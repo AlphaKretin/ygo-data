@@ -1,3 +1,4 @@
+import { CardScript } from "./CardScript";
 import { Language } from "./Language";
 
 export interface ICardSqlResult {
@@ -48,6 +49,7 @@ export class Card {
     public desc: string;
     public strings: string[];
     public dbs: string[];
+    private script: CardScript;
     private lang: Language;
     constructor(data: ICardSqlResult, file: string[], lang: Language) {
         this.code = data.id;
@@ -66,5 +68,38 @@ export class Card {
         this.strings = [data.str1, data.str2, data.str3, data.str4, data.str5, data.str6, data.str7, data.str8,
             data.str9, data.str10, data.str11, data.str12, data.str13, data.str14, data.str15, data.str16];
         this.dbs = file;
+        this.script = new CardScript(this.code);
+    }
+
+    get otNames(): string[] {
+        return [this.ot.toString()]; // placeholder
+    }
+
+    get setNames(): string[] {
+        return [this.setcode.toString()]; // placeholder
+    }
+
+    get typeNames(): string[] {
+        return [this.type.toString()]; // placeholder
+    }
+
+    get raceNames(): string[] {
+        return [this.race.toString()]; // placeholder
+    }
+
+    get attributeNames(): string[] {
+        return [this.attribute.toString()]; // placeholder
+    }
+
+    get categoryNames(): string[] {
+        return [this.category.toString()]; // placeholder
+    }
+
+    get desc_m(): string {
+        return this.desc;
+    }
+
+    get desc_p(): string {
+        return this.desc;
     }
 }
