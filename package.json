@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@types/node": "^10.3.3",
+    "@types/request": "^2.47.1",
     "@types/sqlite3": "^3.1.3"
   }
 }
