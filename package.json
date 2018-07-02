@@ -1,0 +1,25 @@
+{
+  "name": "ygopro-data",
+  "version": "1.0.0",
+  "description": "Parses information from YGOPro card databases",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "sqlite",
+    "ygopro"
+  ],
+  "author": "AlphaKretin",
+  "license": "GPL-3.0+",
+  "dependencies": {
+    "@octokit/rest": "^15.8.2",
+    "fuse.js": "^3.2.1",
+    "request": "^2.87.0",
+    "sqlite": "^2.9.2"
+  },
+  "devDependencies": {
+    "@types/node": "^10.3.3",
+    "@types/sqlite3": "^3.1.3"
+  }
+}
