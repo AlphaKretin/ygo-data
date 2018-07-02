@@ -1,4 +1,3 @@
-import { CardScript } from "./CardScript";
 import { Language } from "./Language";
 
 export interface ICardSqlResult {
@@ -49,7 +48,6 @@ export class Card {
     public desc: string;
     public strings: string[];
     public dbs: string[];
-    public script: CardScript;
     private lang: Language;
     constructor(data: ICardSqlResult, file: string[], lang: Language) {
         this.code = data.id;
@@ -68,7 +66,6 @@ export class Card {
         this.strings = [data.str1, data.str2, data.str3, data.str4, data.str5, data.str6, data.str7, data.str8,
             data.str9, data.str10, data.str11, data.str12, data.str13, data.str14, data.str15, data.str16];
         this.dbs = file;
-        this.script = new CardScript(this.code);
         this.lang = lang;
     }
 
