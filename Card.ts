@@ -125,18 +125,36 @@ export class Card {
     }
 
     get attributeNames(): string[] {
-        return [this.attribute.toString()]; // placeholder
+        const names: string[] = [];
+        for (const key in this.lang.attributes) {
+            if (this.lang.attributes.hasOwnProperty(key)) {
+                const att = parseInt(key, 10);
+                if ((att & this.attribute) !== 0) {
+                    names.push(this.lang.attributes[key]);
+                }
+            }
+        }
+        return names;
     }
 
     get categoryNames(): string[] {
-        return [this.category.toString()]; // placeholder
+        const names: string[] = [];
+        for (const key in this.lang.categories) {
+            if (this.lang.categories.hasOwnProperty(key)) {
+                const cat = parseInt(key, 10);
+                if ((cat & this.category) !== 0) {
+                    names.push(this.lang.categories[key]);
+                }
+            }
+        }
+        return names;
     }
 
     get desc_m(): string {
-        return this.desc;
+        return this.desc; // placeholder
     }
 
     get desc_p(): string {
-        return this.desc;
+        return this.desc; // placeholder
     }
 }

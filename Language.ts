@@ -148,6 +148,8 @@ interface ILanguageDataPayload {
     ots: { [ot: number]: string};
     types: { [type: number]: string};
     races: { [race: number]: string};
+    attributes: { [type: number]: string};
+    categories: { [race: number]: string};
 }
 
 export class Language {
@@ -156,7 +158,9 @@ export class Language {
     public static prepareData(name, config): Promise<ILanguageDataPayload> {
         return new Promise((resolve, reject) => {
             const data: ILanguageDataPayload = {
+                attributes: config.attributes,
                 cards: {},
+                categories: config.categories,
                 counters: {},
                 ots: config.ots,
                 races: config.races,
@@ -192,6 +196,8 @@ export class Language {
     public ots: { [ot: number]: string };
     public types: { [type: number]: string };
     public races: { [type: number]: string };
+    public attributes: { [type: number]: string };
+    public categories: { [type: number]: string };
     public name: string;
     constructor(name: string, data: ILanguageDataPayload) {
         this.name = name;
@@ -201,6 +207,8 @@ export class Language {
         this.ots = data.ots;
         this.types = data.types;
         this.races = data.races;
+        this.attributes = data.attributes;
+        this.categories = data.categories;
     }
 
     public getCardByCode(code: number): Promise<Card> {
