@@ -17,7 +17,7 @@ function loadDB(file: string): Promise<any[]> {
     });
 }
 
-function downloadDB(file, name): Promise<null> {
+function downloadDB(file: any, name: string): Promise<null> {
     return new Promise((resolve, reject) => {
         const path = "dbs/" + name + "/" + file.name;
         request(file.download_url, (err, _, body) => {
@@ -71,6 +71,77 @@ function downloadRepo(repo: string, name: string): Promise<string[]> {
     });
 }
 
+interface IStringsConfPayload {
+    setcodes: { [s: string]: string };
+    counters: { [s: string]: string };
+}
+
+function loadSetcodes(path: string): Promise<IStringsConfPayload> {
+    return new Promise((resolve, reject) => {
+        request(path, (err, _, body) => {
+            if (err) {
+                reject(err);
+            } else {
+                const data: IStringsConfPayload = { setcodes: {}, counters: {} };
+                for (const line of body.split(/\R/)) {
+                    if (line.startsWith("!setname")) {
+                        const code = line.split(" ")[1];
+                        const nam = line.slice(line.indexOf(code) + code.length + 1);
+                        data.setcodes[code] = nam;
+                    }
+                    if (line.startsWith("!counter")) {
+                        const code = line.split(" ")[1];
+                        const nam = line.slice(line.indexOf(code) + code.length + 1);
+                        data.counters[code] = nam;
+                    }
+                }
+                resolve(data);
+            }
+        });
+    });
+}
+
+function loadDBs(files: string[], path: string): Promise<{ [n: number]: Card }> {
+    return new Promise((resolve, reject) => {
+        const cards: { [n: number]: Card } = {};
+        const proms = files.map(file => loadDB(path + file).then(dat => {
+            for (const cardData of dat) {
+                const card = new Card(cardData, [file]);
+                if (card.code in cards) {
+                    const dbs = card.dbs;
+                    dbs.push(file);
+                    card.dbs = dbs;
+                }
+                cards[card.code] = card;
+            }
+        }));
+        Promise.all(proms).then(() => resolve(cards)).catch(e => reject(e));
+    });
+}
+
+function downloadDBs(repos: string[], path: string, name: string) {
+    return new Promise((resolve, reject) => {
+        repos.forEach(repo => {
+            downloadRepo(repo, name).then(files => {
+                loadDBs(files, path).then(res => {
+                    // delete unused databases
+                    fs.readdir("dbs/" + name, (err, r) => {
+                        if (err) {
+                            // this failing shouldn't reject the whole promise, it's not crucial
+                            console.error(err);
+                        } else {
+                            r.filter((f) => !files.includes(f)).forEach((f) => {
+                                fs.unlinkSync("dbs/" + name + "/" + f);
+                            });
+                        }
+                    });
+                    resolve(res);
+                }).catch(e => reject(e));
+            });
+        });
+    });
+}
+
 interface ILanguageDataPayload {
     cards: { [n: number]: Card };
     setcodes: { [s: string]: string };
@@ -78,6 +149,8 @@ interface ILanguageDataPayload {
 }
 
 export class Language {
+    // preparing the data for a language must be done asynchronously, so the intended use is to call this function,
+    // then instantiate a Language object with its resolution
     public static prepareData(name, config): Promise<ILanguageDataPayload> {
         return new Promise((resolve, reject) => {
             const data: ILanguageDataPayload = {
@@ -86,73 +159,22 @@ export class Language {
                 setcodes: {},
             };
             const path = "dbs/" + name + "/";
+            const proms: Array<Promise<any>> = [];
             if ("stringsConf" in config) {
-                request(config.stringsConf, (err, _, body) => {
-                    if (err) {
-                        console.error("Error downloading setcodes and counters!");
-                        console.error(err);
-                    } else {
-                        for (const line of body.split(/\R/)) {
-                            if (line.startsWith("!setname")) {
-                                const code = line.split(" ")[1];
-                                const nam = line.slice(line.indexOf(code) + code.length + 1);
-                                data.setcodes[code] = nam;
-                            }
-                            if (line.startsWith("!counter")) {
-                                const code = line.split(" ")[1];
-                                const nam = line.slice(line.indexOf(code) + code.length + 1);
-                                data.counters[code] = nam;
-                            }
-                        }
-                    }
-                });
-            }
-            if ("localDBs" in config) {
-                config.localDBs.forEach(file => loadDB(path + file).then(dat => {
-                    for (const cardData of dat) {
-                        const card = new Card(cardData, [file]);
-                        if (card.code in data.cards) {
-                            const dbs = card.dbs;
-                            dbs.push(file);
-                            card.dbs = dbs;
-                        }
-                        data.cards[card.code] = card;
-                    }
-                }, err => {
-                    console.error("Could not load database " + file + "!");
-                    console.error(err);
+                proms.push(loadSetcodes(path + config.stringsConf).then(res => {
+                    data.counters = res.counters;
+                    data.setcodes = res.setcodes;
                 }));
             }
-            if ("remoteDBs" in config) {
-                config.remoteDBs.forEach(repo => {
-                    downloadRepo(repo, name).then(files => {
-                        files.forEach(file => loadDB(path + file).then(dat => {
-                            for (const cardData of dat) {
-                                const card = new Card(cardData, [file]);
-                                if (card.code in data.cards) {
-                                    const dbs = card.dbs;
-                                    dbs.push(file);
-                                    card.dbs = dbs;
-                                }
-                                data.cards[card.code] = card;
-                            }
-                        }, err => {
-                            console.error("Could not load database " + file + "!");
-                            console.error(err);
-                        }));
-                        // delete unused databases
-                        fs.readdir("dbs/" + name, (err, res) => {
-                            if (err) {
-                                console.error(err);
-                            } else {
-                                res.filter((f) => !files.includes(f)).forEach((f) => {
-                                    fs.unlinkSync("dbs/" + name + "/" + f);
-                                });
-                            }
-                        });
-                    });
-                });
+            if ("localDBs" in config) {
+                proms.push(loadDBs(config.localDBs, path)
+                    .then(cs => Object.keys(cs).forEach(key => data.cards[key] = cs[key])));
             }
+            if ("remoteDBs" in config) {
+                proms.push(downloadDBs(config.remoteDBs, path, name)
+                    .then(cs => Object.keys(cs).forEach(key => data.cards[key] = cs[key])));
+            }
+            Promise.all(proms).then(() => resolve(data)).catch(e => reject(e));
         });
     }
     public cards: { [n: number]: Card };
