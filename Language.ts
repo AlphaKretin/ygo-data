@@ -72,8 +72,8 @@ function downloadRepo(repo: string, name: string): Promise<string[]> {
 }
 
 interface IStringsConfPayload {
-    setcodes: { [s: string]: string };
-    counters: { [s: string]: string };
+    setcodes: { [set: string]: string };
+    counters: { [counter: string]: string };
 }
 
 function loadSetcodes(path: string): Promise<IStringsConfPayload> {
@@ -137,15 +137,15 @@ function downloadDBs(repos: string[], path: string, name: string) {
                     });
                     resolve(res);
                 }).catch(e => reject(e));
-            });
+            }).catch(e => reject(e));
         });
     });
 }
 
 interface ILanguageDataPayload {
-    cards: { [n: number]: Card };
-    setcodes: { [s: string]: string };
-    counters: { [s: string]: string };
+    cards: { [code: number]: Card };
+    setcodes: { [set: string]: string };
+    counters: { [counter: string]: string };
 }
 
 export class Language {
@@ -177,6 +177,10 @@ export class Language {
             Promise.all(proms).then(() => resolve(data)).catch(e => reject(e));
         });
     }
+    public static build(name, config): Promise<Language> {
+        return new Promise((resolve, reject) => Language.prepareData(name, config)
+            .then(data => resolve(new Language(name, data))).catch(e => reject(e)));
+    }
     public cards: { [n: number]: Card };
     public setcodes: { [s: string]: string };
     public counters: { [s: string]: string };
@@ -186,5 +190,27 @@ export class Language {
         this.cards = data.cards;
         this.setcodes = data.setcodes;
         this.counters = data.counters;
+    }
+
+    public getCardByCode(code: number): Promise<Card> {
+        return new Promise((resolve, reject) => {
+            if (code in this.cards) {
+                resolve(this.cards[code]);
+            } else {
+                reject("Could not find card for code " + code + " in Language " + this.name + "!");
+            }
+        });
+    }
+
+    public getCardByName(name: string): Promise<Card> {
+        return new Promise((resolve, reject) => {
+            const card: Card = Object.values(this.cards).find(c => c.name.toLowerCase() === name);
+            if (card) {
+                resolve(card);
+            } else {
+                // TODO: fuse stuff
+                reject("Could not find card for query " + name + " in Language " + this.name + "!");
+            }
+        });
     }
 }
