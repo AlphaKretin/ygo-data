@@ -31,4 +31,33 @@ export class CardScript {
                 .catch(e => reject(e));
         });
     }
+
+    get url(): Promise<string> {
+        return new Promise((resolve, reject) => {
+            this.update()
+                .then(() => resolve(this.data.data.html_url))
+                .catch(e => reject(e));
+        });
+    }
+
+    get content(): Promise<string> {
+        return new Promise((resolve, reject) => {
+            this.update()
+                .then(() => resolve(this.data.data.content))
+                .catch(e => reject(e));
+        });
+    }
+
+    get contentLines(): Promise<string> {
+        return new Promise((resolve, reject) => {
+            this.update()
+                .then(() => {
+                    const lines: string[] = this.data.data.content.split(/\R/);
+                    const len = lines.length.toString().length;
+                    const script = lines.map((l, i) => (i + 1).toString().padStart(len, " ") + "|" + l).join("\n");
+                    resolve(script);
+                })
+                .catch(e => reject(e));
+        });
+    }
 }
