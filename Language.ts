@@ -108,7 +108,7 @@ export class Language {
                 });
             }
             if ("localDBs" in config) {
-                config.localDBs.forEach((file) => loadDB(path + file).then(dat => {
+                config.localDBs.forEach(file => loadDB(path + file).then(dat => {
                     for (const cardData of dat) {
                         const card = new Card(cardData, [file]);
                         if (card.code in data.cards) {
@@ -118,15 +118,15 @@ export class Language {
                         }
                         data.cards[card.code] = card;
                     }
-                }, (err) => {
+                }, err => {
                     console.error("Could not load database " + file + "!");
                     console.error(err);
                 }));
             }
             if ("remoteDBs" in config) {
-                config.remoteDBs.forEach((repo) => {
-                    downloadRepo(repo, name).then((files) => {
-                        files.forEach((file) => loadDB(path + file).then(dat => {
+                config.remoteDBs.forEach(repo => {
+                    downloadRepo(repo, name).then(files => {
+                        files.forEach(file => loadDB(path + file).then(dat => {
                             for (const cardData of dat) {
                                 const card = new Card(cardData, [file]);
                                 if (card.code in data.cards) {
@@ -158,7 +158,11 @@ export class Language {
     public cards: { [n: number]: Card };
     public setcodes: { [s: string]: string };
     public counters: { [s: string]: string };
-    constructor(name, data) {
-        "";
+    public name: string;
+    constructor(name: string, data: ILanguageDataPayload) {
+        this.name = name;
+        this.cards = data.cards;
+        this.setcodes = data.setcodes;
+        this.counters = data.counters;
     }
 }
