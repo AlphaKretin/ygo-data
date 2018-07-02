@@ -2,12 +2,12 @@ import * as octokit from "@octokit/rest";
 import * as fs from "fs";
 import * as request from "request";
 import * as sqlite from "sqlite";
-import { Card } from "./Card";
+import { Card, ICardSqlResult } from "./Card";
 const GitHub = new octokit();
 
-const reflect = (p) => p.then((v) => ({ v, status: true }), (e) => ({ e, status: false }));
+const reflect = p => p.then(v => ({ v, status: true }), e => ({ e, status: false }));
 
-function loadDB(file: string): Promise<any[]> {
+function loadDB(file: string): Promise<ICardSqlResult[]> {
     return new Promise((resolve, reject) => {
         sqlite.open(file).then(db => {
             db.all("select * from datas,texts where datas.id=texts.id").then(data => {
@@ -61,8 +61,7 @@ function downloadRepo(repo: string, name: string): Promise<string[]> {
             Promise.all(promises.map(reflect)).then((results) => {
                 results.forEach((result) => {
                     if (!result.status) {
-                        console.error("Error downloading database from repo " + repo + "!");
-                        console.error(result);
+                        reject(result);
                     }
                 });
                 resolve(filenames);
@@ -106,7 +105,7 @@ function loadDBs(files: string[], path: string): Promise<{ [n: number]: Card }> 
         const cards: { [n: number]: Card } = {};
         const proms = files.map(file => loadDB(path + file).then(dat => {
             for (const cardData of dat) {
-                const card = new Card(cardData, [file]);
+                const card = new Card(cardData, [file], this);
                 if (card.code in cards) {
                     const dbs = card.dbs;
                     dbs.push(file);
