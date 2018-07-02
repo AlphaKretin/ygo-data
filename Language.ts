@@ -19,7 +19,7 @@ function loadDB(file: string): Promise<any> {
 
 function downloadDB(file, name) {
     return new Promise((resolve, reject) => {
-        let path = "dbs/" + name + "/${file.name}";
+        let path = "dbs/" + name + "/" + file.name;
         request(file.download_url, (err, res, body) => {
             if (err) {
                 reject(err);
@@ -58,7 +58,7 @@ function downloadRepo(repo: string, name: string): Promise<Array<string>> {
 			Promise.all(promises.map(reflect)).then(results => {
                 results.forEach(result => {
                     if (!result.status) {
-                        console.error("Error downloading database from repo ${repo}!");
+                        console.error("Error downloading database from repo " + repo + "!");
                         console.error(result);
                     }
                 });
@@ -72,7 +72,7 @@ export class Language {
     cards: { [ n : number ] : Card };
     setcodes: { [ s: string ] : string };
     constructor(name, config) {
-        let path = "dbs/${name}/";
+        let path = "dbs/" + name + "/";
         if ("setcodeSource" in config) {
             
         }
@@ -88,7 +88,7 @@ export class Language {
                     this.cards[card.code] = card;
                 }
             }, err => {
-                console.error("Could not load database ${file}!");
+                console.error("Could not load database " + file + "!");
                 console.error(err);
             }));
         }
@@ -106,17 +106,17 @@ export class Language {
                             this.cards[card.code] = card;
                         }
                     }, err => {
-                        console.error("Could not load database ${file}!");
+                        console.error("Could not load database " + file + "!");
                         console.error(err);
                     }));
                     //delete unused databases
-                    fs.readdir("dbs/${name}", (err, res) => {
+                    fs.readdir("dbs/" + name, (err, res) => {
                         if (err) {
                             console.error(err);
                         } else {
                             res.filter(f => !files.includes(f)).forEach(f => {
-                                fs.unlinkSync("dbs/${name}/${f}");
-                            })
+                                fs.unlinkSync("dbs/" + name + "/" + f);
+                            });
                         }
                     });
                 });
