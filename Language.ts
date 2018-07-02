@@ -85,13 +85,13 @@ function loadSetcodes(path: string): Promise<IStringsConfPayload> {
                 for (const line of body.split(/\R/)) {
                     if (line.startsWith("!setname")) {
                         const code = line.split(" ")[1];
-                        const nam = line.slice(line.indexOf(code) + code.length + 1);
-                        data.setcodes[code] = nam;
+                        const name = line.slice(line.indexOf(code) + code.length + 1);
+                        data.setcodes[code] = name;
                     }
                     if (line.startsWith("!counter")) {
                         const code = line.split(" ")[1];
-                        const nam = line.slice(line.indexOf(code) + code.length + 1);
-                        data.counters[code] = nam;
+                        const name = line.slice(line.indexOf(code) + code.length + 1);
+                        data.counters[code] = name;
                     }
                 }
                 resolve(data);
@@ -145,6 +145,9 @@ interface ILanguageDataPayload {
     cards: { [code: number]: Card };
     setcodes: { [set: string]: string };
     counters: { [counter: string]: string };
+    ots: { [ot: number]: string};
+    types: { [type: number]: string};
+    races: { [race: number]: string};
 }
 
 export class Language {
@@ -155,7 +158,10 @@ export class Language {
             const data: ILanguageDataPayload = {
                 cards: {},
                 counters: {},
+                ots: config.ots,
+                races: config.races,
                 setcodes: {},
+                types: config.types
             };
             const path = "dbs/" + name + "/";
             const proms: Array<Promise<any>> = [];
@@ -180,15 +186,21 @@ export class Language {
         return new Promise((resolve, reject) => Language.prepareData(name, config)
             .then(data => resolve(new Language(name, data))).catch(e => reject(e)));
     }
-    public cards: { [n: number]: Card };
-    public setcodes: { [s: string]: string };
-    public counters: { [s: string]: string };
+    public cards: { [code: number]: Card };
+    public setcodes: { [set: string]: string };
+    public counters: { [counter: string]: string };
+    public ots: { [ot: number]: string };
+    public types: { [type: number]: string };
+    public races: { [type: number]: string };
     public name: string;
     constructor(name: string, data: ILanguageDataPayload) {
         this.name = name;
         this.cards = data.cards;
         this.setcodes = data.setcodes;
         this.counters = data.counters;
+        this.ots = data.ots;
+        this.types = data.types;
+        this.races = data.races;
     }
 
     public getCardByCode(code: number): Promise<Card> {

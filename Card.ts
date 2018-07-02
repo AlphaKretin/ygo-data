@@ -49,7 +49,7 @@ export class Card {
     public desc: string;
     public strings: string[];
     public dbs: string[];
-    private script: CardScript;
+    public script: CardScript;
     private lang: Language;
     constructor(data: ICardSqlResult, file: string[], lang: Language) {
         this.code = data.id;
@@ -69,22 +69,59 @@ export class Card {
             data.str9, data.str10, data.str11, data.str12, data.str13, data.str14, data.str15, data.str16];
         this.dbs = file;
         this.script = new CardScript(this.code);
+        this.lang = lang;
     }
 
     get otNames(): string[] {
-        return [this.ot.toString()]; // placeholder
+        const names: string[] = [];
+        for (const key in this.lang.ots) {
+            if (this.lang.ots.hasOwnProperty(key)) {
+                const ot = parseInt(key, 10);
+                if ((ot & this.ot) !== 0) {
+                    names.push(this.lang.ots[key]);
+                }
+            }
+        }
+        return names;
     }
 
     get setNames(): string[] {
-        return [this.setcode.toString()]; // placeholder
+        const hex: string[] = this.setcode.toString(16).padStart(16, "0").match(/.{1,2}/g);
+        const names: string[] = [];
+        for (const key in this.lang.setcodes) {
+            if (this.lang.setcodes.hasOwnProperty(key)) {
+                if (hex.includes(key)) {
+                    names.push(this.lang.setcodes[key]);
+                }
+            }
+        }
+        return names;
     }
 
     get typeNames(): string[] {
-        return [this.type.toString()]; // placeholder
+        const names: string[] = [];
+        for (const key in this.lang.types) {
+            if (this.lang.types.hasOwnProperty(key)) {
+                const type = parseInt(key, 10);
+                if ((type & this.type) !== 0) {
+                    names.push(this.lang.types[key]);
+                }
+            }
+        }
+        return names;
     }
 
     get raceNames(): string[] {
-        return [this.race.toString()]; // placeholder
+        const names: string[] = [];
+        for (const key in this.lang.races) {
+            if (this.lang.races.hasOwnProperty(key)) {
+                const race = parseInt(key, 10);
+                if ((race & this.race) !== 0) {
+                    names.push(this.lang.races[key]);
+                }
+            }
+        }
+        return names;
     }
 
     get attributeNames(): string[] {
