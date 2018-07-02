@@ -9,11 +9,11 @@ const reflect = (p) => p.then((v) => ({ v, status: true }), (e) => ({ e, status:
 
 function loadDB(file: string): Promise<any[]> {
     return new Promise((resolve, reject) => {
-        sqlite.open(file).then((db) => {
-            db.all("select * from datas,texts where datas.id=texts.id").then((data) => {
+        sqlite.open(file).then(db => {
+            db.all("select * from datas,texts where datas.id=texts.id").then(data => {
                 resolve(data);
-            }, (err) => reject(err));
-        }, (err) => reject(err));
+            }, err => reject(err));
+        }, err => reject(err));
     });
 }
 
