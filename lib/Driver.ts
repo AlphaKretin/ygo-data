@@ -1,36 +1,77 @@
 import { Card } from "./Card";
 import { CardScript } from "./CardScript";
-import { Language } from "./Language";
+import { ILangConfig, Language } from "./Language";
 
 interface ILangList {
     [lang: string]: Language;
 }
 
+interface IDriverConfig {
+    [lang: string]: ILangConfig;
+}
+
 export class Driver {
-    public static prepareLangs(config): Promise<ILangList> {
+    public static prepareLangs(config: IDriverConfig): Promise<ILangList> {
         return new Promise((resolve, reject) => {
             const langList: ILangList = {};
-            Promise.all(
-                config.map(lang => {
-                    Language.build(lang, config[lang]).then(newLang => (langList[lang] = newLang));
-                })
-            )
+            const proms: Array<Promise<Language>> = Object.keys(config).map((lang: string) =>
+                Language.build(lang, config[lang]).then(newLang => (langList[lang] = newLang))
+            );
+            Promise.all(proms)
                 .then(() => resolve(langList))
-                .catch(e => reject(e));
+                .catch((e: Error) => reject(e));
         });
     }
-    public static build(config): Promise<Driver> {
+    public static build(config: IDriverConfig): Promise<Driver> {
         return new Promise((resolve, reject) => {
             this.prepareLangs(config)
                 .then(langList => resolve(new Driver(langList)))
                 .catch(e => reject(e));
         });
     }
-    public config;
+    public config: IDriverConfig;
     private langList: { [lang: string]: Language };
     private scripts: { [code: number]: CardScript };
     constructor(langList: ILangList) {
         this.langList = langList;
+        this.scripts = {
+            0: new CardScript(0)
+        };
+        this.config = {
+            en: {
+                attributes: {
+                    1: "Light"
+                },
+                categories: {
+                    1: "Destroy Deck"
+                },
+                localDBs: ["a"],
+                ots: {
+                    1: "OCG"
+                },
+                races: {
+                    1: "Dragon"
+                },
+                remoteDBs: [
+                    {
+                        owner: "a",
+                        path: "a",
+                        repo: "a"
+                    }
+                ],
+                stringsConf: {
+                    counters: {
+                        1: "Spell Counter"
+                    },
+                    setcodes: {
+                        1: "Fur Hire"
+                    }
+                },
+                types: {
+                    1: "Monster"
+                }
+            }
+        };
     }
 
     public getCard(name: string, lang: string): Promise<Card> {

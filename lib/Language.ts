@@ -5,7 +5,7 @@ import * as sqlite from "sqlite";
 import { Card, ICardSqlResult } from "./Card";
 const GitHub = new octokit();
 
-const reflect = p => p.then(v => ({ v, status: true }), e => ({ e, status: false }));
+const reflect = (p: Promise<any>) => p.then(v => ({ v, status: true }), e => ({ e, status: false }));
 
 function loadDB(file: string): Promise<ICardSqlResult[]> {
     return new Promise((resolve, reject) => {
@@ -26,7 +26,7 @@ function loadDB(file: string): Promise<ICardSqlResult[]> {
 function downloadDB(file: any, name: string): Promise<null> {
     return new Promise((resolve, reject) => {
         const path = "dbs/" + name + "/" + file.name;
-        request(file.download_url, (err, _, body) => {
+        request(file.download_url, (err: Error, _: any, body: any) => {
             if (err) {
                 reject(err);
             } else {
@@ -42,20 +42,12 @@ function downloadDB(file: any, name: string): Promise<null> {
     });
 }
 
-function downloadRepo(repo: string, name: string): Promise<string[]> {
+function downloadRepo(repo: octokit.ReposGetContentParams, name: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
-        const arr: string[] = repo.split("/");
-        const arg: any = {
-            owner: arr[0],
-            repo: arr[1]
-        };
-        if (arr.length > 2) {
-            arg.path = arr.slice(2).join("/");
-        }
         GitHub.repos
-            .getContent(arg)
+            .getContent(repo)
             .then(res => {
-                const filenames = [];
+                const filenames: string[] = [];
                 const promises = [];
                 for (const key in res.data) {
                     if (res.data.hasOwnProperty(key)) {
@@ -110,13 +102,13 @@ function loadSetcodes(path: string): Promise<IStringsConfPayload> {
     });
 }
 
-function loadDBs(files: string[], path: string): Promise<{ [n: number]: Card }> {
+function loadDBs(files: string[], path: string, lang: ILangTranslations): Promise<ICardList> {
     return new Promise((resolve, reject) => {
         const cards: { [n: number]: Card } = {};
         const proms = files.map(file =>
             loadDB(path + file).then(dat => {
                 for (const cardData of dat) {
-                    const card = new Card(cardData, [file], this);
+                    const card = new Card(cardData, [file], lang);
                     if (card.code in cards) {
                         const dbs = card.dbs;
                         dbs.push(file);
@@ -132,12 +124,17 @@ function loadDBs(files: string[], path: string): Promise<{ [n: number]: Card }> 
     });
 }
 
-function downloadDBs(repos: string[], path: string, name: string) {
+function downloadDBs(
+    repos: octokit.ReposGetContentParams[],
+    path: string,
+    name: string,
+    lang: ILangTranslations
+): Promise<ICardList> {
     return new Promise((resolve, reject) => {
         repos.forEach(repo => {
             downloadRepo(repo, name)
                 .then(files => {
-                    loadDBs(files, path)
+                    loadDBs(files, path, lang)
                         .then(res => {
                             // delete unused databases
                             fs.readdir("dbs/" + name, (err, r) => {
@@ -170,10 +167,34 @@ interface ILanguageDataPayload {
     categories: { [race: number]: string };
 }
 
+export interface ILangTranslations {
+    setcodes: { [set: string]: string };
+    ots: { [ot: number]: string };
+    types: { [type: number]: string };
+    races: { [race: number]: string };
+    attributes: { [type: number]: string };
+    categories: { [race: number]: string };
+}
+
+export interface ILangConfig {
+    attributes: { [type: number]: string };
+    categories: { [type: number]: string };
+    ots: { [ot: number]: string };
+    races: { [race: number]: string };
+    types: { [type: number]: string };
+    stringsConf: IStringsConfPayload;
+    localDBs: string[];
+    remoteDBs: octokit.ReposGetContentParams[];
+}
+
+interface ICardList {
+    [code: number]: Card;
+}
+
 export class Language {
     // preparing the data for a language must be done asynchronously, so the intended use is to call this function,
     // then instantiate a Language object with its resolution
-    public static prepareData(name, config): Promise<ILanguageDataPayload> {
+    public static prepareData(name: string, config: ILangConfig): Promise<ILanguageDataPayload> {
         return new Promise((resolve, reject) => {
             const data: ILanguageDataPayload = {
                 attributes: config.attributes,
@@ -187,34 +208,36 @@ export class Language {
             };
             const path = "dbs/" + name + "/";
             const proms: Array<Promise<any>> = [];
-            if ("stringsConf" in config) {
-                proms.push(
-                    loadSetcodes(path + config.stringsConf).then(res => {
-                        data.counters = res.counters;
-                        data.setcodes = res.setcodes;
-                    })
-                );
-            }
-            if ("localDBs" in config) {
-                proms.push(
-                    loadDBs(config.localDBs, path).then(cs =>
-                        Object.keys(cs).forEach(key => (data.cards[key] = cs[key]))
-                    )
-                );
-            }
-            if ("remoteDBs" in config) {
-                proms.push(
-                    downloadDBs(config.remoteDBs, path, name).then(cs =>
-                        Object.keys(cs).forEach(key => (data.cards[key] = cs[key]))
-                    )
-                );
-            }
+            proms.push(
+                loadSetcodes(path + config.stringsConf).then(res => {
+                    data.counters = res.counters;
+                    data.setcodes = res.setcodes;
+                })
+            );
+            proms.push(
+                loadDBs(config.localDBs, path, data).then((cs: ICardList) => {
+                    for (const key in cs) {
+                        if (cs.hasOwnProperty(key)) {
+                            data.cards[key] = cs[key];
+                        }
+                    }
+                })
+            );
+            proms.push(
+                downloadDBs(config.remoteDBs, path, name, data).then((cs: ICardList) => {
+                    for (const key in cs) {
+                        if (cs.hasOwnProperty(key)) {
+                            data.cards[key] = cs[key];
+                        }
+                    }
+                })
+            );
             Promise.all(proms)
                 .then(() => resolve(data))
                 .catch(e => reject(e));
         });
     }
-    public static build(name, config): Promise<Language> {
+    public static build(name: string, config: ILangConfig): Promise<Language> {
         return new Promise((resolve, reject) =>
             Language.prepareData(name, config)
                 .then(data => resolve(new Language(name, data)))
@@ -254,7 +277,7 @@ export class Language {
 
     public getCardByName(name: string): Promise<Card> {
         return new Promise((resolve, reject) => {
-            const card: Card = Object.values(this.cards).find(c => c.name.toLowerCase() === name);
+            const card: Card | undefined = Object.values(this.cards).find(c => c.name.toLowerCase() === name);
             if (card) {
                 resolve(card);
             } else {

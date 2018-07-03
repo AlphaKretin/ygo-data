@@ -10,8 +10,16 @@
         "sqlite",
         "ygopro"
     ],
-    "author": "AlphaKretin",
+    "author": "AlphaKretin <bastionbotdev@gmail.com>",
     "license": "GPL-3.0+",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AlphaKretin/ygo-data.git"
+    },
+    "bugs": {
+        "url": "https://github.com/AlphaKretin/ygo-data/issues"
+    },
+    "homepage": "https://github.com/AlphaKretin/ygo-data#ygo-data",
     "dependencies": {
         "@octokit/rest": "^15.8.2",
         "fuse.js": "^3.2.1",

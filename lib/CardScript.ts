@@ -2,11 +2,16 @@ import * as octokit from "@octokit/rest";
 const GitHub = new octokit();
 
 export class CardScript {
-    private data;
+    private data: any;
     private source: octokit.ReposGetContentParams;
-    private code;
-    constructor(code) {
+    private code: number;
+    constructor(code: number) {
         this.code = code;
+        this.source = {
+            owner: "placeholder",
+            path: "placeholder",
+            repo: "placeholder"
+        };
     }
 
     private update(): Promise<null> {

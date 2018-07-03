@@ -1,4 +1,4 @@
-import { Language } from "./Language";
+import { ILangTranslations, Language } from "./Language";
 
 export interface ICardSqlResult {
     id: number;
@@ -48,8 +48,8 @@ export class Card {
     public desc: string;
     public strings: string[];
     public dbs: string[];
-    private lang: Language;
-    constructor(data: ICardSqlResult, file: string[], lang: Language) {
+    private lang: ILangTranslations;
+    constructor(data: ICardSqlResult, file: string[], lang: ILangTranslations) {
         this.code = data.id;
         this.ot = data.ot;
         this.alias = data.alias;
@@ -63,8 +63,24 @@ export class Card {
         this.category = data.category;
         this.name = data.name;
         this.desc = data.desc;
-        this.strings = [data.str1, data.str2, data.str3, data.str4, data.str5, data.str6, data.str7, data.str8,
-            data.str9, data.str10, data.str11, data.str12, data.str13, data.str14, data.str15, data.str16];
+        this.strings = [
+            data.str1,
+            data.str2,
+            data.str3,
+            data.str4,
+            data.str5,
+            data.str6,
+            data.str7,
+            data.str8,
+            data.str9,
+            data.str10,
+            data.str11,
+            data.str12,
+            data.str13,
+            data.str14,
+            data.str15,
+            data.str16
+        ];
         this.dbs = file;
         this.lang = lang;
     }
@@ -83,11 +99,14 @@ export class Card {
     }
 
     get setNames(): string[] {
-        const hex: string[] = this.setcode.toString(16).padStart(16, "0").match(/.{1,2}/g);
+        const hex: RegExpMatchArray | null = this.setcode
+            .toString(16)
+            .padStart(16, "0")
+            .match(/.{1,2}/g);
         const names: string[] = [];
         for (const key in this.lang.setcodes) {
             if (this.lang.setcodes.hasOwnProperty(key)) {
-                if (hex.includes(key)) {
+                if (hex && hex.includes(key)) {
                     names.push(this.lang.setcodes[key]);
                 }
             }
