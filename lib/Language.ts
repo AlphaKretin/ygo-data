@@ -182,9 +182,9 @@ export interface ILangConfig {
     ots: { [ot: number]: string };
     races: { [race: number]: string };
     types: { [type: number]: string };
-    stringsConf: IStringsConfPayload;
-    localDBs: string[];
-    remoteDBs: octokit.ReposGetContentParams[];
+    stringsConf: string;
+    localDBs?: string[];
+    remoteDBs?: octokit.ReposGetContentParams[];
 }
 
 interface ICardList {
@@ -209,29 +209,33 @@ export class Language {
             const path = "dbs/" + name + "/";
             const proms: Array<Promise<any>> = [];
             proms.push(
-                loadSetcodes(path + config.stringsConf).then(res => {
+                loadSetcodes(config.stringsConf).then(res => {
                     data.counters = res.counters;
                     data.setcodes = res.setcodes;
                 })
             );
-            proms.push(
-                loadDBs(config.localDBs, path, data).then((cs: ICardList) => {
-                    for (const key in cs) {
-                        if (cs.hasOwnProperty(key)) {
-                            data.cards[key] = cs[key];
+            if (config.localDBs) {
+                proms.push(
+                    loadDBs(config.localDBs, path, data).then((cs: ICardList) => {
+                        for (const key in cs) {
+                            if (cs.hasOwnProperty(key)) {
+                                data.cards[key] = cs[key];
+                            }
                         }
-                    }
-                })
-            );
-            proms.push(
-                downloadDBs(config.remoteDBs, path, name, data).then((cs: ICardList) => {
-                    for (const key in cs) {
-                        if (cs.hasOwnProperty(key)) {
-                            data.cards[key] = cs[key];
+                    })
+                );
+            }
+            if (config.remoteDBs) {
+                proms.push(
+                    downloadDBs(config.remoteDBs, path, name, data).then((cs: ICardList) => {
+                        for (const key in cs) {
+                            if (cs.hasOwnProperty(key)) {
+                                data.cards[key] = cs[key];
+                            }
                         }
-                    }
-                })
-            );
+                    })
+                );
+            }
             Promise.all(proms)
                 .then(() => resolve(data))
                 .catch(e => reject(e));

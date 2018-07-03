@@ -6,12 +6,19 @@ interface ILangList {
     [lang: string]: Language;
 }
 
-interface IDriverConfig {
+export interface IDriverConfig {
     [lang: string]: ILangConfig;
 }
 
 export class Driver {
-    public static prepareLangs(config: IDriverConfig): Promise<ILangList> {
+    public static build(config: IDriverConfig): Promise<Driver> {
+        return new Promise((resolve, reject) => {
+            this.prepareLangs(config)
+                .then(langList => resolve(new Driver(config, langList)))
+                .catch(e => reject(e));
+        });
+    }
+    private static prepareLangs(config: IDriverConfig): Promise<ILangList> {
         return new Promise((resolve, reject) => {
             const langList: ILangList = {};
             const proms: Array<Promise<Language>> = Object.keys(config).map((lang: string) =>
@@ -22,55 +29,14 @@ export class Driver {
                 .catch((e: Error) => reject(e));
         });
     }
-    public static build(config: IDriverConfig): Promise<Driver> {
-        return new Promise((resolve, reject) => {
-            this.prepareLangs(config)
-                .then(langList => resolve(new Driver(langList)))
-                .catch(e => reject(e));
-        });
-    }
     public config: IDriverConfig;
     private langList: { [lang: string]: Language };
     private scripts: { [code: number]: CardScript };
-    constructor(langList: ILangList) {
+    constructor(config: IDriverConfig, langList: ILangList) {
+        this.config = config;
         this.langList = langList;
         this.scripts = {
             0: new CardScript(0)
-        };
-        this.config = {
-            en: {
-                attributes: {
-                    1: "Light"
-                },
-                categories: {
-                    1: "Destroy Deck"
-                },
-                localDBs: ["a"],
-                ots: {
-                    1: "OCG"
-                },
-                races: {
-                    1: "Dragon"
-                },
-                remoteDBs: [
-                    {
-                        owner: "a",
-                        path: "a",
-                        repo: "a"
-                    }
-                ],
-                stringsConf: {
-                    counters: {
-                        1: "Spell Counter"
-                    },
-                    setcodes: {
-                        1: "Fur Hire"
-                    }
-                },
-                types: {
-                    1: "Monster"
-                }
-            }
         };
     }
 
