@@ -26,10 +26,12 @@
     "dependencies": {
         "@octokit/rest": "^15.8.2",
         "fuse.js": "^3.2.1",
+        "mkdirp": "^0.5.1",
         "request": "^2.87.0",
         "sqlite": "^2.9.2"
     },
     "devDependencies": {
+        "@types/mkdirp": "^0.5.2",
         "@types/node": "^10.3.3",
         "@types/request": "^2.47.1",
         "@types/sqlite3": "^3.1.3",

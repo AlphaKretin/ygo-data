@@ -1,6 +1,6 @@
 import * as octokit from "@octokit/rest";
 import * as fs from "fs";
-import * as path from "path";
+import * as mkdirp from "mkdirp";
 import * as request from "request";
 import * as sqlite from "sqlite";
 import { Card, ICardSqlResult } from "./Card";
@@ -8,6 +8,7 @@ const GitHub = new octokit();
 
 function loadDB(file: string): Promise<ICardSqlResult[]> {
     return new Promise((resolve, reject) => {
+        console.log(file);
         sqlite.open(file).then(
             db => {
                 db.all("select * from datas,texts where datas.id=texts.id").then(
@@ -22,40 +23,24 @@ function loadDB(file: string): Promise<ICardSqlResult[]> {
     });
 }
 
-// adapted from https://stackoverflow.com/a/40686853
-function mkDirByPath(targetDir: string, isRelativeToScript = false): void {
-    console.log(targetDir);
-    const sep = path.sep;
-    const initDir = path.isAbsolute(targetDir) ? sep : "";
-    const baseDir = isRelativeToScript ? __dirname : ".";
-
-    targetDir.split(sep).reduce((parentDir, childDir) => {
-        const curDir = path.resolve(baseDir, parentDir, childDir);
-        try {
-            console.log(curDir);
-            fs.mkdirSync(curDir);
-        } catch (err) {
-            if (err.code !== "EEXIST") {
-                throw err;
-            }
-        }
-        return curDir;
-    }, initDir);
-}
-
 function downloadDB(file: any, filePath: string): Promise<null> {
     return new Promise((resolve, reject) => {
         const fullPath = filePath + "/" + file.name;
-        mkDirByPath(filePath, true);
-        request(file.download_url, (err: Error, _: any, body: any) => {
+        mkdirp(filePath, err => {
             if (err) {
                 reject(err);
             } else {
-                fs.writeFile(fullPath, body, er => {
+                request(file.download_url, (er: Error, _: any, body: any) => {
                     if (er) {
                         reject(er);
                     } else {
-                        resolve();
+                        fs.writeFile(fullPath, body, e => {
+                            if (e) {
+                                reject(e);
+                            } else {
+                                resolve();
+                            }
+                        });
                     }
                 });
             }
@@ -122,7 +107,7 @@ function loadDBs(files: string[], filePath: string, lang: ILangTranslations): Pr
     return new Promise((resolve, reject) => {
         const cards: { [n: number]: Card } = {};
         const proms = files.map(file =>
-            loadDB(filePath + file).then(dat => {
+            loadDB(filePath + "/" + file).then(dat => {
                 for (const cardData of dat) {
                     const card = new Card(cardData, [file], lang);
                     if (card.code in cards) {
@@ -158,7 +143,7 @@ function downloadDBs(
                                     console.error(err);
                                 } else {
                                     r.filter(f => !files.includes(f)).forEach(f => {
-                                        fs.unlinkSync(filePath + f);
+                                        fs.unlinkSync(filePath + "/" + f);
                                     });
                                 }
                             });
@@ -221,7 +206,7 @@ export class Language {
                 setcodes: {},
                 types: config.types
             };
-            const filePath = "./dbs/" + name;
+            const filePath = __dirname + "/dbs/" + name;
             const proms: Array<Promise<any>> = [];
             proms.push(
                 loadSetcodes(config.stringsConf).then(res => {
@@ -289,19 +274,21 @@ export class Language {
             if (code in this.cards) {
                 resolve(this.cards[code]);
             } else {
-                reject("Could not find card for code " + code + " in Language " + this.name + "!");
+                reject(new Error("Could not find card for code " + code + " in Language " + this.name + "!"));
             }
         });
     }
 
     public getCardByName(name: string): Promise<Card> {
         return new Promise((resolve, reject) => {
-            const card: Card | undefined = Object.values(this.cards).find(c => c.name.toLowerCase() === name);
+            const card: Card | undefined = Object.values(this.cards).find(
+                c => c.name.toLowerCase() === name.toLowerCase()
+            );
             if (card) {
                 resolve(card);
             } else {
                 // TODO: fuse stuff
-                reject("Could not find card for query " + name + " in Language " + this.name + "!");
+                reject(new Error("Could not find card for query " + name + " in Language " + this.name + "!"));
             }
         });
     }

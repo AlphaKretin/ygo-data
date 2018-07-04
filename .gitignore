@@ -63,3 +63,6 @@ typings/
 *.map
 
 *.DS_Store
+
+# files generated during testing
+*.cdb
