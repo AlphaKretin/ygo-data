@@ -8,7 +8,6 @@ const GitHub = new octokit();
 
 function loadDB(file: string): Promise<ICardSqlResult[]> {
     return new Promise((resolve, reject) => {
-        console.log(file);
         sqlite.open(file).then(
             db => {
                 db.all("select * from datas,texts where datas.id=texts.id").then(
@@ -30,19 +29,25 @@ function downloadDB(file: any, filePath: string): Promise<null> {
             if (err) {
                 reject(err);
             } else {
-                request(file.download_url, (er: Error, _: any, body: any) => {
-                    if (er) {
-                        reject(er);
-                    } else {
-                        fs.writeFile(fullPath, body, e => {
-                            if (e) {
-                                reject(e);
-                            } else {
-                                resolve();
-                            }
-                        });
+                request(
+                    {
+                        encoding: null,
+                        url: file.download_url
+                    },
+                    (er: Error, _: any, body: Buffer) => {
+                        if (er) {
+                            reject(er);
+                        } else {
+                            fs.writeFile(fullPath, body, e => {
+                                if (e) {
+                                    reject(e);
+                                } else {
+                                    resolve();
+                                }
+                            });
+                        }
                     }
-                });
+                );
             }
         });
     });
@@ -135,20 +140,7 @@ function downloadDBs(
             downloadRepo(repo, filePath)
                 .then(files => {
                     loadDBs(files, filePath, lang)
-                        .then(res => {
-                            // delete unused databases
-                            fs.readdir(filePath, (err, r) => {
-                                if (err) {
-                                    // this failing shouldn't reject the whole promise, it's not crucial
-                                    console.error(err);
-                                } else {
-                                    r.filter(f => !files.includes(f)).forEach(f => {
-                                        fs.unlinkSync(filePath + "/" + f);
-                                    });
-                                }
-                            });
-                            resolve(res);
-                        })
+                        .then(resolve)
                         .catch(e => reject(e));
                 })
                 .catch(e => reject(e));
