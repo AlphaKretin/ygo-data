@@ -1,4 +1,4 @@
-import { ILangTranslations, Language } from "./Language";
+import { ILangTranslations } from "./Language";
 
 export interface ICardSqlResult {
     id: number;
@@ -170,7 +170,7 @@ export class Card {
         return this.desc; // placeholder
     }
 
-    get desc_p(): string {
+    get desc_p(): string | null {
         return this.desc; // placeholder
     }
 }

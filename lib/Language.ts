@@ -1,11 +1,10 @@
 import * as octokit from "@octokit/rest";
 import * as fs from "fs";
+import * as path from "path";
 import * as request from "request";
 import * as sqlite from "sqlite";
 import { Card, ICardSqlResult } from "./Card";
 const GitHub = new octokit();
-
-const reflect = (p: Promise<any>) => p.then(v => ({ v, status: true }), e => ({ e, status: false }));
 
 function loadDB(file: string): Promise<ICardSqlResult[]> {
     return new Promise((resolve, reject) => {
@@ -23,14 +22,36 @@ function loadDB(file: string): Promise<ICardSqlResult[]> {
     });
 }
 
-function downloadDB(file: any, name: string): Promise<null> {
+// adapted from https://stackoverflow.com/a/40686853
+function mkDirByPath(targetDir: string, isRelativeToScript = false): void {
+    console.log(targetDir);
+    const sep = path.sep;
+    const initDir = path.isAbsolute(targetDir) ? sep : "";
+    const baseDir = isRelativeToScript ? __dirname : ".";
+
+    targetDir.split(sep).reduce((parentDir, childDir) => {
+        const curDir = path.resolve(baseDir, parentDir, childDir);
+        try {
+            console.log(curDir);
+            fs.mkdirSync(curDir);
+        } catch (err) {
+            if (err.code !== "EEXIST") {
+                throw err;
+            }
+        }
+        return curDir;
+    }, initDir);
+}
+
+function downloadDB(file: any, filePath: string): Promise<null> {
     return new Promise((resolve, reject) => {
-        const path = "dbs/" + name + "/" + file.name;
+        const fullPath = filePath + "/" + file.name;
+        mkDirByPath(filePath, true);
         request(file.download_url, (err: Error, _: any, body: any) => {
             if (err) {
                 reject(err);
             } else {
-                fs.writeFile(path, body, er => {
+                fs.writeFile(fullPath, body, er => {
                     if (er) {
                         reject(er);
                     } else {
@@ -42,7 +63,7 @@ function downloadDB(file: any, name: string): Promise<null> {
     });
 }
 
-function downloadRepo(repo: octokit.ReposGetContentParams, name: string): Promise<string[]> {
+function downloadRepo(repo: octokit.ReposGetContentParams, filePath: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
         GitHub.repos
             .getContent(repo)
@@ -53,17 +74,12 @@ function downloadRepo(repo: octokit.ReposGetContentParams, name: string): Promis
                     if (res.data.hasOwnProperty(key)) {
                         const file = res.data[key];
                         if (file.name.endsWith(".cdb")) {
-                            promises.push(downloadDB(file, name).then(() => filenames.push(file.name)));
+                            promises.push(downloadDB(file, filePath).then(() => filenames.push(file.name)));
                         }
                     }
                 }
-                Promise.all(promises.map(reflect))
-                    .then(results => {
-                        results.forEach(result => {
-                            if (!result.status) {
-                                reject(result);
-                            }
-                        });
+                Promise.all(promises)
+                    .then(() => {
                         resolve(filenames);
                     })
                     .catch(e => reject(e));
@@ -77,9 +93,9 @@ interface IStringsConfPayload {
     counters: { [counter: string]: string };
 }
 
-function loadSetcodes(path: string): Promise<IStringsConfPayload> {
+function loadSetcodes(filePath: string): Promise<IStringsConfPayload> {
     return new Promise((resolve, reject) => {
-        request(path, (err, _, body) => {
+        request(filePath, (err, _, body) => {
             if (err) {
                 reject(err);
             } else {
@@ -102,11 +118,11 @@ function loadSetcodes(path: string): Promise<IStringsConfPayload> {
     });
 }
 
-function loadDBs(files: string[], path: string, lang: ILangTranslations): Promise<ICardList> {
+function loadDBs(files: string[], filePath: string, lang: ILangTranslations): Promise<ICardList> {
     return new Promise((resolve, reject) => {
         const cards: { [n: number]: Card } = {};
         const proms = files.map(file =>
-            loadDB(path + file).then(dat => {
+            loadDB(filePath + file).then(dat => {
                 for (const cardData of dat) {
                     const card = new Card(cardData, [file], lang);
                     if (card.code in cards) {
@@ -126,24 +142,23 @@ function loadDBs(files: string[], path: string, lang: ILangTranslations): Promis
 
 function downloadDBs(
     repos: octokit.ReposGetContentParams[],
-    path: string,
-    name: string,
+    filePath: string,
     lang: ILangTranslations
 ): Promise<ICardList> {
     return new Promise((resolve, reject) => {
         repos.forEach(repo => {
-            downloadRepo(repo, name)
+            downloadRepo(repo, filePath)
                 .then(files => {
-                    loadDBs(files, path, lang)
+                    loadDBs(files, filePath, lang)
                         .then(res => {
                             // delete unused databases
-                            fs.readdir("dbs/" + name, (err, r) => {
+                            fs.readdir(filePath, (err, r) => {
                                 if (err) {
                                     // this failing shouldn't reject the whole promise, it's not crucial
                                     console.error(err);
                                 } else {
                                     r.filter(f => !files.includes(f)).forEach(f => {
-                                        fs.unlinkSync("dbs/" + name + "/" + f);
+                                        fs.unlinkSync(filePath + f);
                                     });
                                 }
                             });
@@ -206,7 +221,7 @@ export class Language {
                 setcodes: {},
                 types: config.types
             };
-            const path = "dbs/" + name + "/";
+            const filePath = "./dbs/" + name;
             const proms: Array<Promise<any>> = [];
             proms.push(
                 loadSetcodes(config.stringsConf).then(res => {
@@ -216,7 +231,7 @@ export class Language {
             );
             if (config.localDBs) {
                 proms.push(
-                    loadDBs(config.localDBs, path, data).then((cs: ICardList) => {
+                    loadDBs(config.localDBs, filePath, data).then((cs: ICardList) => {
                         for (const key in cs) {
                             if (cs.hasOwnProperty(key)) {
                                 data.cards[key] = cs[key];
@@ -227,7 +242,7 @@ export class Language {
             }
             if (config.remoteDBs) {
                 proms.push(
-                    downloadDBs(config.remoteDBs, path, name, data).then((cs: ICardList) => {
+                    downloadDBs(config.remoteDBs, filePath, data).then((cs: ICardList) => {
                         for (const key in cs) {
                             if (cs.hasOwnProperty(key)) {
                                 data.cards[key] = cs[key];

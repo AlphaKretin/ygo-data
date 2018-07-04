@@ -61,3 +61,5 @@ typings/
 .next
 *.js
 *.map
+
+*.DS_Store

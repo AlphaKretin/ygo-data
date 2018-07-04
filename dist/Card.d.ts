@@ -55,5 +55,5 @@ export declare class Card {
     readonly attributeNames: string[];
     readonly categoryNames: string[];
     readonly desc_m: string;
-    readonly desc_p: string;
+    readonly desc_p: string | null;
 }
