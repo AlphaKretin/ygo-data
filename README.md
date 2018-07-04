@@ -1,11 +1,11 @@
-# ygo-data
+# ygopro-data
 
 A Node.js module that handles Yu-Gi-Oh! card data using YGOPro's CDB format.
 
 ## Installation
 
 ```sh
-npm install ygo-data --save
+npm install ygopro-data --save
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ npm install ygo-data --save
 ### Javascript
 
 ```javascript
-const ygoData = require("ygo-data");
+const ygoData = require("ygopro-data");
 const options = require("./options.json");
 ygoData.build(options).then(data => {
     data.getCard("Pot of Greed").then(card => {
@@ -29,7 +29,7 @@ Output should be "Pot of Greed"
 ### TypeScript
 
 ```typescript
-import * as ygoData from "ygo-data";
+import * as ygoData from "ygopro-data";
 const options = require("./options.json")
 ygoData.build(options).then(data => {
     data.getCard(55144522).then(card => {
