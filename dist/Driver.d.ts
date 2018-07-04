@@ -13,7 +13,7 @@ export declare class Driver {
     private langList;
     private scripts;
     constructor(config: IDriverConfig, langList: ILangList);
-    getCard(name: string, lang: string): Promise<Card>;
+    getCard(name: string | number, lang: string): Promise<Card>;
     updateLang(lang: string): Promise<null>;
     readonly langs: string[];
 }

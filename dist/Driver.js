@@ -31,14 +31,16 @@ class Driver {
             if (!(lang in this.langList)) {
                 reject('Invalid language "' + lang + '"!');
             }
-            const inInt = parseInt(name, 10);
+            const inInt = typeof name === "number" ? name : parseInt(name, 10);
             if (!isNaN(inInt)) {
                 this.langList[lang].getCardByCode(inInt).then(card => resolve(card), err => {
-                    this.langList[lang].getCardByName(name).then(card => resolve(card), er2 => reject(err + er2));
+                    this.langList[lang]
+                        .getCardByName(name.toString())
+                        .then(card => resolve(card), er2 => reject(err + er2));
                 });
             }
             else {
-                this.langList[lang].getCardByName(name).then(card => resolve(card), err => reject(err));
+                this.langList[lang].getCardByName(name.toString()).then(card => resolve(card), err => reject(err));
             }
         });
     }
