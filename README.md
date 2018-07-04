@@ -1,5 +1,7 @@
 # ygopro-data
 
+[![Build Status](https://travis-ci.org/AlphaKretin/ygo-data.svg?branch=master)](https://travis-ci.org/AlphaKretin/ygo-data) [![Coverage Status](https://coveralls.io/repos/github/AlphaKretin/ygo-data/badge.svg)](https://coveralls.io/github/AlphaKretin/ygo-data)
+
 A Node.js module that handles Yu-Gi-Oh! card data using YGOPro's CDB format.
 
 ## Installation
