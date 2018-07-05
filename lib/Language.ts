@@ -186,7 +186,7 @@ interface ICardList {
 export class Language {
     // preparing the data for a language must be done asynchronously, so the intended use is to call this function,
     // then instantiate a Language object with its resolution
-    public static prepareData(name: string, config: ILangConfig): Promise<ILanguageDataPayload> {
+    public static prepareData(name: string, config: ILangConfig, path: string): Promise<ILanguageDataPayload> {
         return new Promise((resolve, reject) => {
             const data: ILanguageDataPayload = {
                 attributes: config.attributes,
@@ -198,7 +198,7 @@ export class Language {
                 setcodes: {},
                 types: config.types
             };
-            const filePath = __dirname + "/dbs/" + name;
+            const filePath = path + "/dbs/" + name;
             const proms: Array<Promise<any>> = [];
             proms.push(
                 loadSetcodes(config.stringsConf).then(res => {
@@ -233,9 +233,9 @@ export class Language {
                 .catch(e => reject(e));
         });
     }
-    public static build(name: string, config: ILangConfig): Promise<Language> {
+    public static build(name: string, config: ILangConfig, path: string): Promise<Language> {
         return new Promise((resolve, reject) =>
-            Language.prepareData(name, config)
+            Language.prepareData(name, config, path)
                 .then(data => resolve(new Language(name, data)))
                 .catch(e => reject(e))
         );

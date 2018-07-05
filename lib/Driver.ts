@@ -11,18 +11,18 @@ export interface IDriverConfig {
 }
 
 export class Driver {
-    public static build(config: IDriverConfig): Promise<Driver> {
+    public static build(config: IDriverConfig, path: string): Promise<Driver> {
         return new Promise((resolve, reject) => {
-            this.prepareLangs(config)
-                .then(langList => resolve(new Driver(config, langList)))
+            this.prepareLangs(config, path)
+                .then(langList => resolve(new Driver(config, langList, path)))
                 .catch(e => reject(e));
         });
     }
-    private static prepareLangs(config: IDriverConfig): Promise<ILangList> {
+    private static prepareLangs(config: IDriverConfig, path: string): Promise<ILangList> {
         return new Promise((resolve, reject) => {
             const langList: ILangList = {};
             const proms: Array<Promise<Language>> = Object.keys(config).map((lang: string) =>
-                Language.build(lang, config[lang]).then(newLang => (langList[lang] = newLang))
+                Language.build(lang, config[lang], path).then(newLang => (langList[lang] = newLang))
             );
             Promise.all(proms)
                 .then(() => resolve(langList))
@@ -31,8 +31,10 @@ export class Driver {
     }
     public config: IDriverConfig;
     private langList: { [lang: string]: Language };
+    private path: string;
     private scripts: { [code: number]: CardScript };
-    constructor(config: IDriverConfig, langList: ILangList) {
+    constructor(config: IDriverConfig, langList: ILangList, path: string) {
+        this.path = path;
         this.config = config;
         this.langList = langList;
         this.scripts = {
@@ -68,7 +70,7 @@ export class Driver {
     public updateLang(lang: string): Promise<null> {
         return new Promise((resolve, reject) => {
             if (lang in this.langList) {
-                Language.build(lang, this.config[lang])
+                Language.build(lang, this.config[lang], this.path)
                     .then(newLang => {
                         this.langList[lang] = newLang;
                         resolve();

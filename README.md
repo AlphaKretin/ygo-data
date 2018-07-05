@@ -15,7 +15,7 @@ npm install ygopro-data --save
 ### Javascript
 
 ```javascript
-const ygoData = require("ygopro-data");
+const ygoData = require("ygopro-data").Driver;
 const options = require("./options.json");
 ygoData.build(options).then(data => {
     data.getCard("Pot of Greed").then(card => {
@@ -31,7 +31,7 @@ Output should be "Pot of Greed"
 ### TypeScript
 
 ```typescript
-import * as ygoData from "ygopro-data";
+import { Driver as ygoData } from "ygopro-data";
 const options = require("./options.json")
 ygoData.build(options).then(data => {
     data.getCard(55144522).then(card => {
@@ -62,19 +62,19 @@ All other fields should be Objects with numbers as keys, and the value the human
 ```json
 en: {
     "attributes": {
-        1: "Dark"
+        "0x1": "Earth",
     },
     "categories": {
-        1: "Draw"
+        "0x1": "Destroy Spell/Trap"
     },
     "ots": {
-        1: "OCG"
+        "0x1": "OCG"
     },
     "races": {
-        1: "Dragon"
+        "0x1": "Warrior"
     },
     "types": {
-        1: "Monster"
+        "0x1": "Monster"
     },
     "stringsConf": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf",
     "localDBs": [ "cards.cdb" ],
