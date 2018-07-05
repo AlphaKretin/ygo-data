@@ -52,11 +52,15 @@ export class Driver {
                     err => {
                         this.langList[lang]
                             .getCardByName(name.toString())
-                            .then(card => resolve(card), er2 => reject(err + er2));
+                            .then(card => resolve(card))
+                            .catch(er2 => reject(err + er2));
                     }
                 );
             } else {
-                this.langList[lang].getCardByName(name.toString()).then(card => resolve(card), err => reject(err));
+                this.langList[lang]
+                    .getCardByName(name.toString())
+                    .then(card => resolve(card))
+                    .catch(err => reject(err));
             }
         });
     }
