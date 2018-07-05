@@ -1,6 +1,6 @@
 {
     "name": "ygopro-data",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Parses information from YGOPro card databases",
     "main": "dist/Driver.js",
     "types": "dist/Driver.d.ts",
