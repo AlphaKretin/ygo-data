@@ -3,23 +3,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const CardScript_1 = require("./CardScript");
 const Language_1 = require("./Language");
 class Driver {
-    static build(config) {
+    static build(config, path) {
         return new Promise((resolve, reject) => {
-            this.prepareLangs(config)
-                .then(langList => resolve(new Driver(config, langList)))
+            this.prepareLangs(config, path)
+                .then(langList => resolve(new Driver(config, langList, path)))
                 .catch(e => reject(e));
         });
     }
-    static prepareLangs(config) {
+    static prepareLangs(config, path) {
         return new Promise((resolve, reject) => {
             const langList = {};
-            const proms = Object.keys(config).map((lang) => Language_1.Language.build(lang, config[lang]).then(newLang => (langList[lang] = newLang)));
+            const proms = Object.keys(config).map((lang) => Language_1.Language.build(lang, config[lang], path).then(newLang => (langList[lang] = newLang)));
             Promise.all(proms)
                 .then(() => resolve(langList))
                 .catch((e) => reject(e));
         });
     }
-    constructor(config, langList) {
+    constructor(config, langList, path) {
+        this.path = path;
         this.config = config;
         this.langList = langList;
         this.scripts = {
@@ -36,18 +37,22 @@ class Driver {
                 this.langList[lang].getCardByCode(inInt).then(card => resolve(card), err => {
                     this.langList[lang]
                         .getCardByName(name.toString())
-                        .then(card => resolve(card), er2 => reject(err + er2));
+                        .then(card => resolve(card))
+                        .catch(er2 => reject(err + er2));
                 });
             }
             else {
-                this.langList[lang].getCardByName(name.toString()).then(card => resolve(card), err => reject(err));
+                this.langList[lang]
+                    .getCardByName(name.toString())
+                    .then(card => resolve(card))
+                    .catch(err => reject(err));
             }
         });
     }
     updateLang(lang) {
         return new Promise((resolve, reject) => {
             if (lang in this.langList) {
-                Language_1.Language.build(lang, this.config[lang])
+                Language_1.Language.build(lang, this.config[lang], this.path)
                     .then(newLang => {
                     this.langList[lang] = newLang;
                     resolve();

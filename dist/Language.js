@@ -130,7 +130,7 @@ function downloadDBs(repos, filePath, lang) {
 class Language {
     // preparing the data for a language must be done asynchronously, so the intended use is to call this function,
     // then instantiate a Language object with its resolution
-    static prepareData(name, config) {
+    static prepareData(name, config, path) {
         return new Promise((resolve, reject) => {
             const data = {
                 attributes: config.attributes,
@@ -142,7 +142,7 @@ class Language {
                 setcodes: {},
                 types: config.types
             };
-            const filePath = __dirname + "/dbs/" + name;
+            const filePath = path + "/dbs/" + name;
             const proms = [];
             proms.push(loadSetcodes(config.stringsConf).then(res => {
                 data.counters = res.counters;
@@ -171,8 +171,8 @@ class Language {
                 .catch(e => reject(e));
         });
     }
-    static build(name, config) {
-        return new Promise((resolve, reject) => Language.prepareData(name, config)
+    static build(name, config, path) {
+        return new Promise((resolve, reject) => Language.prepareData(name, config, path)
             .then(data => resolve(new Language(name, data)))
             .catch(e => reject(e)));
     }

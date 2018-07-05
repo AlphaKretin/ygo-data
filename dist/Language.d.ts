@@ -67,8 +67,8 @@ export interface ILangConfig {
     remoteDBs?: octokit.ReposGetContentParams[];
 }
 export declare class Language {
-    static prepareData(name: string, config: ILangConfig): Promise<ILanguageDataPayload>;
-    static build(name: string, config: ILangConfig): Promise<Language>;
+    static prepareData(name: string, config: ILangConfig, path: string): Promise<ILanguageDataPayload>;
+    static build(name: string, config: ILangConfig, path: string): Promise<Language>;
     cards: {
         [code: number]: Card;
     };
