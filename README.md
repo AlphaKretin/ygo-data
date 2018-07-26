@@ -56,6 +56,7 @@ The options file should be a JSON Object, with string keys representing differen
 -   stringsConf should be a link to a YGOPro strings.conf file online that will be downloaded to name setcodes and counters.
 -   localDBs should be an array of strings that are CDB files on the hard drive to load.
 -   remoteDBs should be an array of Objects that are GitHub API repository paths which contain CDBs to be downloaded and remotely updated.
+-   fuseOptions is an optional Object that is a valid configuration for [fuse.js](http://fusejs.io/). Note that the fuse is built from a simplified list of codes and names, so the `keys` field should only be `["name"]`.
 
 All other fields should be Objects with numbers as keys, and the value the human-readable name for the corresponding constant in YGOPro with that number value.
 

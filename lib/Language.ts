@@ -1,10 +1,15 @@
 import * as octokit from "@octokit/rest";
 import * as fs from "fs";
+import * as fuse from "fuse.js";
 import * as mkdirp from "mkdirp";
 import * as request from "request";
 import * as sqlite from "sqlite";
 import { Card, ICardSqlResult } from "./Card";
 const GitHub = new octokit();
+
+function fixName(name: string) {
+    return name.toLowerCase().replace(/ +/g, "");
+}
 
 function loadDB(file: string): Promise<ICardSqlResult[]> {
     return new Promise((resolve, reject) => {
@@ -157,6 +162,7 @@ interface ILanguageDataPayload {
     races: { [race: number]: string };
     attributes: { [type: number]: string };
     categories: { [race: number]: string };
+    fuseList: fuse;
 }
 
 export interface ILangTranslations {
@@ -171,6 +177,7 @@ export interface ILangTranslations {
 export interface ILangConfig {
     attributes: { [type: number]: string };
     categories: { [type: number]: string };
+    fuseOptions?: fuse.FuseOptions;
     ots: { [ot: number]: string };
     races: { [race: number]: string };
     types: { [type: number]: string };
@@ -183,35 +190,39 @@ interface ICardList {
     [code: number]: Card;
 }
 
+interface IFuseEntry {
+    code: number;
+    name: string;
+}
+
 export class Language {
     // preparing the data for a language must be done asynchronously, so the intended use is to call this function,
     // then instantiate a Language object with its resolution
     public static prepareData(name: string, config: ILangConfig, path: string): Promise<ILanguageDataPayload> {
-        return new Promise((resolve, reject) => {
-            const data: ILanguageDataPayload = {
+        return new Promise(async (resolve, reject) => {
+            const cards: ICardList = {};
+            let counters = {};
+            let setcodes = {};
+            const filePath = path + "/dbs/" + name;
+            await loadSetcodes(config.stringsConf).then(res => {
+                counters = res.counters;
+                setcodes = res.setcodes;
+            });
+            const transl: ILangTranslations = {
                 attributes: config.attributes,
-                cards: {},
                 categories: config.categories,
-                counters: {},
                 ots: config.ots,
                 races: config.races,
-                setcodes: {},
+                setcodes,
                 types: config.types
             };
-            const filePath = path + "/dbs/" + name;
             const proms: Array<Promise<any>> = [];
-            proms.push(
-                loadSetcodes(config.stringsConf).then(res => {
-                    data.counters = res.counters;
-                    data.setcodes = res.setcodes;
-                })
-            );
             if (config.localDBs) {
                 proms.push(
-                    loadDBs(config.localDBs, filePath, data).then((cs: ICardList) => {
+                    loadDBs(config.localDBs, filePath, transl).then((cs: ICardList) => {
                         for (const key in cs) {
                             if (cs.hasOwnProperty(key)) {
-                                data.cards[key] = cs[key];
+                                cards[key] = cs[key];
                             }
                         }
                     })
@@ -219,17 +230,38 @@ export class Language {
             }
             if (config.remoteDBs) {
                 proms.push(
-                    downloadDBs(config.remoteDBs, filePath, data).then((cs: ICardList) => {
+                    downloadDBs(config.remoteDBs, filePath, transl).then((cs: ICardList) => {
                         for (const key in cs) {
                             if (cs.hasOwnProperty(key)) {
-                                data.cards[key] = cs[key];
+                                cards[key] = cs[key];
                             }
                         }
                     })
                 );
             }
             Promise.all(proms)
-                .then(() => resolve(data))
+                .then(() => {
+                    const entries: IFuseEntry[] = Object.values(cards).map((c: Card) => {
+                        const entry: IFuseEntry = {
+                            code: c.code,
+                            name: fixName(c.name)
+                        };
+                        return entry;
+                    });
+                    const fuseList = new fuse(entries, config.fuseOptions);
+                    const data: ILanguageDataPayload = {
+                        attributes: config.attributes,
+                        cards,
+                        categories: config.categories,
+                        counters,
+                        fuseList,
+                        ots: config.ots,
+                        races: config.races,
+                        setcodes,
+                        types: config.types
+                    };
+                    resolve(data);
+                })
                 .catch(e => reject(e));
         });
     }
@@ -249,6 +281,7 @@ export class Language {
     public attributes: { [type: number]: string };
     public categories: { [type: number]: string };
     public name: string;
+    public fuseList: fuse;
     constructor(name: string, data: ILanguageDataPayload) {
         this.name = name;
         this.cards = data.cards;
@@ -259,6 +292,7 @@ export class Language {
         this.races = data.races;
         this.attributes = data.attributes;
         this.categories = data.categories;
+        this.fuseList = data.fuseList;
     }
 
     public getCardByCode(code: number): Promise<Card> {
@@ -279,8 +313,13 @@ export class Language {
             if (card) {
                 resolve(card);
             } else {
-                // TODO: fuse stuff
-                reject(new Error("Could not find card for query " + name + " in Language " + this.name + "!"));
+                const results = this.fuseList.search<IFuseEntry>(fixName(name));
+                if (results.length > 0) {
+                    // TODO: results.sort() based on OT?
+                    resolve(this.cards[results[0].code]);
+                } else {
+                    reject(new Error("Could not find card for query " + name + " in Language " + this.name + "!"));
+                }
             }
         });
     }

@@ -1,5 +1,4 @@
 import { Card } from "./Card";
-import { CardScript } from "./CardScript";
 import { ILangConfig, Language } from "./Language";
 
 interface ILangList {
@@ -32,14 +31,10 @@ export class Driver {
     public config: IDriverConfig;
     private langList: { [lang: string]: Language };
     private path: string;
-    private scripts: { [code: number]: CardScript };
     constructor(config: IDriverConfig, langList: ILangList, path: string) {
         this.path = path;
         this.config = config;
         this.langList = langList;
-        this.scripts = {
-            0: new CardScript(0)
-        };
     }
 
     public getCard(name: string | number, lang: string): Promise<Card> {
