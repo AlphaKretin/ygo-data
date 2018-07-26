@@ -186,7 +186,7 @@ export interface ILangConfig {
     remoteDBs?: octokit.ReposGetContentParams[];
 }
 
-interface ICardList {
+export interface ICardList {
     [code: number]: Card;
 }
 

@@ -1,5 +1,5 @@
 import { Card } from "./Card";
-import { ILangConfig, Language } from "./Language";
+import { ICardList, ILangConfig, Language } from "./Language";
 
 interface ILangList {
     [lang: string]: Language;
@@ -40,7 +40,7 @@ export class Driver {
     public getCard(name: string | number, lang: string): Promise<Card> {
         return new Promise((resolve, reject) => {
             if (!(lang in this.langList)) {
-                reject('Invalid language "' + lang + '"!');
+                reject(new Error("Invalid language " + lang + "!"));
             }
             const inInt: number = typeof name === "number" ? name : parseInt(name, 10);
             if (!isNaN(inInt)) {
@@ -72,12 +72,22 @@ export class Driver {
                     })
                     .catch(e => reject(e));
             } else {
-                reject("Invalid language " + lang + "!");
+                reject(new Error("Invalid language " + lang + "!"));
             }
         });
     }
 
     get langs(): string[] {
         return Object.keys(this.langList);
+    }
+
+    public getCardList(lang: string): Promise<ICardList> {
+        return new Promise((resolve, reject) => {
+            if (lang in this.langList) {
+                resolve(this.langList[lang].cards);
+            } else {
+                reject(new Error("Invalid language " + lang + "!"));
+            }
+        });
     }
 }
