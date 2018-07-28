@@ -65,8 +65,8 @@ describe("Testing ATK", function() {
     });
 });
 describe("Testing DEF", function() {
-    it("Should be 500", async function() {
+    it("Should be 2000", async function() {
         const card = await getCard(43694650);
-        expect(card.atk).to.equal(500);
+        expect(card.def).to.equal(2000);
     });
 });
