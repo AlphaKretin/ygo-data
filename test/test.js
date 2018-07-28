@@ -70,3 +70,21 @@ describe("Testing DEF", function() {
         expect(card.def).to.equal(2000);
     });
 });
+describe("Testing Setcodes", function() {
+    it("Should be [Danger!]", async function() {
+        const card = await getCard(43694650);
+        expect(card.setNames).to.deep.equal(["Danger!"]);
+    });
+});
+describe("Testing types", function() {
+    it("Should be Monster/Effect", async function() {
+        const card = await getCard(43694650);
+        expect(card.typeNames).to.have.members(["Monster", "Effect"]);
+    });
+});
+describe("Testing categories", function() {
+    it("Should be an array", async function() {
+        const card = await getCard(43694650);
+        expect(card.categoryNames).to.be.a("array");
+    });
+});

@@ -32,6 +32,11 @@ export interface ICardSqlResult {
     str16: string;
 }
 
+// reduce to 1-input function for easy mapping
+function parseHex(q: string) {
+    return parseInt(q, 16);
+}
+
 export class Card {
     public code: number;
     public ot: number;
@@ -102,11 +107,12 @@ export class Card {
         const hex: RegExpMatchArray | null = this.setcode
             .toString(16)
             .padStart(16, "0")
-            .match(/.{1,2}/g);
+            .match(/.{1,4}/g);
+        const codes: number[] | null = hex && hex.map(parseHex);
         const names: string[] = [];
         for (const key in this.lang.setcodes) {
             if (this.lang.setcodes.hasOwnProperty(key)) {
-                if (hex && hex.includes(key)) {
+                if (codes && codes.includes(parseHex(key))) {
                     names.push(this.lang.setcodes[key]);
                 }
             }

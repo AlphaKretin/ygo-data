@@ -55,7 +55,8 @@ interface IStringsConfPayload {
 async function loadSetcodes(filePath: string): Promise<IStringsConfPayload> {
     const body = await request(filePath);
     const data: IStringsConfPayload = { setcodes: {}, counters: {} };
-    for (const line of body.split(/\R/)) {
+    const lines = body.split(/\r?\n/);
+    for (const line of lines) {
         if (line.startsWith("!setname")) {
             const code = line.split(" ")[1];
             const name = line.slice(line.indexOf(code) + code.length + 1);

@@ -84,7 +84,7 @@
         "types": {
             "0x1": "Monster",
             "0x2": "Spell",
-            "0x3": "Trap",
+            "0x4": "Trap",
             "0x10": "Normal",
             "0x20": "Effect",
             "0x40": "Fusion",

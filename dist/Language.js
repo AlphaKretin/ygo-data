@@ -47,7 +47,8 @@ async function downloadRepo(repo, filePath) {
 async function loadSetcodes(filePath) {
     const body = await request(filePath);
     const data = { setcodes: {}, counters: {} };
-    for (const line of body.split(/\R/)) {
+    const lines = body.split(/\r?\n/);
+    for (const line of lines) {
         if (line.startsWith("!setname")) {
             const code = line.split(" ")[1];
             const name = line.slice(line.indexOf(code) + code.length + 1);
