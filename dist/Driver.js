@@ -2,76 +2,58 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Language_1 = require("./Language");
 class Driver {
-    static build(config, path = ".") {
-        return new Promise((resolve, reject) => {
-            this.prepareLangs(config, path)
-                .then(langList => resolve(new Driver(config, langList, path)))
-                .catch(e => reject(e));
-        });
+    static async build(config, path = ".") {
+        const langList = await this.prepareLangs(config, path);
+        return new Driver(config, langList, path);
     }
-    static prepareLangs(config, path) {
-        return new Promise((resolve, reject) => {
-            const langList = {};
-            const proms = Object.keys(config).map((lang) => Language_1.Language.build(lang, config[lang], path).then(newLang => (langList[lang] = newLang)));
-            Promise.all(proms)
-                .then(() => resolve(langList))
-                .catch((e) => reject(e));
-        });
+    static async prepareLangs(config, path) {
+        const langList = {};
+        for (const lang in config) {
+            if (config.hasOwnProperty(lang)) {
+                const newLang = await Language_1.Language.build(lang, config[lang], path);
+                langList[lang] = newLang;
+            }
+        }
+        return langList;
     }
     constructor(config, langList, path) {
         this.path = path;
         this.config = config;
         this.langList = langList;
     }
-    getCard(name, lang) {
-        return new Promise((resolve, reject) => {
-            if (!(lang in this.langList)) {
-                reject(new Error("Invalid language " + lang + "!"));
-            }
-            const inInt = typeof name === "number" ? name : parseInt(name, 10);
-            if (!isNaN(inInt)) {
-                this.langList[lang].getCardByCode(inInt).then(card => resolve(card), err => {
-                    this.langList[lang]
-                        .getCardByName(name.toString())
-                        .then(card => resolve(card))
-                        .catch(er2 => reject(err + er2));
-                });
-            }
-            else {
-                this.langList[lang]
-                    .getCardByName(name.toString())
-                    .then(card => resolve(card))
-                    .catch(err => reject(err));
-            }
-        });
+    async getCard(name, lang) {
+        if (!(lang in this.langList)) {
+            throw new Error("Invalid language " + lang + "!");
+        }
+        const inInt = typeof name === "number" ? name : parseInt(name, 10);
+        if (!isNaN(inInt)) {
+            const card = await this.langList[lang].getCardByCode(inInt);
+            return card;
+        }
+        else {
+            const card = await this.langList[lang].getCardByName(name.toString());
+            return card;
+        }
     }
-    updateLang(lang) {
-        return new Promise((resolve, reject) => {
-            if (lang in this.langList) {
-                Language_1.Language.build(lang, this.config[lang], this.path)
-                    .then(newLang => {
-                    this.langList[lang] = newLang;
-                    resolve();
-                })
-                    .catch(e => reject(e));
-            }
-            else {
-                reject(new Error("Invalid language " + lang + "!"));
-            }
-        });
+    async updateLang(lang) {
+        if (lang in this.langList) {
+            const newLang = await Language_1.Language.build(lang, this.config[lang], this.path);
+            this.langList[lang] = newLang;
+        }
+        else {
+            throw new Error("Invalid language " + lang + "!");
+        }
     }
     get langs() {
         return Object.keys(this.langList);
     }
     getCardList(lang) {
-        return new Promise((resolve, reject) => {
-            if (lang in this.langList) {
-                resolve(this.langList[lang].cards);
-            }
-            else {
-                reject(new Error("Invalid language " + lang + "!"));
-            }
-        });
+        if (lang in this.langList) {
+            return this.langList[lang].cards;
+        }
+        else {
+            throw new Error("Invalid language " + lang + "!");
+        }
     }
 }
 exports.Driver = Driver;

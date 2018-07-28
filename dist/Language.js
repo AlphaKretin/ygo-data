@@ -1,206 +1,146 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const octokit = require("@octokit/rest");
-const fs = require("fs");
 const fuse = require("fuse.js");
 const mkdirp = require("mkdirp");
-const request = require("request");
+const fs = require("mz/fs");
+const request = require("request-promise-native");
 const sqlite = require("sqlite");
+const util = require("util");
 const Card_1 = require("./Card");
 const GitHub = new octokit();
 function fixName(name) {
     return name.toLowerCase().replace(/ +/g, "");
 }
-function loadDB(file) {
-    return new Promise((resolve, reject) => {
-        sqlite.open(file).then(db => {
-            db.all("select * from datas,texts where datas.id=texts.id").then(data => {
-                resolve(data);
-            }, err => reject(err));
-        }, err => reject(err));
-    });
+async function loadDB(file) {
+    const db = await sqlite.open(file);
+    const data = await db.all("select * from datas,texts where datas.id=texts.id");
+    return data;
 }
-function downloadDB(file, filePath) {
-    return new Promise((resolve, reject) => {
-        const fullPath = filePath + "/" + file.name;
-        mkdirp(filePath, err => {
-            if (err) {
-                reject(err);
-            }
-            else {
-                request({
-                    encoding: null,
-                    url: file.download_url
-                }, (er, _, body) => {
-                    if (er) {
-                        reject(er);
-                    }
-                    else {
-                        fs.writeFile(fullPath, body, e => {
-                            if (e) {
-                                reject(e);
-                            }
-                            else {
-                                resolve();
-                            }
-                        });
-                    }
-                });
-            }
-        });
+async function downloadDB(file, filePath) {
+    const fullPath = filePath + "/" + file.name;
+    await util.promisify(mkdirp)(filePath);
+    const result = await request({
+        encoding: null,
+        url: file.download_url
     });
+    fs.writeFile(fullPath, result);
 }
-function downloadRepo(repo, filePath) {
-    return new Promise((resolve, reject) => {
-        GitHub.repos
-            .getContent(repo)
-            .then(res => {
-            const filenames = [];
-            const promises = [];
-            for (const key in res.data) {
-                if (res.data.hasOwnProperty(key)) {
-                    const file = res.data[key];
-                    if (file.name.endsWith(".cdb")) {
-                        promises.push(downloadDB(file, filePath).then(() => filenames.push(file.name)));
-                    }
-                }
+async function downloadRepo(repo, filePath) {
+    const res = await GitHub.repos.getContent(repo);
+    const filenames = [];
+    for (const key in res.data) {
+        if (res.data.hasOwnProperty(key)) {
+            const file = res.data[key];
+            if (file.name.endsWith(".cdb")) {
+                await downloadDB(file, filePath);
+                filenames.push(file.name);
             }
-            Promise.all(promises)
-                .then(() => {
-                resolve(filenames);
-            })
-                .catch(e => reject(e));
-        })
-            .catch(e => reject(e));
-    });
+        }
+    }
+    return filenames;
 }
-function loadSetcodes(filePath) {
-    return new Promise((resolve, reject) => {
-        request(filePath, (err, _, body) => {
-            if (err) {
-                reject(err);
-            }
-            else {
-                const data = { setcodes: {}, counters: {} };
-                for (const line of body.split(/\R/)) {
-                    if (line.startsWith("!setname")) {
-                        const code = line.split(" ")[1];
-                        const name = line.slice(line.indexOf(code) + code.length + 1);
-                        data.setcodes[code] = name;
-                    }
-                    if (line.startsWith("!counter")) {
-                        const code = line.split(" ")[1];
-                        const name = line.slice(line.indexOf(code) + code.length + 1);
-                        data.counters[code] = name;
-                    }
-                }
-                resolve(data);
-            }
-        });
-    });
+async function loadSetcodes(filePath) {
+    const body = await request(filePath);
+    const data = { setcodes: {}, counters: {} };
+    for (const line of body.split(/\R/)) {
+        if (line.startsWith("!setname")) {
+            const code = line.split(" ")[1];
+            const name = line.slice(line.indexOf(code) + code.length + 1);
+            data.setcodes[code] = name;
+        }
+        if (line.startsWith("!counter")) {
+            const code = line.split(" ")[1];
+            const name = line.slice(line.indexOf(code) + code.length + 1);
+            data.counters[code] = name;
+        }
+    }
+    return data;
 }
-function loadDBs(files, filePath, lang) {
-    return new Promise((resolve, reject) => {
-        const cards = {};
-        const proms = files.map(file => loadDB(filePath + "/" + file).then(dat => {
-            for (const cardData of dat) {
-                const card = new Card_1.Card(cardData, [file], lang);
-                if (card.code in cards) {
-                    const dbs = card.dbs;
-                    dbs.push(file);
-                    card.dbs = dbs;
-                }
-                cards[card.code] = card;
+async function loadDBs(files, filePath, lang) {
+    const cards = {};
+    for (const file of files) {
+        const dat = await loadDB(filePath + "/" + file);
+        for (const cardData of dat) {
+            const card = new Card_1.Card(cardData, [file], lang);
+            if (card.code in cards) {
+                const dbs = card.dbs;
+                dbs.push(file);
+                card.dbs = dbs;
             }
-        }));
-        Promise.all(proms)
-            .then(() => resolve(cards))
-            .catch(e => reject(e));
-    });
+            cards[card.code] = card;
+        }
+    }
+    return cards;
 }
-function downloadDBs(repos, filePath, lang) {
-    return new Promise((resolve, reject) => {
-        repos.forEach(repo => {
-            downloadRepo(repo, filePath)
-                .then(files => {
-                loadDBs(files, filePath, lang)
-                    .then(resolve)
-                    .catch(e => reject(e));
-            })
-                .catch(e => reject(e));
-        });
-    });
+async function downloadDBs(repos, filePath, lang) {
+    let cards = {};
+    for (const repo of repos) {
+        const files = await downloadRepo(repo, filePath);
+        const newCards = await loadDBs(files, filePath, lang);
+        cards = Object.assign({}, cards, newCards);
+    }
+    return cards;
 }
 class Language {
     // preparing the data for a language must be done asynchronously, so the intended use is to call this function,
     // then instantiate a Language object with its resolution
-    static prepareData(name, config, path) {
-        return new Promise(async (resolve, reject) => {
-            const cards = {};
-            let counters = {};
-            let setcodes = {};
-            const filePath = path + "/dbs/" + name;
-            await loadSetcodes(config.stringsConf).then(res => {
-                counters = res.counters;
-                setcodes = res.setcodes;
-            });
-            const transl = {
-                attributes: config.attributes,
-                categories: config.categories,
-                ots: config.ots,
-                races: config.races,
-                setcodes,
-                types: config.types
+    static async prepareData(name, config, path) {
+        const cards = {};
+        let counters = {};
+        let setcodes = {};
+        const filePath = path + "/dbs/" + name;
+        const res = await loadSetcodes(config.stringsConf);
+        counters = res.counters;
+        setcodes = res.setcodes;
+        const transl = {
+            attributes: config.attributes,
+            categories: config.categories,
+            ots: config.ots,
+            races: config.races,
+            setcodes,
+            types: config.types
+        };
+        if (config.localDBs) {
+            const cs = await loadDBs(config.localDBs, filePath, transl);
+            for (const key in cs) {
+                if (cs.hasOwnProperty(key)) {
+                    cards[key] = cs[key];
+                }
+            }
+        }
+        if (config.remoteDBs) {
+            const cs = await downloadDBs(config.remoteDBs, filePath, transl);
+            for (const key in cs) {
+                if (cs.hasOwnProperty(key)) {
+                    cards[key] = cs[key];
+                }
+            }
+        }
+        const entries = Object.values(cards).map((c) => {
+            const entry = {
+                code: c.code,
+                name: fixName(c.name)
             };
-            const proms = [];
-            if (config.localDBs) {
-                proms.push(loadDBs(config.localDBs, filePath, transl).then((cs) => {
-                    for (const key in cs) {
-                        if (cs.hasOwnProperty(key)) {
-                            cards[key] = cs[key];
-                        }
-                    }
-                }));
-            }
-            if (config.remoteDBs) {
-                proms.push(downloadDBs(config.remoteDBs, filePath, transl).then((cs) => {
-                    for (const key in cs) {
-                        if (cs.hasOwnProperty(key)) {
-                            cards[key] = cs[key];
-                        }
-                    }
-                }));
-            }
-            Promise.all(proms)
-                .then(() => {
-                const entries = Object.values(cards).map((c) => {
-                    const entry = {
-                        code: c.code,
-                        name: fixName(c.name)
-                    };
-                    return entry;
-                });
-                const fuseList = new fuse(entries, config.fuseOptions || {});
-                const data = {
-                    attributes: config.attributes,
-                    cards,
-                    categories: config.categories,
-                    counters,
-                    fuseList,
-                    ots: config.ots,
-                    races: config.races,
-                    setcodes,
-                    types: config.types
-                };
-                resolve(data);
-            })
-                .catch(e => reject(e));
+            return entry;
         });
+        const fuseList = new fuse(entries, config.fuseOptions || {});
+        const data = {
+            attributes: config.attributes,
+            cards,
+            categories: config.categories,
+            counters,
+            fuseList,
+            ots: config.ots,
+            races: config.races,
+            setcodes,
+            types: config.types
+        };
+        return data;
     }
-    static build(name, config, path) {
-        return new Promise((resolve, reject) => Language.prepareData(name, config, path)
-            .then(data => resolve(new Language(name, data)))
-            .catch(e => reject(e)));
+    static async build(name, config, path) {
+        const data = await Language.prepareData(name, config, path);
+        return new Language(name, data);
     }
     constructor(name, data) {
         this.name = name;
@@ -215,32 +155,28 @@ class Language {
         this.fuseList = data.fuseList;
     }
     getCardByCode(code) {
-        return new Promise((resolve, reject) => {
-            if (code in this.cards) {
-                resolve(this.cards[code]);
-            }
-            else {
-                reject(new Error("Could not find card for code " + code + " in Language " + this.name + "!"));
-            }
-        });
+        if (code in this.cards) {
+            return this.cards[code];
+        }
+        else {
+            throw new Error("Could not find card for code " + code + " in Language " + this.name + "!");
+        }
     }
     getCardByName(name) {
-        return new Promise((resolve, reject) => {
-            const card = Object.values(this.cards).find(c => c.name.toLowerCase() === name.toLowerCase());
-            if (card) {
-                resolve(card);
+        const card = Object.values(this.cards).find(c => c.name.toLowerCase() === name.toLowerCase());
+        if (card) {
+            return card;
+        }
+        else {
+            const results = this.fuseList.search(fixName(name));
+            if (results.length > 0) {
+                // TODO: results.sort() based on OT?
+                return this.cards[results[0].code];
             }
             else {
-                const results = this.fuseList.search(fixName(name));
-                if (results.length > 0) {
-                    // TODO: results.sort() based on OT?
-                    resolve(this.cards[results[0].code]);
-                }
-                else {
-                    reject(new Error("Could not find card for query " + name + " in Language " + this.name + "!"));
-                }
+                throw new Error("Could not find card for query " + name + " in Language " + this.name + "!");
             }
-        });
+        }
     }
 }
 exports.Language = Language;

@@ -3,20 +3,12 @@ const expect = require("chai").expect;
 const ygoData = require("../dist/Driver.js").Driver;
 const ygoSettings = require("./conf.json");
 let index = "fart";
-function getCard(query) {
-    return new Promise(async (resolve, reject) => {
-        if (index === "fart") {
-            index = await ygoData.build(ygoSettings);
-        }
-        index
-            .getCard(query, "en")
-            .then(function(card) {
-                resolve(card);
-            })
-            .catch(function(e) {
-                reject(e);
-            });
-    });
+async function getCard(query) {
+    if (index === "fart") {
+        index = await ygoData.build(ygoSettings);
+    }
+    const card = index.getCard(query, "en");
+    return card;
 }
 
 describe("Testing with ID", function() {

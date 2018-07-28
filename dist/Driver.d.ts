@@ -14,8 +14,8 @@ export declare class Driver {
     private path;
     constructor(config: IDriverConfig, langList: ILangList, path: string);
     getCard(name: string | number, lang: string): Promise<Card>;
-    updateLang(lang: string): Promise<null>;
+    updateLang(lang: string): Promise<void>;
     readonly langs: string[];
-    getCardList(lang: string): Promise<ICardList>;
+    getCardList(lang: string): ICardList;
 }
 export {};

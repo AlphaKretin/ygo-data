@@ -102,7 +102,7 @@ export declare class Language {
     name: string;
     fuseList: fuse;
     constructor(name: string, data: ILanguageDataPayload);
-    getCardByCode(code: number): Promise<Card>;
-    getCardByName(name: string): Promise<Card>;
+    getCardByCode(code: number): Card;
+    getCardByName(name: string): Card;
 }
 export {};
