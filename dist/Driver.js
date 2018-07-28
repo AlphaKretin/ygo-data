@@ -8,12 +8,14 @@ class Driver {
     }
     static async prepareLangs(config, path) {
         const langList = {};
+        const proms = [];
         for (const lang in config) {
             if (config.hasOwnProperty(lang)) {
-                const newLang = await Language_1.Language.build(lang, config[lang], path);
-                langList[lang] = newLang;
+                const newProm = Language_1.Language.build(lang, config[lang], path).then(newLang => (langList[lang] = newLang));
+                proms.push(newProm);
             }
         }
+        await Promise.all(proms);
         return langList;
     }
     constructor(config, langList, path) {

@@ -29,15 +29,19 @@ async function downloadDB(file, filePath) {
 async function downloadRepo(repo, filePath) {
     const res = await GitHub.repos.getContent(repo);
     const filenames = [];
+    const proms = [];
     for (const key in res.data) {
         if (res.data.hasOwnProperty(key)) {
             const file = res.data[key];
             if (file.name.endsWith(".cdb")) {
-                await downloadDB(file, filePath);
-                filenames.push(file.name);
+                const newProm = downloadDB(file, filePath).then(() => {
+                    filenames.push(file.name);
+                });
+                proms.push(newProm);
             }
         }
     }
+    await Promise.all(proms);
     return filenames;
 }
 async function loadSetcodes(filePath) {
@@ -59,27 +63,35 @@ async function loadSetcodes(filePath) {
 }
 async function loadDBs(files, filePath, lang) {
     const cards = {};
+    const proms = [];
     for (const file of files) {
-        const dat = await loadDB(filePath + "/" + file);
-        for (const cardData of dat) {
-            const card = new Card_1.Card(cardData, [file], lang);
-            if (card.code in cards) {
-                const dbs = card.dbs;
-                dbs.push(file);
-                card.dbs = dbs;
+        const newProm = loadDB(filePath + "/" + file).then(dat => {
+            for (const cardData of dat) {
+                const card = new Card_1.Card(cardData, [file], lang);
+                if (card.code in cards) {
+                    const dbs = card.dbs;
+                    dbs.push(file);
+                    card.dbs = dbs;
+                }
+                cards[card.code] = card;
             }
-            cards[card.code] = card;
-        }
+        });
+        proms.push(newProm);
     }
+    await Promise.all(proms);
     return cards;
 }
 async function downloadDBs(repos, filePath, lang) {
     let cards = {};
+    const proms = [];
     for (const repo of repos) {
-        const files = await downloadRepo(repo, filePath);
-        const newCards = await loadDBs(files, filePath, lang);
-        cards = Object.assign({}, cards, newCards);
+        const newProm = downloadRepo(repo, filePath).then(async (files) => {
+            const newCards = await loadDBs(files, filePath, lang);
+            cards = Object.assign({}, cards, newCards);
+        });
+        proms.push(newProm);
     }
+    await Promise.all(proms);
     return cards;
 }
 class Language {

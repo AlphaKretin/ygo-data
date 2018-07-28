@@ -16,12 +16,14 @@ export class Driver {
     }
     private static async prepareLangs(config: IDriverConfig, path: string): Promise<ILangList> {
         const langList: ILangList = {};
+        const proms: Array<Promise<Language>> = [];
         for (const lang in config) {
             if (config.hasOwnProperty(lang)) {
-                const newLang = await Language.build(lang, config[lang], path);
-                langList[lang] = newLang;
+                const newProm = Language.build(lang, config[lang], path).then(newLang => (langList[lang] = newLang));
+                proms.push(newProm);
             }
         }
+        await Promise.all(proms);
         return langList;
     }
     public config: IDriverConfig;
