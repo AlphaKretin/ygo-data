@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const CardScript_1 = require("./CardScript");
 const Language_1 = require("./Language");
 class Driver {
-    static build(config, path) {
+    static build(config, path = ".") {
         return new Promise((resolve, reject) => {
             this.prepareLangs(config, path)
                 .then(langList => resolve(new Driver(config, langList, path)))
@@ -23,14 +22,11 @@ class Driver {
         this.path = path;
         this.config = config;
         this.langList = langList;
-        this.scripts = {
-            0: new CardScript_1.CardScript(0)
-        };
     }
     getCard(name, lang) {
         return new Promise((resolve, reject) => {
             if (!(lang in this.langList)) {
-                reject('Invalid language "' + lang + '"!');
+                reject(new Error("Invalid language " + lang + "!"));
             }
             const inInt = typeof name === "number" ? name : parseInt(name, 10);
             if (!isNaN(inInt)) {
@@ -60,12 +56,22 @@ class Driver {
                     .catch(e => reject(e));
             }
             else {
-                reject("Invalid language " + lang + "!");
+                reject(new Error("Invalid language " + lang + "!"));
             }
         });
     }
     get langs() {
         return Object.keys(this.langList);
+    }
+    getCardList(lang) {
+        return new Promise((resolve, reject) => {
+            if (lang in this.langList) {
+                resolve(this.langList[lang].cards);
+            }
+            else {
+                reject(new Error("Invalid language " + lang + "!"));
+            }
+        });
     }
 }
 exports.Driver = Driver;

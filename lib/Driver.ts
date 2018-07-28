@@ -10,7 +10,7 @@ export interface IDriverConfig {
 }
 
 export class Driver {
-    public static build(config: IDriverConfig, path: string): Promise<Driver> {
+    public static build(config: IDriverConfig, path = "."): Promise<Driver> {
         return new Promise((resolve, reject) => {
             this.prepareLangs(config, path)
                 .then(langList => resolve(new Driver(config, langList, path)))
@@ -29,7 +29,7 @@ export class Driver {
         });
     }
     public config: IDriverConfig;
-    private langList: { [lang: string]: Language };
+    private langList: ILangList;
     private path: string;
     constructor(config: IDriverConfig, langList: ILangList, path: string) {
         this.path = path;

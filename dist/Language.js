@@ -2,11 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const octokit = require("@octokit/rest");
 const fs = require("fs");
+const fuse = require("fuse.js");
 const mkdirp = require("mkdirp");
 const request = require("request");
 const sqlite = require("sqlite");
 const Card_1 = require("./Card");
 const GitHub = new octokit();
+function fixName(name) {
+    return name.toLowerCase().replace(/ +/g, "");
+}
 function loadDB(file) {
     return new Promise((resolve, reject) => {
         sqlite.open(file).then(db => {
@@ -131,43 +135,65 @@ class Language {
     // preparing the data for a language must be done asynchronously, so the intended use is to call this function,
     // then instantiate a Language object with its resolution
     static prepareData(name, config, path) {
-        return new Promise((resolve, reject) => {
-            const data = {
+        return new Promise(async (resolve, reject) => {
+            const cards = {};
+            let counters = {};
+            let setcodes = {};
+            const filePath = path + "/dbs/" + name;
+            await loadSetcodes(config.stringsConf).then(res => {
+                counters = res.counters;
+                setcodes = res.setcodes;
+            });
+            const transl = {
                 attributes: config.attributes,
-                cards: {},
                 categories: config.categories,
-                counters: {},
                 ots: config.ots,
                 races: config.races,
-                setcodes: {},
+                setcodes,
                 types: config.types
             };
-            const filePath = path + "/dbs/" + name;
             const proms = [];
-            proms.push(loadSetcodes(config.stringsConf).then(res => {
-                data.counters = res.counters;
-                data.setcodes = res.setcodes;
-            }));
             if (config.localDBs) {
-                proms.push(loadDBs(config.localDBs, filePath, data).then((cs) => {
+                proms.push(loadDBs(config.localDBs, filePath, transl).then((cs) => {
                     for (const key in cs) {
                         if (cs.hasOwnProperty(key)) {
-                            data.cards[key] = cs[key];
+                            cards[key] = cs[key];
                         }
                     }
                 }));
             }
             if (config.remoteDBs) {
-                proms.push(downloadDBs(config.remoteDBs, filePath, data).then((cs) => {
+                proms.push(downloadDBs(config.remoteDBs, filePath, transl).then((cs) => {
                     for (const key in cs) {
                         if (cs.hasOwnProperty(key)) {
-                            data.cards[key] = cs[key];
+                            cards[key] = cs[key];
                         }
                     }
                 }));
             }
             Promise.all(proms)
-                .then(() => resolve(data))
+                .then(() => {
+                const entries = Object.values(cards).map((c) => {
+                    const entry = {
+                        code: c.code,
+                        name: fixName(c.name)
+                    };
+                    return entry;
+                });
+                const fuseList = new fuse(entries, config.fuseOptions || {});
+                const data = {
+                    attributes: config.attributes,
+                    cards,
+                    categories: config.categories,
+                    counters,
+                    fuseList,
+                    ots: config.ots,
+                    races: config.races,
+                    setcodes,
+                    types: config.types
+                };
+                resolve(data);
+            })
                 .catch(e => reject(e));
         });
     }
@@ -186,6 +212,7 @@ class Language {
         this.races = data.races;
         this.attributes = data.attributes;
         this.categories = data.categories;
+        this.fuseList = data.fuseList;
     }
     getCardByCode(code) {
         return new Promise((resolve, reject) => {
@@ -204,8 +231,14 @@ class Language {
                 resolve(card);
             }
             else {
-                // TODO: fuse stuff
-                reject(new Error("Could not find card for query " + name + " in Language " + this.name + "!"));
+                const results = this.fuseList.search(fixName(name));
+                if (results.length > 0) {
+                    // TODO: results.sort() based on OT?
+                    resolve(this.cards[results[0].code]);
+                }
+                else {
+                    reject(new Error("Could not find card for query " + name + " in Language " + this.name + "!"));
+                }
             }
         });
     }

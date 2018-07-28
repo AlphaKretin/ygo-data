@@ -1,4 +1,5 @@
 import * as octokit from "@octokit/rest";
+import * as fuse from "fuse.js";
 import { Card } from "./Card";
 interface ILanguageDataPayload {
     cards: {
@@ -25,6 +26,7 @@ interface ILanguageDataPayload {
     categories: {
         [race: number]: string;
     };
+    fuseList: fuse;
 }
 export interface ILangTranslations {
     setcodes: {
@@ -53,6 +55,7 @@ export interface ILangConfig {
     categories: {
         [type: number]: string;
     };
+    fuseOptions?: fuse.FuseOptions;
     ots: {
         [ot: number]: string;
     };
@@ -65,6 +68,9 @@ export interface ILangConfig {
     stringsConf: string;
     localDBs?: string[];
     remoteDBs?: octokit.ReposGetContentParams[];
+}
+export interface ICardList {
+    [code: number]: Card;
 }
 export declare class Language {
     static prepareData(name: string, config: ILangConfig, path: string): Promise<ILanguageDataPayload>;
@@ -94,6 +100,7 @@ export declare class Language {
         [type: number]: string;
     };
     name: string;
+    fuseList: fuse;
     constructor(name: string, data: ILanguageDataPayload);
     getCardByCode(code: number): Promise<Card>;
     getCardByName(name: string): Promise<Card>;

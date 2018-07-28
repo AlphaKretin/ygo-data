@@ -248,7 +248,7 @@ export class Language {
                         };
                         return entry;
                     });
-                    const fuseList = new fuse(entries, config.fuseOptions);
+                    const fuseList = new fuse(entries, config.fuseOptions || {});
                     const data: ILanguageDataPayload = {
                         attributes: config.attributes,
                         cards,
