@@ -10,23 +10,19 @@ export interface IDriverConfig {
 }
 
 export class Driver {
-    public static build(config: IDriverConfig, path = "."): Promise<Driver> {
-        return new Promise((resolve, reject) => {
-            this.prepareLangs(config, path)
-                .then(langList => resolve(new Driver(config, langList, path)))
-                .catch(e => reject(e));
-        });
+    public static async build(config: IDriverConfig, path = "."): Promise<Driver> {
+        const langList = await this.prepareLangs(config, path);
+        return new Driver(config, langList, path);
     }
-    private static prepareLangs(config: IDriverConfig, path: string): Promise<ILangList> {
-        return new Promise((resolve, reject) => {
-            const langList: ILangList = {};
-            const proms: Array<Promise<Language>> = Object.keys(config).map((lang: string) =>
-                Language.build(lang, config[lang], path).then(newLang => (langList[lang] = newLang))
-            );
-            Promise.all(proms)
-                .then(() => resolve(langList))
-                .catch((e: Error) => reject(e));
-        });
+    private static async prepareLangs(config: IDriverConfig, path: string): Promise<ILangList> {
+        const langList: ILangList = {};
+        for (const lang in config) {
+            if (config.hasOwnProperty(lang)) {
+                const newLang = await Language.build(lang, config[lang], path);
+                langList[lang] = newLang;
+            }
+        }
+        return langList;
     }
     public config: IDriverConfig;
     private langList: ILangList;
@@ -37,57 +33,38 @@ export class Driver {
         this.langList = langList;
     }
 
-    public getCard(name: string | number, lang: string): Promise<Card> {
-        return new Promise((resolve, reject) => {
-            if (!(lang in this.langList)) {
-                reject(new Error("Invalid language " + lang + "!"));
-            }
-            const inInt: number = typeof name === "number" ? name : parseInt(name, 10);
-            if (!isNaN(inInt)) {
-                this.langList[lang].getCardByCode(inInt).then(
-                    card => resolve(card),
-                    err => {
-                        this.langList[lang]
-                            .getCardByName(name.toString())
-                            .then(card => resolve(card))
-                            .catch(er2 => reject(err + er2));
-                    }
-                );
-            } else {
-                this.langList[lang]
-                    .getCardByName(name.toString())
-                    .then(card => resolve(card))
-                    .catch(err => reject(err));
-            }
-        });
+    public async getCard(name: string | number, lang: string): Promise<Card> {
+        if (!(lang in this.langList)) {
+            throw new Error("Invalid language " + lang + "!");
+        }
+        const inInt: number = typeof name === "number" ? name : parseInt(name, 10);
+        if (!isNaN(inInt)) {
+            const card = await this.langList[lang].getCardByCode(inInt);
+            return card;
+        } else {
+            const card = await this.langList[lang].getCardByName(name.toString());
+            return card;
+        }
     }
 
-    public updateLang(lang: string): Promise<null> {
-        return new Promise((resolve, reject) => {
-            if (lang in this.langList) {
-                Language.build(lang, this.config[lang], this.path)
-                    .then(newLang => {
-                        this.langList[lang] = newLang;
-                        resolve();
-                    })
-                    .catch(e => reject(e));
-            } else {
-                reject(new Error("Invalid language " + lang + "!"));
-            }
-        });
+    public async updateLang(lang: string): Promise<void> {
+        if (lang in this.langList) {
+            const newLang = await Language.build(lang, this.config[lang], this.path);
+            this.langList[lang] = newLang;
+        } else {
+            throw new Error("Invalid language " + lang + "!");
+        }
     }
 
     get langs(): string[] {
         return Object.keys(this.langList);
     }
 
-    public getCardList(lang: string): Promise<ICardList> {
-        return new Promise((resolve, reject) => {
-            if (lang in this.langList) {
-                resolve(this.langList[lang].cards);
-            } else {
-                reject(new Error("Invalid language " + lang + "!"));
-            }
-        });
+    public getCardList(lang: string): ICardList {
+        if (lang in this.langList) {
+            return this.langList[lang].cards;
+        } else {
+            throw new Error("Invalid language " + lang + "!");
+        }
     }
 }
