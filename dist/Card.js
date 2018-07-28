@@ -40,7 +40,7 @@ class Card {
         const names = [];
         for (const key in this.lang.ots) {
             if (this.lang.ots.hasOwnProperty(key)) {
-                const ot = parseInt(key, 10);
+                const ot = parseInt(key, 16);
                 if ((ot & this.ot) !== 0) {
                     names.push(this.lang.ots[key]);
                 }
@@ -67,7 +67,7 @@ class Card {
         const names = [];
         for (const key in this.lang.types) {
             if (this.lang.types.hasOwnProperty(key)) {
-                const type = parseInt(key, 10);
+                const type = parseInt(key, 16);
                 if ((type & this.type) !== 0) {
                     names.push(this.lang.types[key]);
                 }
@@ -79,7 +79,7 @@ class Card {
         const names = [];
         for (const key in this.lang.races) {
             if (this.lang.races.hasOwnProperty(key)) {
-                const race = parseInt(key, 10);
+                const race = parseInt(key, 16);
                 if ((race & this.race) !== 0) {
                     names.push(this.lang.races[key]);
                 }
@@ -91,7 +91,7 @@ class Card {
         const names = [];
         for (const key in this.lang.attributes) {
             if (this.lang.attributes.hasOwnProperty(key)) {
-                const att = parseInt(key, 10);
+                const att = parseInt(key, 16);
                 if ((att & this.attribute) !== 0) {
                     names.push(this.lang.attributes[key]);
                 }
@@ -103,7 +103,7 @@ class Card {
         const names = [];
         for (const key in this.lang.categories) {
             if (this.lang.categories.hasOwnProperty(key)) {
-                const cat = parseInt(key, 10);
+                const cat = parseInt(key, 16);
                 if ((cat & this.category) !== 0) {
                     names.push(this.lang.categories[key]);
                 }
