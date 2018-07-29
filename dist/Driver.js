@@ -2,11 +2,52 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Language_1 = require("./Language");
 class Driver {
-    static async build(config, path = ".") {
-        const langList = await this.prepareLangs(config, path);
-        return new Driver(config, langList, path);
+    constructor(config, path = ".") {
+        this.path = path;
+        this.config = config;
+        this.pendingLangList = this.prepareLangs(config, path);
     }
-    static async prepareLangs(config, path) {
+    async getCard(name, lang) {
+        const langList = await this.pendingLangList;
+        if (!(lang in langList)) {
+            throw new Error("Invalid language " + lang + "!");
+        }
+        const inInt = typeof name === "number" ? name : parseInt(name, 10);
+        if (!isNaN(inInt)) {
+            const card = await langList[lang].getCardByCode(inInt);
+            return card;
+        }
+        else {
+            const card = await langList[lang].getCardByName(name.toString());
+            return card;
+        }
+    }
+    async updateLang(lang) {
+        const langList = await this.pendingLangList;
+        if (lang in langList) {
+            const newLang = await Language_1.Language.build(lang, this.config[lang], this.path);
+            langList[lang] = newLang;
+        }
+        else {
+            throw new Error("Invalid language " + lang + "!");
+        }
+    }
+    get langs() {
+        return new Promise(async (resolve) => {
+            const langList = await this.pendingLangList;
+            resolve(Object.keys(langList));
+        });
+    }
+    async getCardList(lang) {
+        const langList = await this.pendingLangList;
+        if (lang in langList) {
+            return langList[lang].cards;
+        }
+        else {
+            throw new Error("Invalid language " + lang + "!");
+        }
+    }
+    async prepareLangs(config, path) {
         const langList = {};
         const proms = [];
         for (const lang in config) {
@@ -17,45 +58,6 @@ class Driver {
         }
         await Promise.all(proms);
         return langList;
-    }
-    constructor(config, langList, path) {
-        this.path = path;
-        this.config = config;
-        this.langList = langList;
-    }
-    async getCard(name, lang) {
-        if (!(lang in this.langList)) {
-            throw new Error("Invalid language " + lang + "!");
-        }
-        const inInt = typeof name === "number" ? name : parseInt(name, 10);
-        if (!isNaN(inInt)) {
-            const card = await this.langList[lang].getCardByCode(inInt);
-            return card;
-        }
-        else {
-            const card = await this.langList[lang].getCardByName(name.toString());
-            return card;
-        }
-    }
-    async updateLang(lang) {
-        if (lang in this.langList) {
-            const newLang = await Language_1.Language.build(lang, this.config[lang], this.path);
-            this.langList[lang] = newLang;
-        }
-        else {
-            throw new Error("Invalid language " + lang + "!");
-        }
-    }
-    get langs() {
-        return Object.keys(this.langList);
-    }
-    getCardList(lang) {
-        if (lang in this.langList) {
-            return this.langList[lang].cards;
-        }
-        else {
-            throw new Error("Invalid language " + lang + "!");
-        }
     }
 }
 exports.Driver = Driver;
