@@ -16,6 +16,12 @@ describe("Testing with name", function() {
         expect(card.name).to.equal("Danger!? Jackalope?");
     });
 });
+describe("Testing invalid name", function() {
+    it("Should return undefined", async function() {
+        const card = await index.getCard("aaaaaaaaaaaaaaaaaaaaaaaaaa", "en");
+        expect(card).to.be.undefined;
+    });
+});
 describe("Testing language list", function() {
     it("Should return [en]", async function() {
         const langs = await index.langs;

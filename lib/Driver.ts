@@ -19,17 +19,21 @@ export class Driver {
         this.langList = this.prepareLangs(config, path);
     }
 
-    public async getCard(name: string | number, lang: string): Promise<Card> {
+    public async getCard(name: string | number, lang: string): Promise<Card | undefined> {
         if (!(lang in this.langList)) {
             throw new Error("Invalid language " + lang + "!");
         }
         const inInt: number = typeof name === "number" ? name : parseInt(name, 10);
-        if (!isNaN(inInt)) {
-            const card = await this.langList[lang].getCardByCode(inInt);
-            return card;
-        } else {
-            const card = await this.langList[lang].getCardByName(name.toString());
-            return card;
+        try {
+            if (!isNaN(inInt)) {
+                const card = await this.langList[lang].getCardByCode(inInt);
+                return card;
+            } else {
+                const card = await this.langList[lang].getCardByName(name.toString());
+                return card;
+            }
+        } catch (e) {
+            throw e;
         }
     }
 
@@ -48,8 +52,12 @@ export class Driver {
 
     public async getCardList(lang: string): Promise<ICardList> {
         if (lang in this.langList) {
-            const cards = await this.langList[lang].getCards();
-            return cards;
+            try {
+                const cards = await this.langList[lang].getCards();
+                return cards;
+            } catch (e) {
+                throw e;
+            }
         } else {
             throw new Error("Invalid language " + lang + "!");
         }

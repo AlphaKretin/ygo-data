@@ -76,8 +76,8 @@ export declare class Language {
     pendingData: Promise<ILanguageDataPayload>;
     name: string;
     constructor(name: string, config: ILangConfig, path: string);
-    getCardByCode(code: number): Promise<Card>;
-    getCardByName(name: string): Promise<Card>;
+    getCardByCode(code: number): Promise<Card | undefined>;
+    getCardByName(name: string): Promise<Card | undefined>;
     getCards(): Promise<{
         [code: number]: Card;
     }>;
