@@ -233,6 +233,12 @@
             "0x40000000": "Minus"
         },
         "stringsConf": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf",
-        "localDBs": ["cards.cdb"]
+        "remoteDBs": [
+            {
+                "owner": "AlphaKretin",
+                "repo": "test-commands",
+                "path": ""
+            }
+        ]
     }
 }
