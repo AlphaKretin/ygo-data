@@ -17,10 +17,9 @@ npm install ygopro-data --save
 ```javascript
 const ygoData = require("ygopro-data").Driver;
 const options = require("./options.json");
-ygoData.build(options, __dirname).then(data => {
-    data.getCard("Pot of Greed").then(card => {
-        console.log(card.name);
-    });
+const data = new ygoData(options);
+data.getCard("Pot of Greed").then(card => {
+    console.log(card.name);
 });
 ```
 
@@ -32,11 +31,11 @@ Output should be "Pot of Greed"
 
 ```typescript
 import { Driver as ygoData } from "ygopro-data";
-const options = require("./options.json")
-ygoData.build(options, __dirname).then(data => {
-    data.getCard(55144522).then(card => {
-        console.log(card.name);
-    });
+const options = require("./options.json");
+const data = new ygoData(options);
+data.getCard(55144522).then(card => {
+    console.log(card.name);
+});
 ```
 
 ```sh
