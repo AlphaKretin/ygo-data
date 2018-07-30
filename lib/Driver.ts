@@ -16,7 +16,11 @@ export class Driver {
     constructor(config: IDriverConfig, path = ".") {
         this.path = path;
         this.config = config;
-        this.langList = this.prepareLangs(config, path);
+        try {
+            this.langList = this.prepareLangs(config, path);
+        } catch (e) {
+            throw e;
+        }
     }
 
     public async getCard(name: string | number, lang: string): Promise<Card | undefined> {
@@ -67,7 +71,11 @@ export class Driver {
         const langList: ILangList = {};
         for (const lang in config) {
             if (config.hasOwnProperty(lang)) {
-                langList[lang] = new Language(lang, config[lang], path);
+                try {
+                    langList[lang] = new Language(lang, config[lang], path);
+                } catch (e) {
+                    throw e;
+                }
             }
         }
         return langList;

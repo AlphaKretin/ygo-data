@@ -85,27 +85,27 @@ async function loadSetcodes(filePath) {
 async function loadDBs(files, filePath, lang) {
     const cards = {};
     const proms = [];
-    for (const file of files) {
-        const newProm = loadDB(filePath + "/" + file).then(dat => {
-            for (const cardData of dat) {
-                const card = new Card_1.Card(cardData, [file], lang);
-                if (card.code in cards) {
-                    const dbs = card.dbs;
-                    dbs.push(file);
-                    card.dbs = dbs;
-                }
-                cards[card.code] = card;
-            }
-        });
-        proms.push(newProm);
-    }
     try {
+        for (const file of files) {
+            const newProm = loadDB(filePath + "/" + file).then(dat => {
+                for (const cardData of dat) {
+                    const card = new Card_1.Card(cardData, [file], lang);
+                    if (card.code in cards) {
+                        const dbs = card.dbs;
+                        dbs.push(file);
+                        card.dbs = dbs;
+                    }
+                    cards[card.code] = card;
+                }
+            });
+            proms.push(newProm);
+        }
         await Promise.all(proms);
+        return cards;
     }
     catch (e) {
         throw e;
     }
-    return cards;
 }
 async function downloadDBs(repos, filePath, lang) {
     let cards = {};
@@ -129,6 +129,12 @@ class Language {
     constructor(name, config, path) {
         this.name = name;
         this.pendingData = this.prepareData(config, path);
+        this.pendingData.catch(e => {
+            console.error(e);
+            console.error("Above error thrown in Language " +
+                this.name +
+                ", expect all queries to this language to reject. Best to try to solve the error and restart.");
+        });
     }
     async getCardByCode(code) {
         try {

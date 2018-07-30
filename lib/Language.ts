@@ -91,26 +91,26 @@ async function loadSetcodes(filePath: string): Promise<IStringsConfPayload> {
 async function loadDBs(files: string[], filePath: string, lang: ILangTranslations): Promise<ICardList> {
     const cards: { [n: number]: Card } = {};
     const proms: Array<Promise<void>> = [];
-    for (const file of files) {
-        const newProm = loadDB(filePath + "/" + file).then(dat => {
-            for (const cardData of dat) {
-                const card = new Card(cardData, [file], lang);
-                if (card.code in cards) {
-                    const dbs = card.dbs;
-                    dbs.push(file);
-                    card.dbs = dbs;
-                }
-                cards[card.code] = card;
-            }
-        });
-        proms.push(newProm);
-    }
     try {
+        for (const file of files) {
+            const newProm = loadDB(filePath + "/" + file).then(dat => {
+                for (const cardData of dat) {
+                    const card = new Card(cardData, [file], lang);
+                    if (card.code in cards) {
+                        const dbs = card.dbs;
+                        dbs.push(file);
+                        card.dbs = dbs;
+                    }
+                    cards[card.code] = card;
+                }
+            });
+            proms.push(newProm);
+        }
         await Promise.all(proms);
+        return cards;
     } catch (e) {
         throw e;
     }
-    return cards;
 }
 
 async function downloadDBs(
@@ -178,13 +178,19 @@ interface IFuseEntry {
 }
 
 export class Language {
-    // preparing the data for a language must be done asynchronously, so the intended use is to call this function,
-    // then instantiate a Language object with its resolution
     public pendingData: Promise<ILanguageDataPayload>;
     public name: string;
     constructor(name: string, config: ILangConfig, path: string) {
         this.name = name;
         this.pendingData = this.prepareData(config, path);
+        this.pendingData.catch(e => {
+            console.error(e);
+            console.error(
+                "Above error thrown in Language " +
+                    this.name +
+                    ", expect all queries to this language to reject. Best to try to solve the error and restart."
+            );
+        });
     }
 
     public async getCardByCode(code: number): Promise<Card | undefined> {

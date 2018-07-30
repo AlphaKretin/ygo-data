@@ -23,9 +23,9 @@ describe("Testing invalid name", function() {
     });
 });
 describe("Testing language list", function() {
-    it("Should return [en]", async function() {
+    it("Should return [en, ja]", async function() {
         const langs = await index.langs;
-        expect(langs).to.deep.equal(["en"]);
+        expect(langs).to.deep.equal(["en", "ja"]);
     });
 });
 describe("Testing card list", function() {
@@ -80,5 +80,12 @@ describe("Testing categories", function() {
     it("Should be an array", async function() {
         const card = await index.getCard(43694650, "en");
         expect(card.categoryNames).to.be.a("array");
+    });
+});
+describe("Testing translation", function() {
+    it("Should be 寝ガエル", async function() {
+        const card = await index.getCard("Centerfrog", "en");
+        const card2 = await index.getCard(card.code, "ja");
+        expect(card2.name).to.equal("寝ガエル");
     });
 });

@@ -5,7 +5,12 @@ class Driver {
     constructor(config, path = ".") {
         this.path = path;
         this.config = config;
-        this.langList = this.prepareLangs(config, path);
+        try {
+            this.langList = this.prepareLangs(config, path);
+        }
+        catch (e) {
+            throw e;
+        }
     }
     async getCard(name, lang) {
         if (!(lang in this.langList)) {
@@ -56,7 +61,12 @@ class Driver {
         const langList = {};
         for (const lang in config) {
             if (config.hasOwnProperty(lang)) {
-                langList[lang] = new Language_1.Language(lang, config[lang], path);
+                try {
+                    langList[lang] = new Language_1.Language(lang, config[lang], path);
+                }
+                catch (e) {
+                    throw e;
+                }
             }
         }
         return langList;
