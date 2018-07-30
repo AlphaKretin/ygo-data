@@ -5,12 +5,12 @@ export interface IDriverConfig {
 }
 export declare class Driver {
     config: IDriverConfig;
-    private pendingLangList;
+    private langList;
     private path;
     constructor(config: IDriverConfig, path?: string);
     getCard(name: string | number, lang: string): Promise<Card>;
     updateLang(lang: string): Promise<void>;
-    readonly langs: Promise<string[]>;
+    readonly langs: string[];
     getCardList(lang: string): Promise<ICardList>;
     private prepareLangs;
 }

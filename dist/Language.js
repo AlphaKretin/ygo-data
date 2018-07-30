@@ -96,13 +96,78 @@ async function downloadDBs(repos, filePath, lang) {
     return cards;
 }
 class Language {
-    // preparing the data for a language must be done asynchronously, so the intended use is to call this function,
-    // then instantiate a Language object with its resolution
-    static async prepareData(name, config, path) {
+    constructor(name, config, path) {
+        this.name = name;
+        this.pendingData = this.prepareData(config, path);
+    }
+    async getCardByCode(code) {
+        const cards = await this.getCards();
+        if (code in cards) {
+            return cards[code];
+        }
+        else {
+            throw new Error("Could not find card for code " + code + " in Language " + this.name + "!");
+        }
+    }
+    async getCardByName(name) {
+        const cards = await this.getCards();
+        const card = Object.values(cards).find(c => c.name.toLowerCase() === name.toLowerCase());
+        if (card) {
+            return card;
+        }
+        else {
+            const fuseList = await this.getFuse();
+            const results = fuseList.search(fixName(name));
+            if (results.length > 0) {
+                // TODO: results.sort() based on OT?
+                return cards[results[0].code];
+            }
+            else {
+                throw new Error("Could not find card for query " + name + " in Language " + this.name + "!");
+            }
+        }
+    }
+    async getCards() {
+        const data = await this.pendingData;
+        return data.cards;
+    }
+    async getSetcodes() {
+        const data = await this.pendingData;
+        return data.setcodes;
+    }
+    async getCounters() {
+        const data = await this.pendingData;
+        return data.counters;
+    }
+    async getOts() {
+        const data = await this.pendingData;
+        return data.ots;
+    }
+    async getTypes() {
+        const data = await this.pendingData;
+        return data.types;
+    }
+    async getCategories() {
+        const data = await this.pendingData;
+        return data.categories;
+    }
+    async getAttributes() {
+        const data = await this.pendingData;
+        return data.attributes;
+    }
+    async getRaces() {
+        const data = await this.pendingData;
+        return data.races;
+    }
+    async getFuse() {
+        const data = await this.pendingData;
+        return data.fuseList;
+    }
+    async prepareData(config, path) {
         const cards = {};
         let counters = {};
         let setcodes = {};
-        const filePath = path + "/dbs/" + name;
+        const filePath = path + "/dbs/" + this.name;
         const res = await loadSetcodes(config.stringsConf);
         counters = res.counters;
         setcodes = res.setcodes;
@@ -150,46 +215,6 @@ class Language {
             types: config.types
         };
         return data;
-    }
-    static async build(name, config, path) {
-        const data = await Language.prepareData(name, config, path);
-        return new Language(name, data);
-    }
-    constructor(name, data) {
-        this.name = name;
-        this.cards = data.cards;
-        this.setcodes = data.setcodes;
-        this.counters = data.counters;
-        this.ots = data.ots;
-        this.types = data.types;
-        this.races = data.races;
-        this.attributes = data.attributes;
-        this.categories = data.categories;
-        this.fuseList = data.fuseList;
-    }
-    getCardByCode(code) {
-        if (code in this.cards) {
-            return this.cards[code];
-        }
-        else {
-            throw new Error("Could not find card for code " + code + " in Language " + this.name + "!");
-        }
-    }
-    getCardByName(name) {
-        const card = Object.values(this.cards).find(c => c.name.toLowerCase() === name.toLowerCase());
-        if (card) {
-            return card;
-        }
-        else {
-            const results = this.fuseList.search(fixName(name));
-            if (results.length > 0) {
-                // TODO: results.sort() based on OT?
-                return this.cards[results[0].code];
-            }
-            else {
-                throw new Error("Could not find card for query " + name + " in Language " + this.name + "!");
-            }
-        }
     }
 }
 exports.Language = Language;

@@ -73,36 +73,22 @@ export interface ICardList {
     [code: number]: Card;
 }
 export declare class Language {
-    static prepareData(name: string, config: ILangConfig, path: string): Promise<ILanguageDataPayload>;
-    static build(name: string, config: ILangConfig, path: string): Promise<Language>;
-    cards: {
-        [code: number]: Card;
-    };
-    setcodes: {
-        [set: string]: string;
-    };
-    counters: {
-        [counter: string]: string;
-    };
-    ots: {
-        [ot: number]: string;
-    };
-    types: {
-        [type: number]: string;
-    };
-    races: {
-        [type: number]: string;
-    };
-    attributes: {
-        [type: number]: string;
-    };
-    categories: {
-        [type: number]: string;
-    };
+    pendingData: Promise<ILanguageDataPayload>;
     name: string;
-    fuseList: fuse;
-    constructor(name: string, data: ILanguageDataPayload);
-    getCardByCode(code: number): Card;
-    getCardByName(name: string): Card;
+    constructor(name: string, config: ILangConfig, path: string);
+    getCardByCode(code: number): Promise<Card>;
+    getCardByName(name: string): Promise<Card>;
+    getCards(): Promise<{
+        [code: number]: Card;
+    }>;
+    private getSetcodes;
+    private getCounters;
+    private getOts;
+    private getTypes;
+    private getCategories;
+    private getAttributes;
+    private getRaces;
+    private getFuse;
+    private prepareData;
 }
 export {};

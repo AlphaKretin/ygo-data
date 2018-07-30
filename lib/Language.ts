@@ -155,11 +155,89 @@ interface IFuseEntry {
 export class Language {
     // preparing the data for a language must be done asynchronously, so the intended use is to call this function,
     // then instantiate a Language object with its resolution
-    public static async prepareData(name: string, config: ILangConfig, path: string): Promise<ILanguageDataPayload> {
+    public pendingData: Promise<ILanguageDataPayload>;
+    public name: string;
+    constructor(name: string, config: ILangConfig, path: string) {
+        this.name = name;
+        this.pendingData = this.prepareData(config, path);
+    }
+
+    public async getCardByCode(code: number): Promise<Card> {
+        const cards = await this.getCards();
+        if (code in cards) {
+            return cards[code];
+        } else {
+            throw new Error("Could not find card for code " + code + " in Language " + this.name + "!");
+        }
+    }
+
+    public async getCardByName(name: string): Promise<Card> {
+        const cards = await this.getCards();
+        const card: Card | undefined = Object.values(cards).find(c => c.name.toLowerCase() === name.toLowerCase());
+        if (card) {
+            return card;
+        } else {
+            const fuseList = await this.getFuse();
+            const results = fuseList.search<IFuseEntry>(fixName(name));
+            if (results.length > 0) {
+                // TODO: results.sort() based on OT?
+                return cards[results[0].code];
+            } else {
+                throw new Error("Could not find card for query " + name + " in Language " + this.name + "!");
+            }
+        }
+    }
+
+    public async getCards() {
+        const data = await this.pendingData;
+        return data.cards;
+    }
+
+    private async getSetcodes() {
+        const data = await this.pendingData;
+        return data.setcodes;
+    }
+
+    private async getCounters() {
+        const data = await this.pendingData;
+        return data.counters;
+    }
+
+    private async getOts() {
+        const data = await this.pendingData;
+        return data.ots;
+    }
+
+    private async getTypes() {
+        const data = await this.pendingData;
+        return data.types;
+    }
+
+    private async getCategories() {
+        const data = await this.pendingData;
+        return data.categories;
+    }
+
+    private async getAttributes() {
+        const data = await this.pendingData;
+        return data.attributes;
+    }
+
+    private async getRaces() {
+        const data = await this.pendingData;
+        return data.races;
+    }
+
+    private async getFuse() {
+        const data = await this.pendingData;
+        return data.fuseList;
+    }
+
+    private async prepareData(config: ILangConfig, path: string): Promise<ILanguageDataPayload> {
         const cards: ICardList = {};
         let counters = {};
         let setcodes = {};
-        const filePath = path + "/dbs/" + name;
+        const filePath = path + "/dbs/" + this.name;
         const res = await loadSetcodes(config.stringsConf);
         counters = res.counters;
         setcodes = res.setcodes;
@@ -207,54 +285,5 @@ export class Language {
             types: config.types
         };
         return data;
-    }
-    public static async build(name: string, config: ILangConfig, path: string): Promise<Language> {
-        const data = await Language.prepareData(name, config, path);
-        return new Language(name, data);
-    }
-    public cards: { [code: number]: Card };
-    public setcodes: { [set: string]: string };
-    public counters: { [counter: string]: string };
-    public ots: { [ot: number]: string };
-    public types: { [type: number]: string };
-    public races: { [type: number]: string };
-    public attributes: { [type: number]: string };
-    public categories: { [type: number]: string };
-    public name: string;
-    public fuseList: fuse;
-    constructor(name: string, data: ILanguageDataPayload) {
-        this.name = name;
-        this.cards = data.cards;
-        this.setcodes = data.setcodes;
-        this.counters = data.counters;
-        this.ots = data.ots;
-        this.types = data.types;
-        this.races = data.races;
-        this.attributes = data.attributes;
-        this.categories = data.categories;
-        this.fuseList = data.fuseList;
-    }
-
-    public getCardByCode(code: number): Card {
-        if (code in this.cards) {
-            return this.cards[code];
-        } else {
-            throw new Error("Could not find card for code " + code + " in Language " + this.name + "!");
-        }
-    }
-
-    public getCardByName(name: string): Card {
-        const card: Card | undefined = Object.values(this.cards).find(c => c.name.toLowerCase() === name.toLowerCase());
-        if (card) {
-            return card;
-        } else {
-            const results = this.fuseList.search<IFuseEntry>(fixName(name));
-            if (results.length > 0) {
-                // TODO: results.sort() based on OT?
-                return this.cards[results[0].code];
-            } else {
-                throw new Error("Could not find card for query " + name + " in Language " + this.name + "!");
-            }
-        }
     }
 }
