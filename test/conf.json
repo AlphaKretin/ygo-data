@@ -235,9 +235,9 @@
         "stringsConf": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf",
         "remoteDBs": [
             {
-                "owner": "AlphaKretin",
-                "repo": "test-commands",
-                "path": ""
+                "owner": "Jambalaya751955",
+                "repo": "ygopro-database-JP",
+                "path": "cdb/Live2017Links"
             }
         ]
     }

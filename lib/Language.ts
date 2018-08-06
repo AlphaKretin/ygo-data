@@ -15,7 +15,7 @@ function fixName(name: string) {
 
 async function loadDB(file: string): Promise<ICardSqlResult[]> {
     try {
-        const db = await sqlite.open(file);
+        const db = await sqlite.open(file, { promise: Promise });
         const data = await db.all("select * from datas,texts where datas.id=texts.id");
         return data;
     } catch (e) {
@@ -31,7 +31,7 @@ async function downloadDB(file: any, filePath: string): Promise<void> {
             encoding: null,
             url: file.download_url
         });
-        fs.writeFile(fullPath, result);
+        await fs.writeFile(fullPath, result);
     } catch (e) {
         throw e;
     }

@@ -14,7 +14,7 @@ function fixName(name) {
 }
 async function loadDB(file) {
     try {
-        const db = await sqlite.open(file);
+        const db = await sqlite.open(file, { promise: Promise });
         const data = await db.all("select * from datas,texts where datas.id=texts.id");
         return data;
     }
@@ -30,7 +30,7 @@ async function downloadDB(file, filePath) {
             encoding: null,
             url: file.download_url
         });
-        fs.writeFile(fullPath, result);
+        await fs.writeFile(fullPath, result);
     }
     catch (e) {
         throw e;
