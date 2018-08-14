@@ -53,6 +53,7 @@ export declare class Card {
     readonly status: string;
     readonly setNames: string[];
     readonly typeNames: string[];
+    readonly typeString: string;
     readonly raceNames: string[];
     readonly attributeNames: string[];
     readonly categoryNames: string[];

@@ -76,6 +76,12 @@ describe("Testing types", function() {
         expect(card.typeNames).to.have.members(["Monster", "Effect"]);
     });
 });
+describe("Testing type string", function() {
+    it("Should be Beast/Effect", async function() {
+        const card = await index.getCard(43694650, "en");
+        expect(card.typeString).to.equal("Beast/Effect");
+    });
+});
 describe("Testing categories", function() {
     it("Should be an array", async function() {
         const card = await index.getCard(43694650, "en");
@@ -94,7 +100,6 @@ describe("Testing anime banlist coercion", function() {
         expect(card.status).to.equal("Illegal: 3");
     });
 });
-
 describe("Testing translation", function() {
     it("Should be 寝ガエル", async function() {
         const card = await index.getCard("Centerfrog", "en");

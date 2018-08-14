@@ -171,22 +171,22 @@ interface ILanguageDataPayload {
     cards: { [code: number]: Card };
     setcodes: { [set: string]: string };
     counters: { [counter: string]: string };
-    ots: { [ot: number]: string };
-    types: { [type: number]: string };
-    races: { [race: number]: string };
-    attributes: { [type: number]: string };
-    categories: { [race: number]: string };
+    ots: { [ot: string]: string };
+    types: { [type: string]: string };
+    races: { [race: string]: string };
+    attributes: { [type: string]: string };
+    categories: { [race: string]: string };
     fuseList: fuse;
 }
 
 export interface ILangTranslations {
     banlist: IBanlist;
     setcodes: { [set: string]: string };
-    ots: { [ot: number]: string };
-    types: { [type: number]: string };
-    races: { [race: number]: string };
-    attributes: { [type: number]: string };
-    categories: { [race: number]: string };
+    ots: { [ot: string]: string };
+    types: { [type: string]: string };
+    races: { [race: string]: string };
+    attributes: { [type: string]: string };
+    categories: { [race: string]: string };
 }
 
 export interface ILangConfig {

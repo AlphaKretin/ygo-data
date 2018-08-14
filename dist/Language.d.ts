@@ -18,19 +18,19 @@ interface ILanguageDataPayload {
         [counter: string]: string;
     };
     ots: {
-        [ot: number]: string;
+        [ot: string]: string;
     };
     types: {
-        [type: number]: string;
+        [type: string]: string;
     };
     races: {
-        [race: number]: string;
+        [race: string]: string;
     };
     attributes: {
-        [type: number]: string;
+        [type: string]: string;
     };
     categories: {
-        [race: number]: string;
+        [race: string]: string;
     };
     fuseList: fuse;
 }
@@ -40,19 +40,19 @@ export interface ILangTranslations {
         [set: string]: string;
     };
     ots: {
-        [ot: number]: string;
+        [ot: string]: string;
     };
     types: {
-        [type: number]: string;
+        [type: string]: string;
     };
     races: {
-        [race: number]: string;
+        [race: string]: string;
     };
     attributes: {
-        [type: number]: string;
+        [type: string]: string;
     };
     categories: {
-        [race: number]: string;
+        [race: string]: string;
     };
 }
 export interface ILangConfig {

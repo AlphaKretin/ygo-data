@@ -155,6 +155,16 @@ export class Card {
         return names;
     }
 
+    get typeString(): string {
+        const types = this.typeNames;
+        const monster: string = this.lang.types["0x1"];
+        const index = types.indexOf(monster);
+        if (index > -1) {
+            types[index] = this.raceNames.join("|");
+        }
+        return types.join("/");
+    }
+
     get raceNames(): string[] {
         const names: string[] = [];
         for (const key in this.lang.races) {

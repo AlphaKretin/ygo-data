@@ -103,6 +103,15 @@ class Card {
         }
         return names;
     }
+    get typeString() {
+        const types = this.typeNames;
+        const monster = this.lang.types["0x1"];
+        const index = types.indexOf(monster);
+        if (index > -1) {
+            types[index] = this.raceNames.join("|");
+        }
+        return types.join("/");
+    }
     get raceNames() {
         const names = [];
         for (const key in this.lang.races) {
