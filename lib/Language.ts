@@ -88,6 +88,33 @@ async function loadSetcodes(filePath: string): Promise<IStringsConfPayload> {
     }
 }
 
+async function loadBanlist(filePath: string): Promise<IBanlist> {
+    try {
+        const body = await request(filePath);
+        const data: IBanlist = {};
+        let currentList: string | undefined;
+        const lines: string[] = body.split(/\r?\n/);
+        for (const line of lines) {
+            if (line.startsWith("#")) {
+                continue;
+            }
+            if (line.startsWith("!")) {
+                currentList = line.split(" ")[1];
+                data[currentList!] = {}; // just defined so assert exists
+                continue;
+            }
+            if (currentList) {
+                const code = parseInt(line.split(" ")[0], 10);
+                const copies = parseInt(line.split(" ")[1], 10);
+                data[currentList][code] = copies;
+            }
+        }
+        return data;
+    } catch (e) {
+        throw e;
+    }
+}
+
 async function loadDBs(files: string[], filePath: string, lang: ILangTranslations): Promise<ICardList> {
     const cards: { [n: number]: Card } = {};
     const proms: Array<Promise<void>> = [];
@@ -135,7 +162,12 @@ async function downloadDBs(
     }
 }
 
+interface IBanlist {
+    [list: string]: { [code: number]: number };
+}
+
 interface ILanguageDataPayload {
+    banlist: IBanlist;
     cards: { [code: number]: Card };
     setcodes: { [set: string]: string };
     counters: { [counter: string]: string };
@@ -148,6 +180,7 @@ interface ILanguageDataPayload {
 }
 
 export interface ILangTranslations {
+    banlist: IBanlist;
     setcodes: { [set: string]: string };
     ots: { [ot: number]: string };
     types: { [type: number]: string };
@@ -158,6 +191,7 @@ export interface ILangTranslations {
 
 export interface ILangConfig {
     attributes: { [type: number]: string };
+    banlist: string;
     categories: { [type: number]: string };
     fuseOptions?: fuse.FuseOptions;
     ots: { [ot: number]: string };
@@ -313,8 +347,10 @@ export class Language {
             const res = await loadSetcodes(config.stringsConf);
             counters = res.counters;
             setcodes = res.setcodes;
+            const banlist = await loadBanlist(config.banlist);
             const transl: ILangTranslations = {
                 attributes: config.attributes,
+                banlist,
                 categories: config.categories,
                 ots: config.ots,
                 races: config.races,
@@ -347,6 +383,7 @@ export class Language {
             const fuseList = new fuse(entries, config.fuseOptions || {});
             const data: ILanguageDataPayload = {
                 attributes: config.attributes,
+                banlist,
                 cards,
                 categories: config.categories,
                 counters,

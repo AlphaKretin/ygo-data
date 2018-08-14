@@ -10,6 +10,7 @@
             "0x40": "Divine",
             "0x80": "Laugh"
         },
+        "banlist": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/lflist.conf",
         "categories": {
             "0x1": "Destroy Spell/Trap",
             "0x2": "Destroy Monster",
@@ -117,6 +118,11 @@
                 "owner": "Ygoproco",
                 "repo": "Live2017Links",
                 "path": ""
+            },
+            {
+                "owner": "Ygoproco",
+                "repo": "LiveanimeLinks",
+                "path": ""
             }
         ]
     },
@@ -131,6 +137,7 @@
             "0x40": "Divine",
             "0x80": "Laugh"
         },
+        "banlist": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/lflist.conf",
         "categories": {
             "0x1": "Destroy Spell/Trap",
             "0x2": "Destroy Monster",

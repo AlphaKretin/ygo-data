@@ -1,7 +1,13 @@
 import * as octokit from "@octokit/rest";
 import * as fuse from "fuse.js";
 import { Card } from "./Card";
+interface IBanlist {
+    [list: string]: {
+        [code: number]: number;
+    };
+}
 interface ILanguageDataPayload {
+    banlist: IBanlist;
     cards: {
         [code: number]: Card;
     };
@@ -29,6 +35,7 @@ interface ILanguageDataPayload {
     fuseList: fuse;
 }
 export interface ILangTranslations {
+    banlist: IBanlist;
     setcodes: {
         [set: string]: string;
     };
@@ -52,6 +59,7 @@ export interface ILangConfig {
     attributes: {
         [type: number]: string;
     };
+    banlist: string;
     categories: {
         [type: number]: string;
     };

@@ -46,9 +46,11 @@ export declare class Card {
     desc: string;
     strings: string[];
     dbs: string[];
+    unofficial: boolean;
     private lang;
     constructor(data: ICardSqlResult, file: string[], lang: ILangTranslations);
     readonly otNames: string[];
+    readonly status: string;
     readonly setNames: string[];
     readonly typeNames: string[];
     readonly raceNames: string[];

@@ -53,10 +53,15 @@ export class Card {
     public desc: string;
     public strings: string[];
     public dbs: string[];
+    public unofficial: boolean = true;
     private lang: ILangTranslations;
     constructor(data: ICardSqlResult, file: string[], lang: ILangTranslations) {
         this.code = data.id;
         this.ot = data.ot;
+        // 4+ is anime and derivatives, except custom - unofficial to OCG, but official to Percy
+        if (this.ot < 4 || this.ot >= 32) {
+            this.unofficial = false;
+        }
         this.alias = data.alias;
         this.setcode = data.setcode;
         this.type = data.type;
@@ -101,6 +106,23 @@ export class Card {
             }
         }
         return names;
+    }
+
+    get status(): string {
+        const names = this.otNames;
+        const newNames: string[] = [];
+        for (const name of names) {
+            if (name in this.lang.banlist) {
+                const stat = this.code in this.lang.banlist[name] ? this.lang.banlist[name][this.code] : 3;
+                newNames.push(name + ": " + stat);
+            } else if (this.unofficial) {
+                const stat = this.code in this.lang.banlist.Anime ? this.lang.banlist.Anime[this.code] : 3;
+                newNames.push(name + ": " + stat);
+            } else {
+                newNames.push(name);
+            }
+        }
+        return newNames.join("/");
     }
 
     get setNames(): string[] {

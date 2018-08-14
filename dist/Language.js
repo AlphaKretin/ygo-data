@@ -82,6 +82,33 @@ async function loadSetcodes(filePath) {
         throw e;
     }
 }
+async function loadBanlist(filePath) {
+    try {
+        const body = await request(filePath);
+        const data = {};
+        let currentList;
+        const lines = body.split(/\r?\n/);
+        for (const line of lines) {
+            if (line.startsWith("#")) {
+                continue;
+            }
+            if (line.startsWith("!")) {
+                currentList = line.split(" ")[1];
+                data[currentList] = {}; // just defined so assert exists
+                continue;
+            }
+            if (currentList) {
+                const code = parseInt(line.split(" ")[0], 10);
+                const copies = parseInt(line.split(" ")[1], 10);
+                data[currentList][code] = copies;
+            }
+        }
+        return data;
+    }
+    catch (e) {
+        throw e;
+    }
+}
 async function loadDBs(files, filePath, lang) {
     const cards = {};
     const proms = [];
@@ -257,8 +284,10 @@ class Language {
             const res = await loadSetcodes(config.stringsConf);
             counters = res.counters;
             setcodes = res.setcodes;
+            const banlist = await loadBanlist(config.banlist);
             const transl = {
                 attributes: config.attributes,
+                banlist,
                 categories: config.categories,
                 ots: config.ots,
                 races: config.races,
@@ -291,6 +320,7 @@ class Language {
             const fuseList = new fuse(entries, config.fuseOptions || {});
             const data = {
                 attributes: config.attributes,
+                banlist,
                 cards,
                 categories: config.categories,
                 counters,
