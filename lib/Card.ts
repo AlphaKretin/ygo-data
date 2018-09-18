@@ -1,5 +1,7 @@
+// import jimp = require("jimp");
+import * as request from "request-promise-native";
+import { IDriverConfig } from "./Driver";
 import { ILangTranslations } from "./Language";
-
 export interface ICardSqlResult {
     id: number;
     ot: number;
@@ -55,7 +57,8 @@ export class Card {
     public dbs: string[];
     public unofficial: boolean = true;
     private lang: ILangTranslations;
-    constructor(data: ICardSqlResult, file: string[], lang: ILangTranslations) {
+    private imageLink: string;
+    constructor(data: ICardSqlResult, file: string[], lang: ILangTranslations, mainConf: IDriverConfig) {
         this.code = data.id;
         this.ot = data.ot;
         // 4+ is anime and derivatives, except custom - unofficial to OCG, but official to Percy
@@ -93,6 +96,7 @@ export class Card {
         ];
         this.dbs = file;
         this.lang = lang;
+        this.imageLink = mainConf.imageLink + this.code + "." + mainConf.imageExt;
     }
 
     get otNames(): string[] {
@@ -210,5 +214,16 @@ export class Card {
 
     get desc_p(): string | null {
         return this.desc; // placeholder
+    }
+
+    get image(): Promise<Buffer | undefined> {
+        return new Promise(async resolve => {
+            try {
+                const image = await request(this.imageLink, { encoding: null });
+                resolve(image);
+            } catch (e) {
+                resolve(undefined);
+            }
+        });
     }
 }

@@ -1,7 +1,12 @@
 import { Card } from "./Card";
 import { ICardList, ILangConfig } from "./Language";
 export interface IDriverConfig {
-    [lang: string]: ILangConfig;
+    banlist: string;
+    imageLink: string;
+    imageExt: string;
+    langs: {
+        [lang: string]: ILangConfig;
+    };
 }
 export declare class Driver {
     config: IDriverConfig;

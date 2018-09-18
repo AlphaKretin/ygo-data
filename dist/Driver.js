@@ -33,7 +33,7 @@ class Driver {
     }
     async updateLang(lang) {
         if (lang in this.langList) {
-            const newLang = new Language_1.Language(lang, this.config[lang], this.path);
+            const newLang = new Language_1.Language(lang, this.config.langs[lang], this.path, this.config);
             this.langList[lang] = newLang;
         }
         else {
@@ -59,10 +59,10 @@ class Driver {
     }
     prepareLangs(config, path) {
         const langList = {};
-        for (const lang in config) {
-            if (config.hasOwnProperty(lang)) {
+        for (const lang in config.langs) {
+            if (config.langs.hasOwnProperty(lang)) {
                 try {
-                    langList[lang] = new Language_1.Language(lang, config[lang], path);
+                    langList[lang] = new Language_1.Language(lang, config.langs[lang], path, config);
                 }
                 catch (e) {
                     throw e;

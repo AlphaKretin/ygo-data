@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+// import jimp = require("jimp");
+const request = require("request-promise-native");
 // reduce to 1-input function for easy mapping
 function parseHex(q) {
     return parseInt(q, 16);
 }
 class Card {
-    constructor(data, file, lang) {
+    constructor(data, file, lang, mainConf) {
         this.unofficial = true;
         this.code = data.id;
         this.ot = data.ot;
@@ -44,6 +46,7 @@ class Card {
         ];
         this.dbs = file;
         this.lang = lang;
+        this.imageLink = mainConf.imageLink + this.code + "." + mainConf.imageExt;
     }
     get otNames() {
         const names = [];
@@ -153,6 +156,17 @@ class Card {
     }
     get desc_p() {
         return this.desc; // placeholder
+    }
+    get image() {
+        return new Promise(async (resolve) => {
+            try {
+                const image = await request(this.imageLink, { encoding: null });
+                resolve(image);
+            }
+            catch (e) {
+                resolve(undefined);
+            }
+        });
     }
 }
 exports.Card = Card;

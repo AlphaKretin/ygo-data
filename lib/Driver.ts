@@ -6,7 +6,12 @@ interface ILangList {
 }
 
 export interface IDriverConfig {
-    [lang: string]: ILangConfig;
+    banlist: string;
+    imageLink: string;
+    imageExt: string;
+    langs: {
+        [lang: string]: ILangConfig;
+    };
 }
 
 export class Driver {
@@ -43,7 +48,7 @@ export class Driver {
 
     public async updateLang(lang: string): Promise<void> {
         if (lang in this.langList) {
-            const newLang = new Language(lang, this.config[lang], this.path);
+            const newLang = new Language(lang, this.config.langs[lang], this.path, this.config);
             this.langList[lang] = newLang;
         } else {
             throw new Error("Invalid language " + lang + "!");
@@ -69,10 +74,10 @@ export class Driver {
 
     private prepareLangs(config: IDriverConfig, path: string): ILangList {
         const langList: ILangList = {};
-        for (const lang in config) {
-            if (config.hasOwnProperty(lang)) {
+        for (const lang in config.langs) {
+            if (config.langs.hasOwnProperty(lang)) {
                 try {
-                    langList[lang] = new Language(lang, config[lang], path);
+                    langList[lang] = new Language(lang, config.langs[lang], path, config);
                 } catch (e) {
                     throw e;
                 }

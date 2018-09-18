@@ -109,14 +109,14 @@ async function loadBanlist(filePath) {
         throw e;
     }
 }
-async function loadDBs(files, filePath, lang) {
+async function loadDBs(files, filePath, lang, mainConf) {
     const cards = {};
     const proms = [];
     try {
         for (const file of files) {
             const newProm = loadDB(filePath + "/" + file).then(dat => {
                 for (const cardData of dat) {
-                    const card = new Card_1.Card(cardData, [file], lang);
+                    const card = new Card_1.Card(cardData, [file], lang, mainConf);
                     if (card.code in cards) {
                         const dbs = card.dbs;
                         dbs.push(file);
@@ -134,13 +134,13 @@ async function loadDBs(files, filePath, lang) {
         throw e;
     }
 }
-async function downloadDBs(repos, filePath, lang) {
+async function downloadDBs(repos, filePath, lang, mainConf) {
     let cards = {};
     const proms = [];
     try {
         for (const repo of repos) {
             const newProm = downloadRepo(repo, filePath).then(async (files) => {
-                const newCards = await loadDBs(files, filePath, lang);
+                const newCards = await loadDBs(files, filePath, lang, mainConf);
                 cards = Object.assign({}, cards, newCards);
             });
             proms.push(newProm);
@@ -153,9 +153,9 @@ async function downloadDBs(repos, filePath, lang) {
     }
 }
 class Language {
-    constructor(name, config, path) {
+    constructor(name, config, path, mainConf) {
         this.name = name;
-        this.pendingData = this.prepareData(config, path);
+        this.pendingData = this.prepareData(config, path, mainConf);
         this.pendingData.catch(e => {
             console.error(e);
             console.error("Above error thrown in Language " +
@@ -275,7 +275,7 @@ class Language {
             throw e;
         }
     }
-    async prepareData(config, path) {
+    async prepareData(config, path, mainConf) {
         const cards = {};
         let counters = {};
         let setcodes = {};
@@ -284,7 +284,7 @@ class Language {
             const res = await loadSetcodes(config.stringsConf);
             counters = res.counters;
             setcodes = res.setcodes;
-            const banlist = await loadBanlist(config.banlist);
+            const banlist = await loadBanlist(mainConf.banlist);
             const transl = {
                 attributes: config.attributes,
                 banlist,
@@ -295,7 +295,7 @@ class Language {
                 types: config.types
             };
             if (config.localDBs) {
-                const cs = await loadDBs(config.localDBs, filePath, transl);
+                const cs = await loadDBs(config.localDBs, filePath, transl, mainConf);
                 for (const key in cs) {
                     if (cs.hasOwnProperty(key)) {
                         cards[key] = cs[key];
@@ -303,7 +303,7 @@ class Language {
                 }
             }
             if (config.remoteDBs) {
-                const cs = await downloadDBs(config.remoteDBs, filePath, transl);
+                const cs = await downloadDBs(config.remoteDBs, filePath, transl, mainConf);
                 for (const key in cs) {
                     if (cs.hasOwnProperty(key)) {
                         cards[key] = cs[key];

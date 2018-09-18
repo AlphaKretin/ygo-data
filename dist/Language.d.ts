@@ -1,6 +1,7 @@
 import * as octokit from "@octokit/rest";
 import * as fuse from "fuse.js";
 import { Card } from "./Card";
+import { IDriverConfig } from "./Driver";
 interface IBanlist {
     [list: string]: {
         [code: number]: number;
@@ -59,11 +60,11 @@ export interface ILangConfig {
     attributes: {
         [type: number]: string;
     };
-    banlist: string;
     categories: {
         [type: number]: string;
     };
     fuseOptions?: fuse.FuseOptions;
+    imageLink: string;
     ots: {
         [ot: number]: string;
     };
@@ -83,7 +84,7 @@ export interface ICardList {
 export declare class Language {
     pendingData: Promise<ILanguageDataPayload>;
     name: string;
-    constructor(name: string, config: ILangConfig, path: string);
+    constructor(name: string, config: ILangConfig, path: string, mainConf: IDriverConfig);
     getCardByCode(code: number): Promise<Card | undefined>;
     getCardByName(name: string): Promise<Card | undefined>;
     getCards(): Promise<{

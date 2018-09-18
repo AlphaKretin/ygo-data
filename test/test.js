@@ -107,3 +107,10 @@ describe("Testing translation", function() {
         expect(card2.name).to.equal("寝ガエル");
     });
 });
+describe("Testing image download", function() {
+    it("Should be a buffer", async function() {
+        const card = await index.getCard(47346782, "en");
+        const image = await card.image;
+        expect(image).to.be.instanceof(Buffer);
+    });
+});

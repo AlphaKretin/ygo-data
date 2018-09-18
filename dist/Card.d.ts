@@ -1,3 +1,5 @@
+/// <reference types="node" />
+import { IDriverConfig } from "./Driver";
 import { ILangTranslations } from "./Language";
 export interface ICardSqlResult {
     id: number;
@@ -48,7 +50,8 @@ export declare class Card {
     dbs: string[];
     unofficial: boolean;
     private lang;
-    constructor(data: ICardSqlResult, file: string[], lang: ILangTranslations);
+    private imageLink;
+    constructor(data: ICardSqlResult, file: string[], lang: ILangTranslations, mainConf: IDriverConfig);
     readonly otNames: string[];
     readonly status: string;
     readonly setNames: string[];
@@ -59,4 +62,5 @@ export declare class Card {
     readonly categoryNames: string[];
     readonly desc_m: string;
     readonly desc_p: string | null;
+    readonly image: Promise<Buffer | undefined>;
 }

@@ -6,6 +6,7 @@ import * as request from "request-promise-native";
 import * as sqlite from "sqlite";
 import * as util from "util";
 import { Card, ICardSqlResult } from "./Card";
+import { IDriverConfig } from "./Driver";
 
 const GitHub = new octokit();
 
@@ -115,14 +116,19 @@ async function loadBanlist(filePath: string): Promise<IBanlist> {
     }
 }
 
-async function loadDBs(files: string[], filePath: string, lang: ILangTranslations): Promise<ICardList> {
+async function loadDBs(
+    files: string[],
+    filePath: string,
+    lang: ILangTranslations,
+    mainConf: IDriverConfig
+): Promise<ICardList> {
     const cards: { [n: number]: Card } = {};
     const proms: Array<Promise<void>> = [];
     try {
         for (const file of files) {
             const newProm = loadDB(filePath + "/" + file).then(dat => {
                 for (const cardData of dat) {
-                    const card = new Card(cardData, [file], lang);
+                    const card = new Card(cardData, [file], lang, mainConf);
                     if (card.code in cards) {
                         const dbs = card.dbs;
                         dbs.push(file);
@@ -143,14 +149,15 @@ async function loadDBs(files: string[], filePath: string, lang: ILangTranslation
 async function downloadDBs(
     repos: octokit.ReposGetContentParams[],
     filePath: string,
-    lang: ILangTranslations
+    lang: ILangTranslations,
+    mainConf: IDriverConfig
 ): Promise<ICardList> {
     let cards: ICardList = {};
     const proms: Array<Promise<void>> = [];
     try {
         for (const repo of repos) {
             const newProm = downloadRepo(repo, filePath).then(async files => {
-                const newCards = await loadDBs(files, filePath, lang);
+                const newCards = await loadDBs(files, filePath, lang, mainConf);
                 cards = { ...cards, ...newCards };
             });
             proms.push(newProm);
@@ -191,9 +198,9 @@ export interface ILangTranslations {
 
 export interface ILangConfig {
     attributes: { [type: number]: string };
-    banlist: string;
     categories: { [type: number]: string };
     fuseOptions?: fuse.FuseOptions;
+    imageLink: string;
     ots: { [ot: number]: string };
     races: { [race: number]: string };
     types: { [type: number]: string };
@@ -214,9 +221,9 @@ interface IFuseEntry {
 export class Language {
     public pendingData: Promise<ILanguageDataPayload>;
     public name: string;
-    constructor(name: string, config: ILangConfig, path: string) {
+    constructor(name: string, config: ILangConfig, path: string, mainConf: IDriverConfig) {
         this.name = name;
-        this.pendingData = this.prepareData(config, path);
+        this.pendingData = this.prepareData(config, path, mainConf);
         this.pendingData.catch(e => {
             console.error(e);
             console.error(
@@ -338,7 +345,11 @@ export class Language {
         }
     }
 
-    private async prepareData(config: ILangConfig, path: string): Promise<ILanguageDataPayload> {
+    private async prepareData(
+        config: ILangConfig,
+        path: string,
+        mainConf: IDriverConfig
+    ): Promise<ILanguageDataPayload> {
         const cards: ICardList = {};
         let counters = {};
         let setcodes = {};
@@ -347,7 +358,7 @@ export class Language {
             const res = await loadSetcodes(config.stringsConf);
             counters = res.counters;
             setcodes = res.setcodes;
-            const banlist = await loadBanlist(config.banlist);
+            const banlist = await loadBanlist(mainConf.banlist);
             const transl: ILangTranslations = {
                 attributes: config.attributes,
                 banlist,
@@ -358,7 +369,7 @@ export class Language {
                 types: config.types
             };
             if (config.localDBs) {
-                const cs = await loadDBs(config.localDBs, filePath, transl);
+                const cs = await loadDBs(config.localDBs, filePath, transl, mainConf);
                 for (const key in cs) {
                     if (cs.hasOwnProperty(key)) {
                         cards[key] = cs[key];
@@ -366,7 +377,7 @@ export class Language {
                 }
             }
             if (config.remoteDBs) {
-                const cs = await downloadDBs(config.remoteDBs, filePath, transl);
+                const cs = await downloadDBs(config.remoteDBs, filePath, transl, mainConf);
                 for (const key in cs) {
                     if (cs.hasOwnProperty(key)) {
                         cards[key] = cs[key];
