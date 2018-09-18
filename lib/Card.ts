@@ -56,8 +56,8 @@ export class Card {
     public strings: string[];
     public dbs: string[];
     public unofficial: boolean = true;
+    public imageLink: string;
     private lang: ILangTranslations;
-    private imageLink: string;
     constructor(data: ICardSqlResult, file: string[], lang: ILangTranslations, mainConf: IDriverConfig) {
         this.code = data.id;
         this.ot = data.ot;
