@@ -49,8 +49,8 @@ export declare class Card {
     strings: string[];
     dbs: string[];
     unofficial: boolean;
+    imageLink: string;
     private lang;
-    private imageLink;
     constructor(data: ICardSqlResult, file: string[], lang: ILangTranslations, mainConf: IDriverConfig);
     readonly otNames: string[];
     readonly status: string;
