@@ -183,7 +183,7 @@ interface ILanguageDataPayload {
     races: { [race: string]: string };
     attributes: { [type: string]: string };
     categories: { [race: string]: string };
-    fuseList: fuse;
+    fuseList: fuse<IFuseEntry>;
 }
 
 export interface ILangTranslations {
@@ -199,7 +199,7 @@ export interface ILangTranslations {
 export interface ILangConfig {
     attributes: { [type: number]: string };
     categories: { [type: number]: string };
-    fuseOptions?: fuse.FuseOptions;
+    fuseOptions?: fuse.FuseOptions<IFuseEntry>;
     imageLink: string;
     ots: { [ot: number]: string };
     races: { [race: number]: string };
@@ -253,7 +253,7 @@ export class Language {
                 return card;
             } else {
                 const fuseList = await this.getFuse();
-                const results = fuseList.search<IFuseEntry>(fixName(name));
+                const results = fuseList.search(fixName(name));
                 if (results.length > 0) {
                     // TODO: results.sort() based on OT?
                     return cards[results[0].code];

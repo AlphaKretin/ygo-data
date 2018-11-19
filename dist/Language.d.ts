@@ -33,7 +33,7 @@ interface ILanguageDataPayload {
     categories: {
         [race: string]: string;
     };
-    fuseList: fuse;
+    fuseList: fuse<IFuseEntry>;
 }
 export interface ILangTranslations {
     banlist: IBanlist;
@@ -63,7 +63,7 @@ export interface ILangConfig {
     categories: {
         [type: number]: string;
     };
-    fuseOptions?: fuse.FuseOptions;
+    fuseOptions?: fuse.FuseOptions<IFuseEntry>;
     imageLink: string;
     ots: {
         [ot: number]: string;
@@ -80,6 +80,10 @@ export interface ILangConfig {
 }
 export interface ICardList {
     [code: number]: Card;
+}
+interface IFuseEntry {
+    code: number;
+    name: string;
 }
 export declare class Language {
     pendingData: Promise<ILanguageDataPayload>;
