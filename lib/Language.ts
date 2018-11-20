@@ -256,7 +256,15 @@ export class Language {
                 const results = fuseList.search(fixName(name));
                 if (results.length > 0) {
                     // TODO: results.sort() based on OT?
-                    return cards[results[0].code];
+                    const foundCard = cards[results[0].code];
+                    if (!(foundCard.alias && foundCard.alias > 0)) {
+                        return foundCard;
+                    }
+                    const aliasCard = cards[foundCard.alias];
+                    if (aliasCard.name === foundCard.name) {
+                        return aliasCard;
+                    }
+                    return foundCard;
                 }
             }
         } catch (e) {

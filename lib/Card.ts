@@ -237,6 +237,9 @@ export class Card {
             const baseCode = this.alias && this.alias > 0 ? this.alias : this.code;
             const outCodes = [baseCode];
             const cards = await this.host!.getCards();
+            if (!(baseCode in cards)) {
+                reject("Card " + this.code + "'s alias, " + baseCode + ", does not exist!");
+            }
             for (const code in cards) {
                 if (cards.hasOwnProperty(code)) {
                     const card = cards[code];
