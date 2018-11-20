@@ -114,3 +114,17 @@ describe("Testing image download", function() {
         expect(image).to.be.instanceof(Buffer);
     });
 });
+describe("Testing alias check with name", function() {
+    it("Should be [7852509, 7852510]", async function() {
+        const card = await index.getCard("Loop of Destruction", "en");
+        const codes = await card.codes;
+        expect(codes).to.deep.equal([7852509, 7852510]);
+    });
+});
+describe("Testing alias check with alt art's code", function() {
+    it("Should be [7852509, 7852510]", async function() {
+        const card = await index.getCard(7852510, "en");
+        const codes = await card.codes;
+        expect(codes).to.deep.equal([7852509, 7852510]);
+    });
+});

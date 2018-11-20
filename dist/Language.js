@@ -197,6 +197,11 @@ class Language {
     async getCards() {
         try {
             const data = await this.pendingData;
+            for (const code in data.cards) {
+                if (data.cards.hasOwnProperty(code)) {
+                    data.cards[code].owner = this;
+                }
+            }
             return data.cards;
         }
         catch (e) {

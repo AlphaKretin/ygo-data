@@ -52,7 +52,7 @@ class Card {
         const names = [];
         for (const key in this.lang.ots) {
             if (this.lang.ots.hasOwnProperty(key)) {
-                const ot = parseInt(key, 16);
+                const ot = parseHex(key);
                 if ((ot & this.ot) !== 0) {
                     names.push(this.lang.ots[key]);
                 }
@@ -98,7 +98,7 @@ class Card {
         const names = [];
         for (const key in this.lang.types) {
             if (this.lang.types.hasOwnProperty(key)) {
-                const type = parseInt(key, 16);
+                const type = parseHex(key);
                 if ((type & this.type) !== 0) {
                     names.push(this.lang.types[key]);
                 }
@@ -107,6 +107,7 @@ class Card {
         return names;
     }
     get typeString() {
+        // TODO: Add sorting e.g. Effect last
         const types = this.typeNames;
         const monster = this.lang.types["0x1"];
         const index = types.indexOf(monster);
@@ -119,7 +120,7 @@ class Card {
         const names = [];
         for (const key in this.lang.races) {
             if (this.lang.races.hasOwnProperty(key)) {
-                const race = parseInt(key, 16);
+                const race = parseHex(key);
                 if ((race & this.race) !== 0) {
                     names.push(this.lang.races[key]);
                 }
@@ -131,7 +132,7 @@ class Card {
         const names = [];
         for (const key in this.lang.attributes) {
             if (this.lang.attributes.hasOwnProperty(key)) {
-                const att = parseInt(key, 16);
+                const att = parseHex(key);
                 if ((att & this.attribute) !== 0) {
                     names.push(this.lang.attributes[key]);
                 }
@@ -143,7 +144,7 @@ class Card {
         const names = [];
         for (const key in this.lang.categories) {
             if (this.lang.categories.hasOwnProperty(key)) {
-                const cat = parseInt(key, 16);
+                const cat = parseHex(key);
                 if ((cat & this.category) !== 0) {
                     names.push(this.lang.categories[key]);
                 }
@@ -167,6 +168,28 @@ class Card {
                 resolve(undefined);
             }
         });
+    }
+    get codes() {
+        return new Promise(async (resolve, reject) => {
+            if (!this.host) {
+                reject("Host language was not defined for card " + this.code + ", something went wrong internally!");
+            }
+            const baseCode = this.alias && this.alias > 0 ? this.alias : this.code;
+            const outCodes = [baseCode];
+            const cards = await this.host.getCards();
+            for (const code in cards) {
+                if (cards.hasOwnProperty(code)) {
+                    const card = cards[code];
+                    if (card.alias === baseCode && cards[baseCode].ot === card.ot) {
+                        outCodes.push(card.code);
+                    }
+                }
+            }
+            resolve(outCodes);
+        });
+    }
+    set owner(lang) {
+        this.host = lang;
     }
 }
 exports.Card = Card;
