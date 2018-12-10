@@ -9,10 +9,17 @@ interface ICardListOpts {
     };
     gitAuth?: octokit.Auth;
 }
+export interface ISimpleCard {
+    id: number;
+    name: string;
+}
 declare class CardList {
     private cards?;
-    getCard(id: number | string): Promise<Card>;
+    getCard(id: number | string): Promise<Card | undefined>;
     update(opts: ICardListOpts, savePath: string): void;
+    getSimpleList(lang: string): Promise<{
+        [id: number]: ISimpleCard;
+    }>;
     private downloadSingleDB;
     private downloadDBs;
     private loadDBs;

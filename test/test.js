@@ -12,7 +12,7 @@ describe("Testing with ID", function() {
 describe("Testing with name", function() {
     it("Should return Danger!? Jackalope?", async function() {
         const card = await index.getCard("Danger!? Jackalope?", "en");
-        expect(card.name).to.equal("Danger!? Jackalope?");
+        expect(card.text.en.name).to.equal("Danger!? Jackalope?");
     });
 });
 describe("Testing invalid name", function() {

@@ -36,7 +36,7 @@ export class Card {
             for (const id in cards) {
                 if (cards.hasOwnProperty(id)) {
                     const card = await cards.getCard(id);
-                    if (card.data.alias === baseCode) {
+                    if (card && card.data.alias === baseCode) {
                         ids.push(parseInt(id, 10));
                     }
                 }

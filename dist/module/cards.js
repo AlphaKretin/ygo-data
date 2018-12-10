@@ -21,6 +21,22 @@ class CardList {
     update(opts, savePath) {
         this.cards = this.load(opts, savePath);
     }
+    async getSimpleList(lang) {
+        if (!this.cards) {
+            throw new Error("Card list not loaded!");
+        }
+        const list = await this.cards;
+        const map = {};
+        for (const key in list) {
+            if (list.hasOwnProperty(key)) {
+                const card = list[key];
+                if (lang in card.text) {
+                    map[card.id] = { id: card.id, name: card.text[lang].name };
+                }
+            }
+        }
+        return map;
+    }
     async downloadSingleDB(file, filePath) {
         const fullPath = filePath + file.name;
         const result = await request({

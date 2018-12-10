@@ -22,7 +22,7 @@ class Card {
             for (const id in cards_1.cards) {
                 if (cards_1.cards.hasOwnProperty(id)) {
                     const card = await cards_1.cards.getCard(id);
-                    if (card.data.alias === baseCode) {
+                    if (card && card.data.alias === baseCode) {
                         ids.push(parseInt(id, 10));
                     }
                 }

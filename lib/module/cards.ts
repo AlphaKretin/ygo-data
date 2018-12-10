@@ -18,10 +18,15 @@ interface ICardListOpts {
     gitAuth?: octokit.Auth;
 }
 
+export interface ISimpleCard {
+    id: number;
+    name: string;
+}
+
 class CardList {
     private cards?: Promise<{ [id: number]: Card }>;
 
-    public async getCard(id: number | string): Promise<Card> {
+    public async getCard(id: number | string): Promise<Card | undefined> {
         if (!this.cards) {
             throw new Error("Card list not loaded!");
         }
@@ -34,6 +39,23 @@ class CardList {
 
     public update(opts: ICardListOpts, savePath: string) {
         this.cards = this.load(opts, savePath);
+    }
+
+    public async getSimpleList(lang: string): Promise<{ [id: number]: ISimpleCard }> {
+        if (!this.cards) {
+            throw new Error("Card list not loaded!");
+        }
+        const list = await this.cards;
+        const map: { [id: number]: ISimpleCard } = {};
+        for (const key in list) {
+            if (list.hasOwnProperty(key)) {
+                const card = list[key];
+                if (lang in card.text) {
+                    map[card.id] = { id: card.id, name: card.text[lang].name };
+                }
+            }
+        }
+        return map;
     }
 
     private async downloadSingleDB(file: any, filePath: string): Promise<void> {
