@@ -103,8 +103,7 @@ describe("Testing anime banlist coercion", function() {
 describe("Testing translation", function() {
     it("Should be 寝ガエル", async function() {
         const card = await index.getCard("Centerfrog", "en");
-        const card2 = await index.getCard(card.code, "ja");
-        expect(card2.name).to.equal("寝ガエル");
+        expect(card.text.ja.name).to.equal("寝ガエル");
     });
 });
 describe("Testing image download", function() {
