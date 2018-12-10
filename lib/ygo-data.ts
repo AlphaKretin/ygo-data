@@ -33,6 +33,9 @@ class YgoData {
             if (isNaN(idNum) && lang) {
                 const fuse = await this.getFuse(lang);
                 const result = fuse.search(id);
+                if (result.length < 1) {
+                    return undefined;
+                }
                 // @ts-ignore
                 const resultCard = await this.getCard(result[0].item.id);
                 return resultCard;
