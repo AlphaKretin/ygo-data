@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const enums_1 = require("../module/enums");
 const setcodes_1 = require("../module/setcodes");
 const translations_1 = require("../module/translations");
 function getNames(val, func) {
@@ -51,7 +52,10 @@ class CardData {
                     ot: getNames(this.ot, v => trans.getOT(v)),
                     race: getNames(this.race, v => trans.getRace(v)),
                     setcode: getSetcodeNames(this.setcode, lang),
-                    type: getNames(this.type, v => trans.getType(v))
+                    type: getNames(this.type, v => trans.getType(v)),
+                    typeString: getNames(this.type, v => trans.getType(v))
+                        .join("/")
+                        .replace(trans.getType(enums_1.CardType.TYPE_MONSTER), getNames(this.race, v => trans.getRace(v)).join("|"))
                 };
             }
         }

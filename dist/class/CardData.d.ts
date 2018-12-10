@@ -17,6 +17,7 @@ interface ICardDataNames {
     race: string[];
     attribute: string[];
     category: string[];
+    typeString: string;
 }
 export declare class CardData {
     readonly ot: number;

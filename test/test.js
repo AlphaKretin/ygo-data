@@ -79,7 +79,7 @@ describe("Testing types", function() {
 describe("Testing type string", function() {
     it("Should be Beast/Effect", async function() {
         const card = await index.getCard(43694650);
-        expect(card.typeString).to.equal("Beast/Effect");
+        expect(card.data.names.en.typeString).to.equal("Beast/Effect");
     });
 });
 describe("Testing categories", function() {

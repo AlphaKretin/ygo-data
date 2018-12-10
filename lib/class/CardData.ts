@@ -1,3 +1,4 @@
+import { CardType } from "../module/enums";
 import { setcodes } from "../module/setcodes";
 import { translations } from "../module/translations";
 
@@ -21,6 +22,7 @@ interface ICardDataNames {
     race: string[];
     attribute: string[];
     category: string[];
+    typeString: string;
 }
 
 function getNames(val: number, func: (v: number) => string): string[] {
@@ -87,7 +89,13 @@ export class CardData {
                     ot: getNames(this.ot, v => trans.getOT(v)),
                     race: getNames(this.race, v => trans.getRace(v)),
                     setcode: getSetcodeNames(this.setcode, lang),
-                    type: getNames(this.type, v => trans.getType(v))
+                    type: getNames(this.type, v => trans.getType(v)),
+                    typeString: getNames(this.type, v => trans.getType(v))
+                        .join("/")
+                        .replace(
+                            trans.getType(CardType.TYPE_MONSTER),
+                            getNames(this.race, v => trans.getRace(v)).join("|")
+                        )
                 };
             }
         }
