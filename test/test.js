@@ -36,19 +36,19 @@ describe("Testing card list", function() {
 describe("Testing OT", function() {
     it("Should be TCG", async function() {
         const card = await index.getCard(43694650);
-        expect(card.data.names.ot).to.deep.equal(["TCG"]);
+        expect(card.data.names.en.ot).to.deep.equal(["TCG"]);
     });
 });
 describe("Testing race", function() {
     it("Should be Beast", async function() {
         const card = await index.getCard(43694650);
-        expect(card.data.names.race).to.deep.equal(["Beast"]);
+        expect(card.data.names.en.race).to.deep.equal(["Beast"]);
     });
 });
 describe("Testing attribute", function() {
     it("Should be DARK", async function() {
         const card = await index.getCard(43694650);
-        expect(card.data.names.attribute).to.deep.equal(["Dark"]);
+        expect(card.data.names.en.attribute).to.deep.equal(["Dark"]);
     });
 });
 describe("Testing ATK", function() {
@@ -72,7 +72,7 @@ describe("Testing Setcodes", function() {
 describe("Testing types", function() {
     it("Should be Monster/Effect", async function() {
         const card = await index.getCard(43694650);
-        expect(card.data.names.type).to.have.members(["Monster", "Effect"]);
+        expect(card.data.names.en.type).to.have.members(["Monster", "Effect"]);
     });
 });
 describe("Testing type string", function() {

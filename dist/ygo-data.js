@@ -17,7 +17,19 @@ class YgoData {
             shouldSort: true,
             threshold: 0.2
         };
-        const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+        const config = JSON.parse(fs.readFileSync(configPath, "utf8"), (key, value) => {
+            // if object with hex keys
+            if (typeof value === "object" && Object.keys(value)[0].startsWith("0x")) {
+                const newObj = {};
+                for (const k in value) {
+                    if (value.hasOwnProperty(k)) {
+                        newObj[parseInt(k, 16)] = value[k];
+                    }
+                }
+                return newObj;
+            }
+            return value;
+        });
         cards_1.cards.update(config.cardOpts, savePath);
         translations_1.translations.update(config.transOpts);
         this.fuses = {};
