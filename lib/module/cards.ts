@@ -58,6 +58,13 @@ class CardList {
         return map;
     }
 
+    public async getRawCardList(): Promise<{ [id: number]: Card }> {
+        if (!this.cards) {
+            throw new Error("Card list not loaded!");
+        }
+        return await this.cards;
+    }
+
     private async downloadSingleDB(file: any, filePath: string): Promise<void> {
         const fullPath = filePath + file.name;
         const result = await request({

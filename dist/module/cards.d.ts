@@ -20,6 +20,9 @@ declare class CardList {
     getSimpleList(lang: string): Promise<{
         [id: number]: ISimpleCard;
     }>;
+    getRawCardList(): Promise<{
+        [id: number]: Card;
+    }>;
     private downloadSingleDB;
     private downloadDBs;
     private loadDBs;

@@ -37,6 +37,12 @@ class CardList {
         }
         return map;
     }
+    async getRawCardList() {
+        if (!this.cards) {
+            throw new Error("Card list not loaded!");
+        }
+        return await this.cards;
+    }
     async downloadSingleDB(file, filePath) {
         const fullPath = filePath + file.name;
         const result = await request({

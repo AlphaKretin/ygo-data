@@ -44,6 +44,9 @@ class YgoData {
             return card;
         }
     }
+    async getCardList() {
+        return await cards_1.cards.getRawCardList();
+    }
     async getFuse(lang) {
         if (!(lang in this.fuses)) {
             const list = await cards_1.cards.getSimpleList(lang);

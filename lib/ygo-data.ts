@@ -47,6 +47,10 @@ class YgoData {
         }
     }
 
+    public async getCardList(): Promise<{ [id: number]: Card }> {
+        return await cards.getRawCardList();
+    }
+
     private async getFuse(lang: string): Promise<Fuse<ISimpleCard>> {
         if (!(lang in this.fuses)) {
             const list = await cards.getSimpleList(lang);
