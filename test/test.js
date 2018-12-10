@@ -85,7 +85,7 @@ describe("Testing type string", function() {
 describe("Testing categories", function() {
     it("Should be an array", async function() {
         const card = await index.getCard(43694650);
-        expect(card.data.name.category).to.be.a("array");
+        expect(card.data.names.en.category).to.be.a("array");
     });
 });
 describe("Testing banlist", function() {
