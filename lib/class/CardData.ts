@@ -1,3 +1,4 @@
+import { setcodes } from "../module/setcodes";
 import { translations } from "../module/translations";
 
 export interface ICardDataRaw {
@@ -15,7 +16,7 @@ export interface ICardDataRaw {
 
 interface ICardDataNames {
     ot: string[];
-    setcode: string[];
+    setcode: Promise<string[]>;
     type: string[];
     race: string[];
     attribute: string[];
@@ -34,8 +35,21 @@ function getNames(val: number, func: (v: number) => string): string[] {
     return names;
 }
 
-function getSetcodeNames(setcode: number, lang: string): string[] {
-    return ["unimplemented"]; // TODO
+async function getSetcodeNames(setcode: number, lang: string): Promise<string[]> {
+    let tempCode = setcode;
+    const codes: number[] = [];
+    while (tempCode > 0) {
+        codes.push(tempCode & 0xffff);
+        tempCode = tempCode >> 16;
+    }
+    const names: string[] = [];
+    for (const code of codes) {
+        const name = await setcodes.getCode(code, lang);
+        if (name) {
+            names.push(name);
+        }
+    }
+    return names;
 }
 
 export class CardData {

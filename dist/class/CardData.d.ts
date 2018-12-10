@@ -12,7 +12,7 @@ export interface ICardDataRaw {
 }
 interface ICardDataNames {
     ot: string[];
-    setcode: string[];
+    setcode: Promise<string[]>;
     type: string[];
     race: string[];
     attribute: string[];

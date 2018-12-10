@@ -13,8 +13,7 @@
                         "repo": "LiveanimeLinks",
                         "path": ""
                     }
-                ],
-                "stringsConf": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf"
+                ]
             },
             "ja": {
                 "remoteDBs": [
@@ -23,10 +22,13 @@
                         "repo": "ygopro-database-JP",
                         "path": "cdb/Live2017Links"
                     }
-                ],
-                "stringsConf": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf"
+                ]
             }
         }
+    },
+    "stringOpts": {
+        "en": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf",
+        "ja": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf"
     },
     "transOpts": {
         "en": {

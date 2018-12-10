@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const setcodes_1 = require("../module/setcodes");
 const translations_1 = require("../module/translations");
 function getNames(val, func) {
     let i = 1;
@@ -12,8 +13,21 @@ function getNames(val, func) {
     }
     return names;
 }
-function getSetcodeNames(setcode, lang) {
-    return ["unimplemented"]; // TODO
+async function getSetcodeNames(setcode, lang) {
+    let tempCode = setcode;
+    const codes = [];
+    while (tempCode > 0) {
+        codes.push(tempCode & 0xffff);
+        tempCode = tempCode >> 16;
+    }
+    const names = [];
+    for (const code of codes) {
+        const name = await setcodes_1.setcodes.getCode(code, lang);
+        if (name) {
+            names.push(name);
+        }
+    }
+    return names;
 }
 class CardData {
     constructor(dbData, langs) {

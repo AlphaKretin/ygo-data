@@ -2,6 +2,7 @@ import * as Fuse from "fuse.js";
 import * as fs from "mz/fs";
 import { Card } from "./class/Card";
 import { cards, ISimpleCard } from "./module/cards";
+import { setcodes } from "./module/setcodes";
 import { translations } from "./module/translations";
 
 class YgoData {
@@ -33,6 +34,7 @@ class YgoData {
             return value;
         });
         cards.update(config.cardOpts, savePath);
+        setcodes.update(config.stringOpts);
         translations.update(config.transOpts);
         this.fuses = {};
         this.langs = Object.keys(config.cardOpts.langs);

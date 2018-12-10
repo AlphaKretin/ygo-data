@@ -66,7 +66,8 @@ describe("Testing DEF", function() {
 describe("Testing Setcodes", function() {
     it("Should be [Danger!]", async function() {
         const card = await index.getCard(43694650);
-        expect(card.setNames).to.deep.equal(["Danger!"]);
+        const names = await card.data.names.en.setcode;
+        expect(names).to.deep.equal(["Danger!"]);
     });
 });
 describe("Testing types", function() {
