@@ -5,6 +5,7 @@ import { cards, ISimpleCard } from "./module/cards";
 import { translations } from "./module/translations";
 
 class YgoData {
+    public readonly langs: string[];
     // TODO: Add some configurability here
     private fuseOpts: Fuse.FuseOptions<ISimpleCard> = {
         distance: 100,
@@ -22,6 +23,7 @@ class YgoData {
         cards.update(config.cardOpts, savePath);
         translations.update(config.transOpts);
         this.fuses = {};
+        this.langs = Object.keys(config.cardOpts.langs);
     }
 
     public async getCard(id: number | string, lang?: string): Promise<Card | undefined> {

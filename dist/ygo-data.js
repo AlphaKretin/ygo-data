@@ -21,6 +21,7 @@ class YgoData {
         cards_1.cards.update(config.cardOpts, savePath);
         translations_1.translations.update(config.transOpts);
         this.fuses = {};
+        this.langs = Object.keys(config.cardOpts.langs);
     }
     async getCard(id, lang) {
         if (typeof id === "number") {
