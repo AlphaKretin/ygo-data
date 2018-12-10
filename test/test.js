@@ -1,13 +1,12 @@
 "use strict";
 const expect = require("chai").expect;
-const ygoData = require("../dist/Driver.js").Driver;
-const ygoSettings = require("./conf.json");
-let index = new ygoData(ygoSettings);
+const ygoData = require("../dist/ygo-data.js");
+let index = new ygoData(__dirname + "/conf.json", __dirname + "/dbs/");
 
 describe("Testing with ID", function() {
     it("Should return Danger!? Jackalope?", async function() {
-        const card = await index.getCard(43694650, "en");
-        expect(card.name).to.equal("Danger!? Jackalope?");
+        const card = await index.getCard(43694650);
+        expect(card.text.en.name).to.equal("Danger!? Jackalope?");
     });
 });
 describe("Testing with name", function() {

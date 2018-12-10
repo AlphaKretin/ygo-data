@@ -1,10 +1,36 @@
 {
-    "banlist": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/lflist.conf",
-    "imageLink": "https://raw.githubusercontent.com/AlphaKretin/AlphaKretin.github.io/master/miscstorage/",
-    "imageExt": "png",
-    "langs": {
+    "cardOpts": {
+        "langs": {
+            "en": {
+                "remoteDBs": [
+                    {
+                        "owner": "Ygoproco",
+                        "repo": "Live2017Links",
+                        "path": ""
+                    },
+                    {
+                        "owner": "Ygoproco",
+                        "repo": "LiveanimeLinks",
+                        "path": ""
+                    }
+                ],
+                "stringsConf": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf"
+            },
+            "ja": {
+                "remoteDBs": [
+                    {
+                        "owner": "Jambalaya751955",
+                        "repo": "ygopro-database-JP",
+                        "path": "cdb/Live2017Links"
+                    }
+                ],
+                "stringsConf": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf"
+            }
+        }
+    },
+    "transOpts": {
         "en": {
-            "attributes": {
+            "attribute": {
                 "0x1": "Earth",
                 "0x2": "Water",
                 "0x4": "Fire",
@@ -14,7 +40,7 @@
                 "0x40": "Divine",
                 "0x80": "Laugh"
             },
-            "categories": {
+            "category": {
                 "0x1": "Destroy Spell/Trap",
                 "0x2": "Destroy Monster",
                 "0x4": "Banish",
@@ -48,7 +74,7 @@
                 "0x40000000": "Xyz-related",
                 "0x80000000": "Negate effect"
             },
-            "ots": {
+            "ot": {
                 "0x1": "OCG",
                 "0x2": "TCG",
                 "0x4": "Anime",
@@ -56,7 +82,7 @@
                 "0x10": "Video Game",
                 "0x20": "Custom"
             },
-            "races": {
+            "race": {
                 "0x1": "Warrior",
                 "0x2": "Spellcaster",
                 "0x4": "Fairy",
@@ -85,7 +111,7 @@
                 "0x80000000": "Yokai",
                 "0x100000000": "Charisma"
             },
-            "types": {
+            "type": {
                 "0x1": "Monster",
                 "0x2": "Spell",
                 "0x4": "Trap",
@@ -114,23 +140,10 @@
                 "0x10000000": "Armor",
                 "0x20000000": "Plus",
                 "0x40000000": "Minus"
-            },
-            "stringsConf": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf",
-            "remoteDBs": [
-                {
-                    "owner": "Ygoproco",
-                    "repo": "Live2017Links",
-                    "path": ""
-                },
-                {
-                    "owner": "Ygoproco",
-                    "repo": "LiveanimeLinks",
-                    "path": ""
-                }
-            ]
+            }
         },
         "ja": {
-            "attributes": {
+            "attribute": {
                 "0x1": "Earth",
                 "0x2": "Water",
                 "0x4": "Fire",
@@ -140,8 +153,7 @@
                 "0x40": "Divine",
                 "0x80": "Laugh"
             },
-            "banlist": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/lflist.conf",
-            "categories": {
+            "category": {
                 "0x1": "Destroy Spell/Trap",
                 "0x2": "Destroy Monster",
                 "0x4": "Banish",
@@ -175,7 +187,7 @@
                 "0x40000000": "Xyz-related",
                 "0x80000000": "Negate effect"
             },
-            "ots": {
+            "ot": {
                 "0x1": "OCG",
                 "0x2": "TCG",
                 "0x4": "Anime",
@@ -183,7 +195,7 @@
                 "0x10": "Video Game",
                 "0x20": "Custom"
             },
-            "races": {
+            "race": {
                 "0x1": "Warrior",
                 "0x2": "Spellcaster",
                 "0x4": "Fairy",
@@ -212,7 +224,7 @@
                 "0x80000000": "Yokai",
                 "0x100000000": "Charisma"
             },
-            "types": {
+            "type": {
                 "0x1": "Monster",
                 "0x2": "Spell",
                 "0x4": "Trap",
@@ -241,15 +253,10 @@
                 "0x10000000": "Armor",
                 "0x20000000": "Plus",
                 "0x40000000": "Minus"
-            },
-            "stringsConf": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf",
-            "remoteDBs": [
-                {
-                    "owner": "Jambalaya751955",
-                    "repo": "ygopro-database-JP",
-                    "path": "cdb/Live2017Links"
-                }
-            ]
+            }
         }
-    }
+    },
+    "banlist": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/lflist.conf",
+    "imageLink": "https://raw.githubusercontent.com/AlphaKretin/AlphaKretin.github.io/master/miscstorage/",
+    "imageExt": "png"
 }
