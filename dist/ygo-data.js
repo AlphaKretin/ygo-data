@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const Fuse = require("fuse.js");
 const fs = require("mz/fs");
 const banlist_1 = require("./module/banlist");
@@ -7,7 +6,7 @@ const cards_1 = require("./module/cards");
 const images_1 = require("./module/images");
 const setcodes_1 = require("./module/setcodes");
 const translations_1 = require("./module/translations");
-class YgoData {
+module.exports = class YgoData {
     constructor(configPath, savePath) {
         // TODO: Add some configurability here
         this.fuseOpts = {
@@ -72,6 +71,5 @@ class YgoData {
         }
         return this.fuses[lang];
     }
-}
-exports.default = YgoData;
+};
 //# sourceMappingURL=ygo-data.js.map

@@ -1,6 +1,6 @@
 "use strict";
 const expect = require("chai").expect;
-const ygoData = require("../dist/ygo-data.js").default;
+const ygoData = require("../dist/ygo-data.js");
 let index = new ygoData(__dirname + "/conf.json", __dirname + "/dbs/");
 
 describe("Testing with ID", function() {
