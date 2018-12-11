@@ -1,19 +1,18 @@
 "use strict";
 const expect = require("chai").expect;
-const ygoData = require("../dist/Driver.js").Driver;
-const ygoSettings = require("./conf.json");
-let index = new ygoData(ygoSettings);
+const ygoData = require("../dist/ygo-data.js");
+let index = new ygoData(__dirname + "/conf.json", __dirname + "/dbs/");
 
 describe("Testing with ID", function() {
     it("Should return Danger!? Jackalope?", async function() {
-        const card = await index.getCard(43694650, "en");
-        expect(card.name).to.equal("Danger!? Jackalope?");
+        const card = await index.getCard(43694650);
+        expect(card.text.en.name).to.equal("Danger!? Jackalope?");
     });
 });
 describe("Testing with name", function() {
     it("Should return Danger!? Jackalope?", async function() {
         const card = await index.getCard("Danger!? Jackalope?", "en");
-        expect(card.name).to.equal("Danger!? Jackalope?");
+        expect(card.text.en.name).to.equal("Danger!? Jackalope?");
     });
 });
 describe("Testing invalid name", function() {
@@ -36,80 +35,82 @@ describe("Testing card list", function() {
 });
 describe("Testing OT", function() {
     it("Should be TCG", async function() {
-        const card = await index.getCard(43694650, "en");
-        expect(card.otNames).to.deep.equal(["TCG"]);
+        const card = await index.getCard(43694650);
+        expect(card.data.names.en.ot).to.deep.equal(["TCG"]);
     });
 });
 describe("Testing race", function() {
     it("Should be Beast", async function() {
-        const card = await index.getCard(43694650, "en");
-        expect(card.raceNames).to.deep.equal(["Beast"]);
+        const card = await index.getCard(43694650);
+        expect(card.data.names.en.race).to.deep.equal(["Beast"]);
     });
 });
 describe("Testing attribute", function() {
     it("Should be DARK", async function() {
-        const card = await index.getCard(43694650, "en");
-        expect(card.attributeNames).to.deep.equal(["Dark"]);
+        const card = await index.getCard(43694650);
+        expect(card.data.names.en.attribute).to.deep.equal(["Dark"]);
     });
 });
 describe("Testing ATK", function() {
     it("Should be 500", async function() {
-        const card = await index.getCard(43694650, "en");
-        expect(card.atk).to.equal(500);
+        const card = await index.getCard(43694650);
+        expect(card.data.atk).to.equal(500);
     });
 });
 describe("Testing DEF", function() {
     it("Should be 2000", async function() {
-        const card = await index.getCard(43694650, "en");
-        expect(card.def).to.equal(2000);
+        const card = await index.getCard(43694650);
+        expect(card.data.def).to.equal(2000);
     });
 });
 describe("Testing Setcodes", function() {
     it("Should be [Danger!]", async function() {
-        const card = await index.getCard(43694650, "en");
-        expect(card.setNames).to.deep.equal(["Danger!"]);
+        const card = await index.getCard(43694650);
+        const names = await card.data.names.en.setcode;
+        expect(names).to.deep.equal(["Danger!"]);
     });
 });
 describe("Testing types", function() {
     it("Should be Monster/Effect", async function() {
-        const card = await index.getCard(43694650, "en");
-        expect(card.typeNames).to.have.members(["Monster", "Effect"]);
+        const card = await index.getCard(43694650);
+        expect(card.data.names.en.type).to.have.members(["Monster", "Effect"]);
     });
 });
 describe("Testing type string", function() {
     it("Should be Beast/Effect", async function() {
-        const card = await index.getCard(43694650, "en");
-        expect(card.typeString).to.equal("Beast/Effect");
+        const card = await index.getCard(43694650);
+        expect(card.data.names.en.typeString).to.equal("Beast/Effect");
     });
 });
 describe("Testing categories", function() {
     it("Should be an array", async function() {
-        const card = await index.getCard(43694650, "en");
-        expect(card.categoryNames).to.be.a("array");
+        const card = await index.getCard(43694650);
+        expect(card.data.names.en.category).to.be.a("array");
     });
 });
 describe("Testing banlist", function() {
     it("Should be OCG: 3/TCG: 3", async function() {
         const card = await index.getCard("Centerfrog", "en");
-        expect(card.status).to.equal("OCG: 3/TCG: 3");
+        const status = await card.status;
+        expect(status).to.equal("OCG: 3/TCG: 3");
     });
 });
 describe("Testing anime banlist coercion", function() {
     it("Should be Illegal: 3", async function() {
         const card = await index.getCard("Noritoshi, in Darkest Rainment", "en");
-        expect(card.status).to.equal("Illegal: 3");
+        const status = await card.status;
+        expect(status).to.equal("Illegal: 3");
     });
 });
 describe("Testing translation", function() {
     it("Should be 寝ガエル", async function() {
         const card = await index.getCard("Centerfrog", "en");
-        const card2 = await index.getCard(card.code, "ja");
-        expect(card2.name).to.equal("寝ガエル");
+        expect(card.text.ja.name).to.equal("寝ガエル");
     });
 });
 describe("Testing image download", function() {
     it("Should be a buffer", async function() {
-        const card = await index.getCard(47346782, "en");
+        const card = await index.getCard(47346782);
         const image = await card.image;
         expect(image).to.be.instanceof(Buffer);
     });
@@ -117,14 +118,14 @@ describe("Testing image download", function() {
 describe("Testing alias check with name", function() {
     it("Should be [7852509, 7852510]", async function() {
         const card = await index.getCard("Loop of Destruction", "en");
-        const codes = await card.codes;
+        const codes = await card.aliasIDs;
         expect(codes).to.deep.equal([7852509, 7852510]);
     });
 });
 describe("Testing alias check with alt art's code", function() {
     it("Should be [7852509, 7852510]", async function() {
         const card = await index.getCard(7852510, "en");
-        const codes = await card.codes;
+        const codes = await card.aliasIDs;
         expect(codes).to.deep.equal([7852509, 7852510]);
     });
 });
