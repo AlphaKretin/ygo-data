@@ -35,9 +35,10 @@ export class Card {
         return new Promise(async (resolve, reject) => {
             const baseCode = this.data.alias > 0 ? this.data.alias : this.id;
             const ids = [baseCode];
-            for (const id in cards) {
-                if (cards.hasOwnProperty(id)) {
-                    const card = await cards.getCard(id);
+            const list = await cards.getRawCardList();
+            for (const id in list) {
+                if (list.hasOwnProperty(id)) {
+                    const card = list[id];
                     if (card && card.data.alias === baseCode) {
                         ids.push(parseInt(id, 10));
                     }
