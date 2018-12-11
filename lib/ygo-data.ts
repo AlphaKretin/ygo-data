@@ -7,7 +7,7 @@ import { images } from "./module/images";
 import { setcodes } from "./module/setcodes";
 import { translations } from "./module/translations";
 
-class YgoData {
+export default class YgoData {
     public readonly langs: string[];
     // TODO: Add some configurability here
     private fuseOpts: Fuse.FuseOptions<ISimpleCard> = {
@@ -77,5 +77,3 @@ class YgoData {
         return this.fuses[lang];
     }
 }
-
-module.exports = YgoData;

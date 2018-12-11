@@ -15,11 +15,11 @@ npm install ygopro-data --save
 ### Javascript
 
 ```javascript
-const ygoData = require("ygopro-data");
+const ygoData = require("ygopro-data").default;
 const options = require("./options.json");
 const data = new ygoData(options);
 data.getCard("Pot of Greed", "en").then(card => {
-    console.log(card.name);
+    console.log(card.text["en"].name);
 });
 ```
 
@@ -34,7 +34,7 @@ import { ygoData } from "ygopro-data";
 const options = require("./options.json");
 const data = new ygoData(options);
 data.getCard(55144522).then(card => {
-    console.log(card.name);
+    console.log(card.text["en"].name);
 });
 ```
 

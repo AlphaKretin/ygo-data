@@ -73,5 +73,5 @@ class YgoData {
         return this.fuses[lang];
     }
 }
-module.exports = YgoData;
+exports.default = YgoData;
 //# sourceMappingURL=ygo-data.js.map
