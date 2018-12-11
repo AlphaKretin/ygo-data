@@ -91,13 +91,15 @@ describe("Testing categories", function() {
 describe("Testing banlist", function() {
     it("Should be OCG: 3/TCG: 3", async function() {
         const card = await index.getCard("Centerfrog", "en");
-        expect(card.status).to.equal("OCG: 3/TCG: 3");
+        const status = await card.status;
+        expect(status).to.equal("OCG: 3/TCG: 3");
     });
 });
 describe("Testing anime banlist coercion", function() {
     it("Should be Illegal: 3", async function() {
         const card = await index.getCard("Noritoshi, in Darkest Rainment", "en");
-        expect(card.status).to.equal("Illegal: 3");
+        const status = await card.status;
+        expect(status).to.equal("Illegal: 3");
     });
 });
 describe("Testing translation", function() {

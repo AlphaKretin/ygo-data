@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const banlist_1 = require("../module/banlist");
 const cards_1 = require("../module/cards");
 const CardData_1 = require("./CardData");
 const CardText_1 = require("./CardText");
@@ -28,6 +29,24 @@ class Card {
                 }
             }
             resolve(ids);
+        });
+    }
+    get status() {
+        return new Promise(async (resolve, reject) => {
+            const stats = [];
+            // TODO: yeah ik this is hardcoded but it should share names with the banlist file...
+            // need a better way in general
+            const ots = this.data.names.en.ot;
+            for (const ot of ots) {
+                const stat = await banlist_1.banlist.getStatus(this.id, ot);
+                if (stat) {
+                    stats.push(ot + ": " + stat);
+                }
+                else {
+                    stats.push(ot);
+                }
+            }
+            resolve(stats.join("/"));
         });
     }
 }

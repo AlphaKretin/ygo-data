@@ -1,6 +1,7 @@
 import * as Fuse from "fuse.js";
 import * as fs from "mz/fs";
 import { Card } from "./class/Card";
+import { banlist } from "./module/banlist";
 import { cards, ISimpleCard } from "./module/cards";
 import { setcodes } from "./module/setcodes";
 import { translations } from "./module/translations";
@@ -36,6 +37,7 @@ class YgoData {
         cards.update(config.cardOpts, savePath);
         setcodes.update(config.stringOpts);
         translations.update(config.transOpts);
+        banlist.update(config.banlist);
         this.fuses = {};
         this.langs = Object.keys(config.cardOpts.langs);
     }

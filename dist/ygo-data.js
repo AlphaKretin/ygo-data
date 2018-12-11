@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Fuse = require("fuse.js");
 const fs = require("mz/fs");
+const banlist_1 = require("./module/banlist");
 const cards_1 = require("./module/cards");
 const setcodes_1 = require("./module/setcodes");
 const translations_1 = require("./module/translations");
@@ -34,6 +35,7 @@ class YgoData {
         cards_1.cards.update(config.cardOpts, savePath);
         setcodes_1.setcodes.update(config.stringOpts);
         translations_1.translations.update(config.transOpts);
+        banlist_1.banlist.update(config.banlist);
         this.fuses = {};
         this.langs = Object.keys(config.cardOpts.langs);
     }

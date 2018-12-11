@@ -16,4 +16,5 @@ export declare class Card {
     };
     constructor(dbData: ICardRaw);
     readonly aliasIDs: Promise<number[]>;
+    readonly status: Promise<string>;
 }

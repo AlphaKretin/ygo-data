@@ -1,3 +1,4 @@
+import { banlist } from "../module/banlist";
 import { cards } from "../module/cards";
 import { CardData, ICardDataRaw } from "./CardData";
 import { CardText, ICardTextRaw } from "./CardText";
@@ -42,6 +43,24 @@ export class Card {
                 }
             }
             resolve(ids);
+        });
+    }
+
+    get status(): Promise<string> {
+        return new Promise(async (resolve, reject) => {
+            const stats = [];
+            // TODO: yeah ik this is hardcoded but it should share names with the banlist file...
+            // need a better way in general
+            const ots = this.data.names.en.ot;
+            for (const ot of ots) {
+                const stat = await banlist.getStatus(this.id, ot);
+                if (stat) {
+                    stats.push(ot + ": " + stat);
+                } else {
+                    stats.push(ot);
+                }
+            }
+            resolve(stats.join("/"));
         });
     }
 }
