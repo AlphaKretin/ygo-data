@@ -53,7 +53,8 @@ export class Card {
             // need a better way in general
             const ots = this.data.names.en.ot;
             for (const ot of ots) {
-                const stat = await banlist.getStatus(this.id, ot);
+                const listOT = ot === "Illegal" || ot === "Video Game" ? "Anime" : ot;
+                const stat = await banlist.getStatus(this.id, listOT);
                 if (stat) {
                     stats.push(ot + ": " + stat);
                 } else {
