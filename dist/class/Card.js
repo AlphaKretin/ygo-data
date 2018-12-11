@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const banlist_1 = require("../module/banlist");
 const cards_1 = require("../module/cards");
+const images_1 = require("../module/images");
 const CardData_1 = require("./CardData");
 const CardText_1 = require("./CardText");
 class Card {
@@ -48,6 +49,12 @@ class Card {
                 }
             }
             resolve(stats.join("/"));
+        });
+    }
+    get image() {
+        return new Promise(async (resolve, reject) => {
+            const image = await images_1.images.getImage(this.id);
+            resolve(image);
         });
     }
 }

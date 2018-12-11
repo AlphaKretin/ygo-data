@@ -1,5 +1,6 @@
 import { banlist } from "../module/banlist";
 import { cards } from "../module/cards";
+import { images } from "../module/images";
 import { CardData, ICardDataRaw } from "./CardData";
 import { CardText, ICardTextRaw } from "./CardText";
 
@@ -62,6 +63,13 @@ export class Card {
                 }
             }
             resolve(stats.join("/"));
+        });
+    }
+
+    get image(): Promise<Buffer | undefined> {
+        return new Promise(async (resolve, reject) => {
+            const image = await images.getImage(this.id);
+            resolve(image);
         });
     }
 }

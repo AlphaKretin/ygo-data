@@ -4,6 +4,7 @@ const Fuse = require("fuse.js");
 const fs = require("mz/fs");
 const banlist_1 = require("./module/banlist");
 const cards_1 = require("./module/cards");
+const images_1 = require("./module/images");
 const setcodes_1 = require("./module/setcodes");
 const translations_1 = require("./module/translations");
 class YgoData {
@@ -36,6 +37,7 @@ class YgoData {
         setcodes_1.setcodes.update(config.stringOpts);
         translations_1.translations.update(config.transOpts);
         banlist_1.banlist.update(config.banlist);
+        images_1.images.update(config.imageLink, config.imageExt);
         this.fuses = {};
         this.langs = Object.keys(config.cardOpts.langs);
     }

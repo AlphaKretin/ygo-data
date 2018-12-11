@@ -3,6 +3,7 @@ import * as fs from "mz/fs";
 import { Card } from "./class/Card";
 import { banlist } from "./module/banlist";
 import { cards, ISimpleCard } from "./module/cards";
+import { images } from "./module/images";
 import { setcodes } from "./module/setcodes";
 import { translations } from "./module/translations";
 
@@ -38,6 +39,7 @@ class YgoData {
         setcodes.update(config.stringOpts);
         translations.update(config.transOpts);
         banlist.update(config.banlist);
+        images.update(config.imageLink, config.imageExt);
         this.fuses = {};
         this.langs = Object.keys(config.cardOpts.langs);
     }

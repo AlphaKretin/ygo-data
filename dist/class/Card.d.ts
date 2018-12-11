@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { CardData, ICardDataRaw } from "./CardData";
 import { CardText, ICardTextRaw } from "./CardText";
 export interface ICardRaw {
@@ -17,4 +18,5 @@ export declare class Card {
     constructor(dbData: ICardRaw);
     readonly aliasIDs: Promise<number[]>;
     readonly status: Promise<string>;
+    readonly image: Promise<Buffer | undefined>;
 }
