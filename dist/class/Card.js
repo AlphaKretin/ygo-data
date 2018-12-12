@@ -11,6 +11,7 @@ class Card {
         const langs = Object.keys(dbData.text);
         this.data = new CardData_1.CardData(dbData.data, langs);
         this.text = {};
+        this.dbs = dbData.dbs;
         for (const lang in dbData.text) {
             if (dbData.text.hasOwnProperty(lang)) {
                 this.text[lang] = new CardText_1.CardText(dbData.text[lang]);
@@ -18,7 +19,7 @@ class Card {
         }
     }
     get aliasIDs() {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
             const list = await cards_1.cards.getRawCardList();
             if (this.data.alias > 0) {
                 const alCard = list[this.data.alias];
@@ -41,7 +42,7 @@ class Card {
         });
     }
     get status() {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
             const stats = [];
             // TODO: yeah ik this is hardcoded but it should share names with the banlist file...
             // need a better way in general
@@ -60,7 +61,7 @@ class Card {
         });
     }
     get image() {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
             const image = await images_1.images.getImage(this.id);
             resolve(image);
         });

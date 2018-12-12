@@ -15,6 +15,7 @@ export declare class Card {
     readonly text: {
         [lang: string]: CardText;
     };
+    readonly dbs: string[];
     constructor(dbData: ICardRaw);
     readonly aliasIDs: Promise<number[]>;
     readonly status: Promise<string>;

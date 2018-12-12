@@ -65,6 +65,10 @@ describe("Testing basic properties", function() {
         const card = await index.getCard(43694650);
         expect(card.data.names.en.category).to.be.a("array");
     });
+    it("List of databases should be [prerelease-cyho.cdb]", async function() {
+        const card = await index.getCard(43694650);
+        expect(card.dbs).to.deep.equal(["prerelease-cyho.cdb"]);
+    });
 });
 describe("Testing banlist", function() {
     it("Unlimited legal card should be OCG: 3/TCG: 3", async function() {
