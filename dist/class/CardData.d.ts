@@ -1,3 +1,4 @@
+import { CardAttribute, CardCategory, CardOT, CardRace, CardType } from "../module/enums";
 export interface ICardDataRaw {
     ot: number;
     alias: number;
@@ -34,5 +35,10 @@ export declare class CardData {
         [lang: string]: ICardDataNames;
     };
     constructor(dbData: ICardDataRaw, langs: string[]);
+    isAttribute(att: CardAttribute): boolean;
+    isCategory(cat: CardCategory): boolean;
+    isOT(ot: CardOT): boolean;
+    isRace(race: CardRace): boolean;
+    isType(type: CardType): boolean;
 }
 export {};

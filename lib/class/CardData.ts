@@ -1,4 +1,4 @@
-import { CardType } from "../module/enums";
+import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType } from "../module/enums";
 import { setcodes } from "../module/setcodes";
 import { translations } from "../module/translations";
 
@@ -99,5 +99,25 @@ export class CardData {
                 };
             }
         }
+    }
+
+    public isAttribute(att: CardAttribute): boolean {
+        return (this.attribute & att) === att;
+    }
+
+    public isCategory(cat: CardCategory): boolean {
+        return (this.category & cat) === cat;
+    }
+
+    public isOT(ot: CardOT): boolean {
+        return (this.ot & ot) === ot;
+    }
+
+    public isRace(race: CardRace): boolean {
+        return (this.race & race) === race;
+    }
+
+    public isType(type: CardType): boolean {
+        return (this.type & type) === type;
     }
 }

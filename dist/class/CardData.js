@@ -60,6 +60,21 @@ class CardData {
             }
         }
     }
+    isAttribute(att) {
+        return (this.attribute & att) === att;
+    }
+    isCategory(cat) {
+        return (this.category & cat) === cat;
+    }
+    isOT(ot) {
+        return (this.ot & ot) === ot;
+    }
+    isRace(race) {
+        return (this.race & race) === race;
+    }
+    isType(type) {
+        return (this.type & type) === type;
+    }
 }
 exports.CardData = CardData;
 //# sourceMappingURL=CardData.js.map
