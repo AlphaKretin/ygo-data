@@ -55,22 +55,28 @@ class YgoData {
             if (isNaN(idNum) && lang) {
                 const simpList = await cards_1.cards.getSimpleList(lang);
                 const term = id.trim().toLowerCase();
+                let resultCard;
                 for (const code in simpList) {
                     if (simpList.hasOwnProperty(code)) {
                         if (simpList[code].name.toLowerCase() === term) {
                             const c = await cards_1.cards.getCard(code);
-                            return c;
+                            if (c) {
+                                resultCard = c;
+                                break;
+                            }
                         }
                     }
                 }
-                const fuse = await this.getFuse(lang);
-                const result = fuse.search(id);
-                if (result.length < 1) {
-                    return undefined;
+                if (resultCard === undefined) {
+                    const fuse = await this.getFuse(lang);
+                    const result = fuse.search(id);
+                    if (result.length < 1) {
+                        return undefined;
+                    }
+                    // @ts-ignore
+                    resultCard = await this.getCard(result[0].item.id);
                 }
-                // @ts-ignore
-                let resultCard = await this.getCard(result[0].item.id);
-                if (resultCard && resultCard.data.alias > 0) {
+                if (resultCard !== undefined && resultCard.data.alias > 0) {
                     const newCard = await this.getCard(resultCard.data.alias);
                     if (newCard && newCard.data.ot === resultCard.data.ot) {
                         resultCard = newCard;
