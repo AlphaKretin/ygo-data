@@ -26,7 +26,7 @@ class YgoData {
         };
         const config = JSON.parse(fs.readFileSync(configPath, "utf8"), (key, value) => {
             // if object with hex keys
-            if (typeof value === "object" && Object.keys(value)[0].startsWith("0x")) {
+            if (typeof value === "object" && Object.keys(value).length > 0 && Object.keys(value)[0].startsWith("0x")) {
                 const newObj = {};
                 for (const k in value) {
                     if (value.hasOwnProperty(k)) {

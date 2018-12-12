@@ -1,29 +1,8 @@
 {
     "cardOpts": {
         "langs": {
-            "en": {
-                "remoteDBs": [
-                    {
-                        "owner": "Ygoproco",
-                        "repo": "Live2017Links",
-                        "path": ""
-                    },
-                    {
-                        "owner": "Ygoproco",
-                        "repo": "LiveanimeLinks",
-                        "path": ""
-                    }
-                ]
-            },
-            "ja": {
-                "remoteDBs": [
-                    {
-                        "owner": "Jambalaya751955",
-                        "repo": "ygopro-database-JP",
-                        "path": "cdb/Live2017Links"
-                    }
-                ]
-            }
+            "en": {},
+            "ja": {}
         }
     },
     "stringOpts": {
