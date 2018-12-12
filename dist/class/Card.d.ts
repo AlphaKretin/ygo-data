@@ -19,4 +19,5 @@ export declare class Card {
     readonly aliasIDs: Promise<number[]>;
     readonly status: Promise<string>;
     readonly image: Promise<Buffer | undefined>;
+    readonly imageLink: string;
 }

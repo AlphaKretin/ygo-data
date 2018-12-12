@@ -129,3 +129,9 @@ describe("Testing alias check with alt art's code", function() {
         expect(codes).to.deep.equal([7852509, 7852510]);
     });
 });
+describe("Testing image link", function() {
+    it("Should be a string", async function() {
+        const card = await index.getCard(7852510, "en");
+        expect(card.imageLink).to.be.a("string");
+    });
+});

@@ -58,6 +58,9 @@ class Card {
             resolve(image);
         });
     }
+    get imageLink() {
+        return images_1.images.getLink(this.id);
+    }
 }
 exports.Card = Card;
 //# sourceMappingURL=Card.js.map

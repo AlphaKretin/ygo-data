@@ -73,4 +73,8 @@ export class Card {
             resolve(image);
         });
     }
+
+    get imageLink(): string {
+        return images.getLink(this.id);
+    }
 }
