@@ -33,13 +33,20 @@ export class Card {
 
     get aliasIDs(): Promise<number[]> {
         return new Promise(async (resolve, reject) => {
-            const baseCode = this.data.alias > 0 ? this.data.alias : this.id;
-            const ids = [baseCode];
             const list = await cards.getRawCardList();
+            if (this.data.alias > 0) {
+                const alCard = list[this.data.alias];
+                if (alCard.data.ot !== this.data.ot) {
+                    resolve([this.id]);
+                }
+            }
+            const baseCode = this.data.alias > 0 ? this.data.alias : this.id;
+            const baseCard = list[baseCode];
+            const ids = [baseCode];
             for (const id in list) {
                 if (list.hasOwnProperty(id)) {
                     const card = list[id];
-                    if (card && card.data.alias === baseCode) {
+                    if (card && card.data.alias === baseCode && card.data.ot === baseCard.data.ot) {
                         ids.push(parseInt(id, 10));
                     }
                 }

@@ -124,9 +124,23 @@ describe("Testing alias check with name", function() {
 });
 describe("Testing alias check with alt art's code", function() {
     it("Should be [7852509, 7852510]", async function() {
-        const card = await index.getCard(7852510, "en");
+        const card = await index.getCard(7852510);
         const codes = await card.aliasIDs;
         expect(codes).to.deep.equal([7852509, 7852510]);
+    });
+});
+describe("Testing alias check to exclude anime version", function() {
+    it("Should not include 513000134", async function() {
+        const card = await index.getCard(10000010);
+        const codes = await card.aliasIDs;
+        expect(codes).to.not.include(513000134);
+    });
+});
+describe("Testing alias check from anime version", function() {
+    it("Should be [513000134]", async function() {
+        const card = await index.getCard(513000134);
+        const codes = await card.aliasIDs;
+        expect(codes).to.deep.equal([513000134]);
     });
 });
 describe("Testing image link", function() {
