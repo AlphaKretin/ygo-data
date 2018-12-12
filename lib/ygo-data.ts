@@ -68,7 +68,13 @@ class YgoData {
                     return undefined;
                 }
                 // @ts-ignore
-                const resultCard = await this.getCard(result[0].item.id);
+                let resultCard = await this.getCard(result[0].item.id);
+                if (resultCard && resultCard.data.alias > 0) {
+                    const newCard = await this.getCard(resultCard.data.alias);
+                    if (newCard && newCard.data.ot === resultCard.data.ot) {
+                        resultCard = newCard;
+                    }
+                }
                 return resultCard;
             }
             const card = await cards.getCard(id);
