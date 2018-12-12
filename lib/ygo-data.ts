@@ -3,11 +3,12 @@ import * as fs from "mz/fs";
 import { Card } from "./class/Card";
 import { banlist } from "./module/banlist";
 import { cards, ISimpleCard } from "./module/cards";
+import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType } from "./module/enums";
 import { images } from "./module/images";
 import { setcodes } from "./module/setcodes";
 import { translations } from "./module/translations";
 
-export = class YgoData {
+class YgoData {
     public readonly langs: string[];
     // TODO: Add some configurability here
     private fuseOpts: Fuse.FuseOptions<ISimpleCard> = {
@@ -76,4 +77,15 @@ export = class YgoData {
         }
         return this.fuses[lang];
     }
+}
+
+const enumMap = {
+    attribute: CardAttribute,
+    category: CardCategory,
+    marker: CardLinkMarker,
+    ot: CardOT,
+    race: CardRace,
+    type: CardType
 };
+
+export { YgoData, Card, translations, enumMap as enums };

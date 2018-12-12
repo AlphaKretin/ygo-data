@@ -17,7 +17,7 @@ npm install ygopro-data --save
 ```javascript
 const ygoData = require("ygopro-data");
 const options = require("./options.json");
-const data = new ygoData(options);
+const data = new ygoData.YgoData(options);
 data.getCard("Pot of Greed", "en").then(card => {
     console.log(card.text["en"].name);
 });
@@ -30,7 +30,8 @@ Output should be "Pot of Greed"
 ### TypeScript
 
 ```typescript
-import * as ygoData from "ygopro-data";
+// exports other useful tools like the Card class, translations module, and enums module
+import { YgoData } from "ygopro-data";
 const options = require("./options.json");
 const data = new ygoData(options);
 data.getCard(55144522).then(card => {
