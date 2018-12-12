@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const request = require("request-promise-native");
 const banlist_1 = require("../module/banlist");
 const cards_1 = require("../module/cards");
 const images_1 = require("../module/images");
@@ -68,6 +69,45 @@ class Card {
     }
     get imageLink() {
         return images_1.images.getLink(this.id);
+    }
+    get price() {
+        return new Promise(async (resolve) => {
+            try {
+                // TODO: again this is hardcoded but it has to be in english for this to work so.
+                // The source for OCG prices is dying :(
+                const body = await request("https://yugiohprices.com/api/get_card_prices/" + encodeURIComponent(this.text.en.name));
+                let result = JSON.parse(body);
+                if (result instanceof Array) {
+                    result = result[0];
+                }
+                if (!(result.status && result.status === "success")) {
+                    resolve(undefined);
+                }
+                let low;
+                const avgs = [];
+                let hi;
+                for (const print of result.data) {
+                    if (print.price_data.status === "success") {
+                        const data = print.price_data.data.prices;
+                        if (!low || data.low < low) {
+                            low = data.low;
+                        }
+                        avgs.push(data.average);
+                        if (!hi || data.high > hi) {
+                            hi = data.high;
+                        }
+                    }
+                }
+                if (!low || avgs.length < 1 || !hi) {
+                    resolve(undefined);
+                }
+                const avg = avgs.reduce((a, b) => a + b) / avgs.length;
+                resolve({ low, avg, hi });
+            }
+            catch (_a) {
+                resolve(undefined);
+            }
+        });
     }
 }
 exports.Card = Card;

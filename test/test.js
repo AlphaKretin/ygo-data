@@ -169,3 +169,17 @@ describe("Testing Link/Defense interactions", function() {
         expect(card.data.linkMarker).to.deep.equal(["↙", "↘", "⬆"]);
     });
 });
+describe("Testing prices", function() {
+    it("Anime card should have no price", async function() {
+        const card = await index.getCard(513000134);
+        const price = await card.price;
+        expect(price).to.be.undefined;
+    });
+    it("Price should be an object of numbers", async function() {
+        const card = await index.getCard(43694650);
+        const price = await card.price;
+        expect(price.low).to.be.a("number");
+        expect(price.avg).to.be.a("number");
+        expect(price.hi).to.be.a("number");
+    });
+});

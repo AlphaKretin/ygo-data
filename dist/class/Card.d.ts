@@ -9,6 +9,11 @@ export interface ICardRaw {
         [lang: string]: ICardTextRaw;
     };
 }
+interface ICardPrice {
+    low: number;
+    avg: number;
+    hi: number;
+}
 export declare class Card {
     readonly id: number;
     readonly data: CardData;
@@ -21,4 +26,6 @@ export declare class Card {
     readonly status: Promise<string>;
     readonly image: Promise<Buffer | undefined>;
     readonly imageLink: string;
+    readonly price: Promise<ICardPrice | undefined>;
 }
+export {};
