@@ -52,6 +52,16 @@ class YgoData {
         } else {
             const idNum = parseInt(id, 10);
             if (isNaN(idNum) && lang) {
+                const simpList = await cards.getSimpleList(lang);
+                const term = id.trim().toLowerCase();
+                for (const code in simpList) {
+                    if (simpList.hasOwnProperty(code)) {
+                        if (simpList[code].name.toLowerCase() === term) {
+                            const c = await cards.getCard(code);
+                            return c;
+                        }
+                    }
+                }
                 const fuse = await this.getFuse(lang);
                 const result = fuse.search(id);
                 if (result.length < 1) {
