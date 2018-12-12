@@ -4,7 +4,7 @@ interface ICardListOpts {
     langs: {
         [lang: string]: {
             stringsConf: string;
-            remoteDBs?: octokit.ReposGetContentParams[];
+            remoteDBs?: octokit.ReposGetContentsParams[];
         };
     };
     gitAuth?: octokit.Auth;

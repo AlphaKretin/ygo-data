@@ -12,7 +12,7 @@ interface ICardListOpts {
     langs: {
         [lang: string]: {
             stringsConf: string;
-            remoteDBs?: octokit.ReposGetContentParams[];
+            remoteDBs?: octokit.ReposGetContentsParams[];
         };
     };
     gitAuth?: octokit.Auth;
@@ -87,7 +87,7 @@ class CardList {
                 const lang = opts.langs[langName];
                 if (lang.remoteDBs) {
                     for (const repo of lang.remoteDBs) {
-                        const contents = await github.repos.getContent(repo);
+                        const contents = await github.repos.getContents(repo);
                         for (const file of contents.data) {
                             if (file.name.endsWith(".cdb")) {
                                 proms.push(this.downloadSingleDB(file, filePath));
