@@ -60,7 +60,6 @@ export class CardData {
     public readonly setcode: number;
     public readonly type: number;
     public readonly atk: number;
-    public readonly def: number;
     public readonly level: number;
     public readonly race: number;
     public readonly attribute: number;
@@ -68,13 +67,14 @@ export class CardData {
     public readonly names: {
         [lang: string]: ICardDataNames;
     };
+    private literalDef: number;
     constructor(dbData: ICardDataRaw, langs: string[]) {
         this.ot = dbData.ot;
         this.alias = dbData.alias;
         this.setcode = dbData.setcode;
         this.type = dbData.type;
         this.atk = dbData.atk;
-        this.def = dbData.def;
+        this.literalDef = dbData.def;
         this.level = dbData.level;
         this.race = dbData.race;
         this.attribute = dbData.attribute;
@@ -101,6 +101,47 @@ export class CardData {
         }
     }
 
+    get def(): number | undefined {
+        if (this.isType(CardType.TYPE_LINK)) {
+            return undefined;
+        } else {
+            return this.literalDef;
+        }
+    }
+
+    get linkMarker(): string[] | undefined {
+        if (!this.isType(CardType.TYPE_LINK)) {
+            return undefined;
+        } else {
+            const markers = [];
+            if (this.isLinkMarker(CardLinkMarker.LINK_MARKER_BOTTOM_LEFT)) {
+                markers.push("↙");
+            }
+            if (this.isLinkMarker(CardLinkMarker.LINK_MARKER_BOTTOM)) {
+                markers.push("⬇");
+            }
+            if (this.isLinkMarker(CardLinkMarker.LINK_MARKER_BOTTOM_RIGHT)) {
+                markers.push("↘");
+            }
+            if (this.isLinkMarker(CardLinkMarker.LINK_MARKER_LEFT)) {
+                markers.push("⬅");
+            }
+            if (this.isLinkMarker(CardLinkMarker.LINK_MARKER_RIGHT)) {
+                markers.push("➡");
+            }
+            if (this.isLinkMarker(CardLinkMarker.LINK_MARKER_TOP_LEFT)) {
+                markers.push("↖");
+            }
+            if (this.isLinkMarker(CardLinkMarker.LINK_MARKER_TOP)) {
+                markers.push("⬆");
+            }
+            if (this.isLinkMarker(CardLinkMarker.LINK_MARKER_TOP_RIGHT)) {
+                markers.push("↗");
+            }
+            return markers;
+        }
+    }
+
     public isAttribute(att: CardAttribute): boolean {
         return (this.attribute & att) === att;
     }
@@ -119,5 +160,12 @@ export class CardData {
 
     public isType(type: CardType): boolean {
         return (this.type & type) === type;
+    }
+
+    public isLinkMarker(mark: CardLinkMarker): boolean {
+        if (!this.isType(CardType.TYPE_LINK)) {
+            return false;
+        }
+        return (this.literalDef & mark) === mark;
     }
 }

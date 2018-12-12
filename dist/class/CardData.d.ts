@@ -1,4 +1,4 @@
-import { CardAttribute, CardCategory, CardOT, CardRace, CardType } from "../module/enums";
+import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType } from "../module/enums";
 export interface ICardDataRaw {
     ot: number;
     alias: number;
@@ -26,7 +26,6 @@ export declare class CardData {
     readonly setcode: number;
     readonly type: number;
     readonly atk: number;
-    readonly def: number;
     readonly level: number;
     readonly race: number;
     readonly attribute: number;
@@ -34,11 +33,15 @@ export declare class CardData {
     readonly names: {
         [lang: string]: ICardDataNames;
     };
+    private literalDef;
     constructor(dbData: ICardDataRaw, langs: string[]);
+    readonly def: number | undefined;
+    readonly linkMarker: string[] | undefined;
     isAttribute(att: CardAttribute): boolean;
     isCategory(cat: CardCategory): boolean;
     isOT(ot: CardOT): boolean;
     isRace(race: CardRace): boolean;
     isType(type: CardType): boolean;
+    isLinkMarker(mark: CardLinkMarker): boolean;
 }
 export {};

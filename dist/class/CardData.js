@@ -37,7 +37,7 @@ class CardData {
         this.setcode = dbData.setcode;
         this.type = dbData.type;
         this.atk = dbData.atk;
-        this.def = dbData.def;
+        this.literalDef = dbData.def;
         this.level = dbData.level;
         this.race = dbData.race;
         this.attribute = dbData.attribute;
@@ -60,6 +60,47 @@ class CardData {
             }
         }
     }
+    get def() {
+        if (this.isType(enums_1.CardType.TYPE_LINK)) {
+            return undefined;
+        }
+        else {
+            return this.literalDef;
+        }
+    }
+    get linkMarker() {
+        if (!this.isType(enums_1.CardType.TYPE_LINK)) {
+            return undefined;
+        }
+        else {
+            const markers = [];
+            if (this.isLinkMarker(enums_1.CardLinkMarker.LINK_MARKER_BOTTOM_LEFT)) {
+                markers.push("↙");
+            }
+            if (this.isLinkMarker(enums_1.CardLinkMarker.LINK_MARKER_BOTTOM)) {
+                markers.push("⬇");
+            }
+            if (this.isLinkMarker(enums_1.CardLinkMarker.LINK_MARKER_BOTTOM_RIGHT)) {
+                markers.push("↘");
+            }
+            if (this.isLinkMarker(enums_1.CardLinkMarker.LINK_MARKER_LEFT)) {
+                markers.push("⬅");
+            }
+            if (this.isLinkMarker(enums_1.CardLinkMarker.LINK_MARKER_RIGHT)) {
+                markers.push("➡");
+            }
+            if (this.isLinkMarker(enums_1.CardLinkMarker.LINK_MARKER_TOP_LEFT)) {
+                markers.push("↖");
+            }
+            if (this.isLinkMarker(enums_1.CardLinkMarker.LINK_MARKER_TOP)) {
+                markers.push("⬆");
+            }
+            if (this.isLinkMarker(enums_1.CardLinkMarker.LINK_MARKER_TOP_RIGHT)) {
+                markers.push("↗");
+            }
+            return markers;
+        }
+    }
     isAttribute(att) {
         return (this.attribute & att) === att;
     }
@@ -74,6 +115,12 @@ class CardData {
     }
     isType(type) {
         return (this.type & type) === type;
+    }
+    isLinkMarker(mark) {
+        if (!this.isType(enums_1.CardType.TYPE_LINK)) {
+            return false;
+        }
+        return (this.literalDef & mark) === mark;
     }
 }
 exports.CardData = CardData;
