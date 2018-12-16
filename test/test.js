@@ -81,6 +81,11 @@ describe("Testing banlist", function() {
         const status = await card.status;
         expect(status).to.equal("Illegal: 3");
     });
+    it("OCG-Banned card should be OCG: 0/TCG: 3", async function() {
+        const card = await index.getCard("Summon Sorceress", "en");
+        const status = await card.status;
+        expect(status).to.equal("OCG: 0/TCG: 3");
+    });
 });
 describe("Testing translation", function() {
     it("Centerfrog should be 寝ガエル", async function() {

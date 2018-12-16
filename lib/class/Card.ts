@@ -73,7 +73,7 @@ export class Card {
             for (const ot of ots) {
                 const listOT = ot === "Illegal" || ot === "Video Game" ? "Anime" : ot;
                 const stat = await banlist.getStatus(this.id, listOT);
-                if (stat) {
+                if (stat !== undefined) {
                     stats.push(ot + ": " + stat);
                 } else {
                     stats.push(ot);
