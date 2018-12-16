@@ -31,6 +31,33 @@ async function getSetcodeNames(setcode, lang) {
     return names;
 }
 class CardData {
+    static generateTypeString(type, race, trans) {
+        // list of types to defer in order they should appear
+        const deferred = [enums_1.CardType.TYPE_TUNER, enums_1.CardType.TYPE_NORMAL, enums_1.CardType.TYPE_EFFECT];
+        let i = 1;
+        const names = [];
+        const defNames = {};
+        while (i <= type) {
+            if ((i & type) === i) {
+                const name = trans.getType(i);
+                if (deferred.indexOf(i) > -1) {
+                    defNames[i] = name;
+                }
+                else {
+                    names.push(name);
+                }
+            }
+            i = i * 2;
+        }
+        for (const def of deferred) {
+            if (def in defNames) {
+                names.push(defNames[def]);
+            }
+        }
+        return names
+            .join("/")
+            .replace(trans.getType(enums_1.CardType.TYPE_MONSTER), getNames(race, v => trans.getRace(v)).join("|"));
+    }
     constructor(dbData, langs) {
         this.ot = dbData.ot;
         this.alias = dbData.alias;
@@ -53,9 +80,7 @@ class CardData {
                     race: getNames(this.race, v => trans.getRace(v)),
                     setcode: getSetcodeNames(this.setcode, lang),
                     type: getNames(this.type, v => trans.getType(v)),
-                    typeString: getNames(this.type, v => trans.getType(v))
-                        .join("/")
-                        .replace(trans.getType(enums_1.CardType.TYPE_MONSTER), getNames(this.race, v => trans.getRace(v)).join("|"))
+                    typeString: CardData.generateTypeString(this.type, this.race, trans)
                 };
             }
         }

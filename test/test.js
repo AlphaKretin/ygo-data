@@ -188,3 +188,21 @@ describe("Testing prices", function() {
         expect(price.hi).to.be.a("number");
     });
 });
+describe("Testing type string", function() {
+    it("Effect should come after Synchro", async function() {
+        const card = await index.getCard("Junk Warrior", "en");
+        expect(card.data.names.en.typeString).to.equal("Warrior/Synchro/Effect");
+    });
+    it("Normal should come after Tuner", async function() {
+        const card = await index.getCard("Tune Warrior", "en");
+        expect(card.data.names.en.typeString).to.equal("Warrior/Tuner/Normal");
+    });
+    it("Tuner should come after Synchro", async function() {
+        const card = await index.getCard("Coral Dragon", "en");
+        expect(card.data.names.en.typeString).to.equal("Dragon/Synchro/Tuner/Effect");
+    });
+    it("Nomi Tuner should be Special Summon/Tuner/Effect", async function() {
+        const card = await index.getCard("Blackwing - Gofu the Vague Shadow", "en");
+        expect(card.data.names.en.typeString).to.equal("Winged Beast/Special Summon/Tuner/Effect");
+    });
+});

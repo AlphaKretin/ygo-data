@@ -21,6 +21,7 @@ interface ICardDataNames {
     typeString: string;
 }
 export declare class CardData {
+    private static generateTypeString;
     readonly ot: number;
     readonly alias: number;
     readonly setcode: number;
