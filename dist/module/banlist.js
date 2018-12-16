@@ -13,7 +13,9 @@ class Banlist {
         return code in lf[list] ? lf[list][code] : 3;
     }
     update(url) {
-        this.lflist = this.load(url);
+        this.lflist = this.load(url).catch(e => {
+            throw e;
+        });
     }
     async load(url) {
         const lflistConf = await request(url);

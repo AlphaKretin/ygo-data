@@ -38,7 +38,9 @@ class CardList {
     }
 
     public update(opts: ICardListOpts, savePath: string) {
-        this.cards = this.load(opts, savePath);
+        this.cards = this.load(opts, savePath).catch(e => {
+            throw e;
+        });
     }
 
     public async getSimpleList(lang: string): Promise<{ [id: number]: ISimpleCard }> {

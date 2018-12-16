@@ -36,10 +36,15 @@ class YgoData {
             }
             return value;
         });
-        cards.update(config.cardOpts, savePath);
+        try {
+            cards.update(config.cardOpts, savePath);
+            banlist.update(config.banlist);
+        } catch (e) {
+            throw e;
+        }
         setcodes.update(config.stringOpts);
         translations.update(config.transOpts);
-        banlist.update(config.banlist);
+
         images.update(config.imageLink, config.imageExt);
         this.fuses = {};
         this.langs = Object.keys(config.cardOpts.langs);

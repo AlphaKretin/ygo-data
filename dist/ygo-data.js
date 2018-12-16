@@ -37,10 +37,15 @@ class YgoData {
             }
             return value;
         });
-        cards_1.cards.update(config.cardOpts, savePath);
+        try {
+            cards_1.cards.update(config.cardOpts, savePath);
+            banlist_1.banlist.update(config.banlist);
+        }
+        catch (e) {
+            throw e;
+        }
         setcodes_1.setcodes.update(config.stringOpts);
         translations_1.translations.update(config.transOpts);
-        banlist_1.banlist.update(config.banlist);
         images_1.images.update(config.imageLink, config.imageExt);
         this.fuses = {};
         this.langs = Object.keys(config.cardOpts.langs);

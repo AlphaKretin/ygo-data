@@ -19,7 +19,9 @@ class CardList {
         return list[id];
     }
     update(opts, savePath) {
-        this.cards = this.load(opts, savePath);
+        this.cards = this.load(opts, savePath).catch(e => {
+            throw e;
+        });
     }
     async getSimpleList(lang) {
         if (!this.cards) {
