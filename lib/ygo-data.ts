@@ -22,6 +22,7 @@ class YgoData {
         threshold: 0.2
     };
     private fuses: { [lang: string]: Fuse<ISimpleCard> };
+    private shortcuts?: { [lang: string]: { [short: string]: string } };
     constructor(configPath: string, savePath: string) {
         const config = JSON.parse(fs.readFileSync(configPath, "utf8"), (key, value) => {
             // if object with hex keys
@@ -44,10 +45,10 @@ class YgoData {
         }
         setcodes.update(config.stringOpts);
         translations.update(config.transOpts);
-
         images.update(config.imageLink, config.imageExt);
         this.fuses = {};
         this.langs = Object.keys(config.cardOpts.langs);
+        this.shortcuts = config.shortcuts;
     }
 
     public async getCard(id: number | string, lang?: string): Promise<Card | undefined> {
@@ -58,7 +59,7 @@ class YgoData {
             const idNum = parseInt(id, 10);
             if (isNaN(idNum) && lang) {
                 const simpList = await cards.getSimpleList(lang);
-                const term = id.trim().toLowerCase();
+                let term = id.trim().toLowerCase();
                 let resultCard: Card | undefined;
                 for (const code in simpList) {
                     if (simpList.hasOwnProperty(code)) {
@@ -71,9 +72,29 @@ class YgoData {
                         }
                     }
                 }
+                if (this.shortcuts) {
+                    const terms = term.split(/\s/);
+                    for (let i = 0; i < terms.length; i++) {
+                        if (terms[i] in this.shortcuts[lang]) {
+                            terms[i] = this.shortcuts[lang][terms[i]].toLowerCase().trim();
+                        }
+                    }
+                    term = terms.join(" ");
+                    for (const code in simpList) {
+                        if (simpList.hasOwnProperty(code)) {
+                            if (simpList[code].name.toLowerCase() === term) {
+                                const c = await cards.getCard(code);
+                                if (c) {
+                                    resultCard = c;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
                 if (resultCard === undefined) {
                     const fuse = await this.getFuse(lang);
-                    const result = fuse.search(id);
+                    const result = fuse.search(term);
                     if (result.length < 1) {
                         return undefined;
                     }

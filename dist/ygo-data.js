@@ -49,6 +49,7 @@ class YgoData {
         images_1.images.update(config.imageLink, config.imageExt);
         this.fuses = {};
         this.langs = Object.keys(config.cardOpts.langs);
+        this.shortcuts = config.shortcuts;
     }
     async getCard(id, lang) {
         if (typeof id === "number") {
@@ -59,7 +60,7 @@ class YgoData {
             const idNum = parseInt(id, 10);
             if (isNaN(idNum) && lang) {
                 const simpList = await cards_1.cards.getSimpleList(lang);
-                const term = id.trim().toLowerCase();
+                let term = id.trim().toLowerCase();
                 let resultCard;
                 for (const code in simpList) {
                     if (simpList.hasOwnProperty(code)) {
@@ -72,9 +73,29 @@ class YgoData {
                         }
                     }
                 }
+                if (this.shortcuts) {
+                    const terms = term.split(/\s/);
+                    for (let i = 0; i < terms.length; i++) {
+                        if (terms[i] in this.shortcuts[lang]) {
+                            terms[i] = this.shortcuts[lang][terms[i]].toLowerCase().trim();
+                        }
+                    }
+                    term = terms.join(" ");
+                    for (const code in simpList) {
+                        if (simpList.hasOwnProperty(code)) {
+                            if (simpList[code].name.toLowerCase() === term) {
+                                const c = await cards_1.cards.getCard(code);
+                                if (c) {
+                                    resultCard = c;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
                 if (resultCard === undefined) {
                     const fuse = await this.getFuse(lang);
-                    const result = fuse.search(id);
+                    const result = fuse.search(term);
                     if (result.length < 1) {
                         return undefined;
                     }

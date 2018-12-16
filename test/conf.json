@@ -237,6 +237,9 @@
             }
         }
     },
+    "shortcuts": {
+        "en": { "mst": "Mystical Space Typhoon" }
+    },
     "banlist": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/lflist.conf",
     "imageLink": "https://raw.githubusercontent.com/AlphaKretin/AlphaKretin.github.io/master/miscstorage/",
     "imageExt": "png"

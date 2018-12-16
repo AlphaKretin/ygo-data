@@ -206,3 +206,13 @@ describe("Testing type string", function() {
         expect(card.data.names.en.typeString).to.equal("Winged Beast/Special Summon/Tuner/Effect");
     });
 });
+describe("Testing shortcuts", function() {
+    it("mst should alias to Mystical Space Typhoon", async function() {
+        const card = await index.getCard("mst", "en");
+        expect(card.text.en.name).to.equal("Mystical Space Typhoon");
+    });
+    it("mst in middle of name should not alias", async function() {
+        const card = await index.getCard("Doomstar Magician", "en");
+        expect(card.text.en.name).to.equal("Doomstar Magician");
+    });
+});

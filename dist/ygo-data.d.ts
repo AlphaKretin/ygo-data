@@ -5,6 +5,7 @@ declare class YgoData {
     readonly langs: string[];
     private fuseOpts;
     private fuses;
+    private shortcuts?;
     constructor(configPath: string, savePath: string);
     getCard(id: number | string, lang?: string): Promise<Card | undefined>;
     getCardList(): Promise<{
