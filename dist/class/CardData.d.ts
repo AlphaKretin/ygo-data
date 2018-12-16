@@ -27,7 +27,6 @@ export declare class CardData {
     readonly setcode: number;
     readonly type: number;
     readonly atk: number;
-    readonly level: number;
     readonly race: number;
     readonly attribute: number;
     readonly category: number;
@@ -35,8 +34,12 @@ export declare class CardData {
         [lang: string]: ICardDataNames;
     };
     private literalDef;
+    private literalLevel;
     constructor(dbData: ICardDataRaw, langs: string[]);
     readonly def: number | undefined;
+    readonly level: number;
+    readonly lscale: number | undefined;
+    readonly rscale: number | undefined;
     readonly linkMarker: string[] | undefined;
     isAttribute(att: CardAttribute): boolean;
     isCategory(cat: CardCategory): boolean;

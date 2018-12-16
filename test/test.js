@@ -216,3 +216,19 @@ describe("Testing shortcuts", function() {
         expect(card.text.en.name).to.equal("Doomstar Magician");
     });
 });
+describe("Testing Pendulum stats", function() {
+    it("Non-pendulum should have undefined scales", async function() {
+        const card = await index.getCard(43694650);
+        expect(card.data.lscale).to.be.undefined;
+        expect(card.data.rscale).to.be.undefined;
+    });
+    it("OEPD should be Level 7", async function() {
+        const card = await index.getCard("Odd-Eyes Pendulum Dragon", "en");
+        expect(card.data.level).to.equal(7);
+    });
+    it("OEPD should be Scale 4", async function() {
+        const card = await index.getCard("Odd-Eyes Pendulum Dragon", "en");
+        expect(card.data.lscale).to.equal(4);
+        expect(card.data.rscale).to.equal(4);
+    });
+});

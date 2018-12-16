@@ -65,7 +65,7 @@ class CardData {
         this.type = dbData.type;
         this.atk = dbData.atk;
         this.literalDef = dbData.def;
-        this.level = dbData.level;
+        this.literalLevel = dbData.level;
         this.race = dbData.race;
         this.attribute = dbData.attribute;
         this.category = dbData.category;
@@ -92,6 +92,24 @@ class CardData {
         else {
             return this.literalDef;
         }
+    }
+    get level() {
+        if (this.isType(enums_1.CardType.TYPE_PENDULUM)) {
+            return this.literalLevel & 0xff;
+        }
+        return this.literalLevel;
+    }
+    get lscale() {
+        if (!this.isType(enums_1.CardType.TYPE_PENDULUM)) {
+            return undefined;
+        }
+        return (this.literalLevel >> 24) & 0xff;
+    }
+    get rscale() {
+        if (!this.isType(enums_1.CardType.TYPE_PENDULUM)) {
+            return undefined;
+        }
+        return (this.literalLevel >> 16) & 0xff;
     }
     get linkMarker() {
         if (!this.isType(enums_1.CardType.TYPE_LINK)) {

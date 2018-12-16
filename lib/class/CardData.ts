@@ -87,7 +87,6 @@ export class CardData {
     public readonly setcode: number;
     public readonly type: number;
     public readonly atk: number;
-    public readonly level: number;
     public readonly race: number;
     public readonly attribute: number;
     public readonly category: number;
@@ -95,6 +94,7 @@ export class CardData {
         [lang: string]: ICardDataNames;
     };
     private literalDef: number;
+    private literalLevel: number;
     constructor(dbData: ICardDataRaw, langs: string[]) {
         this.ot = dbData.ot;
         this.alias = dbData.alias;
@@ -102,7 +102,7 @@ export class CardData {
         this.type = dbData.type;
         this.atk = dbData.atk;
         this.literalDef = dbData.def;
-        this.level = dbData.level;
+        this.literalLevel = dbData.level;
         this.race = dbData.race;
         this.attribute = dbData.attribute;
         this.category = dbData.category;
@@ -129,6 +129,27 @@ export class CardData {
         } else {
             return this.literalDef;
         }
+    }
+
+    get level(): number {
+        if (this.isType(CardType.TYPE_PENDULUM)) {
+            return this.literalLevel & 0xff;
+        }
+        return this.literalLevel;
+    }
+
+    get lscale(): number | undefined {
+        if (!this.isType(CardType.TYPE_PENDULUM)) {
+            return undefined;
+        }
+        return (this.literalLevel >> 24) & 0xff;
+    }
+
+    get rscale(): number | undefined {
+        if (!this.isType(CardType.TYPE_PENDULUM)) {
+            return undefined;
+        }
+        return (this.literalLevel >> 16) & 0xff;
     }
 
     get linkMarker(): string[] | undefined {
