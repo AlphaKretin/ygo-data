@@ -59,6 +59,8 @@ The options file should be a JSON Object, with string keys representing differen
 
 -   `transOpts` will control translations of various game terms in different languages. Its value should be another language-keyed object, and language value should be an object with the following keys: `attribute`, `category`, `ot`, `race`, `type`. Each of these values will be another object, with the hexadecimal values for each property as the keys and the corresponding translation as the value.
 
+-   `shortcuts` is an optional field that contains abbreviations you want to recognise as card names. Its value is, again, a language-keyed object, and the values of that object should be an object with abbreviations in lower case as keys and the full name as values.
+
 -   `banlist` should be a string of a URL to a YGOPro lflist.conf file, `imageLink` should be a string of a URL to which card IDs can be appended to download card images, ending in a slash, and `imageExt` should be the file extension of the images expected to be found at the `imageLink`, without the dot.
 
 ```json
@@ -96,6 +98,11 @@ The options file should be a JSON Object, with string keys representing differen
             "type": {
                 "0x1": "Monster"
             }
+        }
+    },
+    "shortcuts": {
+        "en": {
+            "mst": "Mystical Space Typhoon"
         }
     },
     "banlist": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/lflist.conf",
