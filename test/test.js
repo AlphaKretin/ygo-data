@@ -239,10 +239,17 @@ describe("Testing Pendulum stats", function() {
 describe("Testing Pendulum text", function() {
     it("Non-pend should have just monsterBody", async function() {
         const card = await index.getCard(43694650);
-        expect(card.text.en.desc.monsterBody.length).to.be.above(400);
         expect(card.text.en.desc.monsterHead).to.be.undefined;
         expect(card.text.en.desc.pendBody).to.be.undefined;
         expect(card.text.en.desc.pendHead).to.be.undefined;
+        expect(card.text.en.desc.monsterBody.length).to.be.above(450);
+    });
+    it("Extra Deck non-pend should have just monsterBody", async function() {
+        const card = await index.getCard(31833038);
+        expect(card.text.en.desc.monsterHead).to.be.undefined;
+        expect(card.text.en.desc.pendBody).to.be.undefined;
+        expect(card.text.en.desc.pendHead).to.be.undefined;
+        expect(card.text.en.desc.monsterBody.length).to.be.above(490);
     });
     it("Pendulum should have 4 properties", async function() {
         const card = await index.getCard("Odd-Eyes Pendulum Dragon", "en");

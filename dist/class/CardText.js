@@ -7,7 +7,7 @@ class CardText {
         this.strings = [];
     }
     getPText() {
-        const lines = this.literalDesc.split("\r\n");
+        const lines = this.literalDesc.split(/\r\n|\n|\r/);
         if (lines.length > 1) {
             let ind = lines.findIndex(l => l.indexOf("---") > -1);
             if (ind === -1) {
@@ -16,6 +16,9 @@ class CardText {
                         ind = i;
                         break;
                     }
+                }
+                if (ind === -1) {
+                    return [this.literalDesc];
                 }
                 lines.splice(ind, 0, "---");
             }
