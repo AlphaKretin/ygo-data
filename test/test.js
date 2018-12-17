@@ -16,6 +16,10 @@ describe("Testing searches", function() {
         const card = await index.getCard("aaaaaaaaaaaaaaaaaaaaaaaaaa", "en");
         expect(card).to.be.undefined;
     });
+    it("Name search should work in Japanese", async function() {
+        const card = await index.getCard("オッドアイズ・ペンデュラム・ドラゴン", "ja");
+        expect(card.text.en.name).to.equal("Odd-Eyes Pendulum Dragon");
+    });
 });
 describe("Testing utilities", function() {
     it("Language list should be [en, ja]", async function() {
@@ -230,5 +234,28 @@ describe("Testing Pendulum stats", function() {
         const card = await index.getCard("Odd-Eyes Pendulum Dragon", "en");
         expect(card.data.lscale).to.equal(4);
         expect(card.data.rscale).to.equal(4);
+    });
+});
+describe("Testing Pendulum text", function() {
+    it("Non-pend should have just monsterBody", async function() {
+        const card = await index.getCard(43694650);
+        expect(card.text.en.desc.monsterBody.length).to.be.above(400);
+        expect(card.text.en.desc.monsterHead).to.be.undefined;
+        expect(card.text.en.desc.pendBody).to.be.undefined;
+        expect(card.text.en.desc.pendHead).to.be.undefined;
+    });
+    it("Pendulum should have 4 properties", async function() {
+        const card = await index.getCard("Odd-Eyes Pendulum Dragon", "en");
+        expect(card.text.en.desc.pendHead).to.equal("Pendulum Effect");
+        expect(card.text.en.desc.monsterHead).to.equal("Monster Effect");
+        expect(card.text.en.desc.pendBody.length).to.be.below(350);
+        expect(card.text.en.desc.monsterBody.length).to.be.below(125);
+    });
+    it("Japanese Pendulum should have 4 properties", async function() {
+        const card = await index.getCard("オッドアイズ・ペンデュラム・ドラゴン", "ja");
+        expect(card.text.ja.desc.pendHead).to.equal("Ｐスケール：青４／赤４");
+        expect(card.text.ja.desc.monsterHead).to.equal("モンスター効果");
+        expect(card.text.ja.desc.pendBody.length).to.be.below(150);
+        expect(card.text.ja.desc.monsterBody.length).to.be.below(50);
     });
 });

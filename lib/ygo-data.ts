@@ -72,7 +72,7 @@ class YgoData {
                         }
                     }
                 }
-                if (this.shortcuts) {
+                if (this.shortcuts && this.shortcuts[lang]) {
                     const terms = term.split(/\s/);
                     for (let i = 0; i < terms.length; i++) {
                         if (terms[i] in this.shortcuts[lang]) {
