@@ -25,8 +25,13 @@ export declare class Translation {
     private category;
     constructor(name: string, raw: ITranslationRaw);
     getType(t: CardType): string;
+    reverseType(s: string): CardType | undefined;
     getRace(r: CardRace): string;
+    reverseRace(s: string): CardRace | undefined;
     getAttribute(a: CardAttribute): string;
+    reverseAttribute(s: string): CardAttribute | undefined;
     getOT(o: CardOT): string;
+    reverseOT(s: string): CardOT | undefined;
     getCategory(c: CardCategory): string;
+    reverseCategory(s: string): CardCategory | undefined;
 }

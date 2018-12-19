@@ -8,6 +8,10 @@ import { Card, ICardRaw } from "../class/Card";
 import { ICardDataRaw } from "../class/CardData";
 import { ICardTextRaw } from "../class/CardText";
 
+export interface ICardList {
+    [id: number]: Card;
+}
+
 interface ICardListOpts {
     langs: {
         [lang: string]: {
@@ -60,7 +64,7 @@ class CardList {
         return map;
     }
 
-    public async getRawCardList(): Promise<{ [id: number]: Card }> {
+    public async getRawCardList(): Promise<ICardList> {
         if (!this.cards) {
             throw new Error("Card list not loaded!");
         }

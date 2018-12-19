@@ -59,6 +59,8 @@ The options file should be a JSON Object, with string keys representing differen
 
 -   `transOpts` will control translations of various game terms in different languages. Its value should be another language-keyed object, and language value should be an object with the following keys: `attribute`, `category`, `ot`, `race`, `type`. Each of these values will be another object, with the hexadecimal values for each property as the keys and the corresponding translation as the value.
 
+-   `filterNames` will control what valid property names are for filter parsing. Its value should be an object with the following keys: `attribute`, `category`, `ot`, `race`, `type`, `level`, `atk`, `def`. The value of each of those keys should be an array of lower-case strings, filled with names for the property in any and all desired languages.
+
 -   `shortcuts` is an optional field that contains abbreviations you want to recognise as card names. Its value is, again, a language-keyed object, and the values of that object should be an object with abbreviations in lower case as keys and the full name as values.
 
 -   `banlist` should be a string of a URL to a YGOPro lflist.conf file, `imageLink` should be a string of a URL to which card IDs can be appended to download card images, ending in a slash, and `imageExt` should be the file extension of the images expected to be found at the `imageLink`, without the dot.
@@ -104,6 +106,16 @@ The options file should be a JSON Object, with string keys representing differen
         "en": {
             "mst": "Mystical Space Typhoon"
         }
+    },
+    "filterNames": {
+        "attribute": ["att", "attribute"],
+        "category": ["cat", "category"],
+        "ot": ["ot", "status", "region"],
+        "race": ["race", "mtype", "monstertype"],
+        "type": ["type", "ctype", "cardtype"],
+        "level": ["lvl", "level", "rank", "link"],
+        "atk": ["atk", "attack"],
+        "def": ["def", "defense", "defence"]
     },
     "banlist": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/lflist.conf",
     "imageLink": "https://cdn.exampleimagesite.fake/images/",

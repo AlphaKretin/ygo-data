@@ -1,9 +1,11 @@
 import * as Fuse from "fuse.js";
 import * as fs from "mz/fs";
 import { Card } from "./class/Card";
+import { Filter } from "./class/Filter";
 import { banlist } from "./module/banlist";
 import { cards, ISimpleCard } from "./module/cards";
 import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType } from "./module/enums";
+import { updateFilterNames } from "./module/filterNames";
 import { images } from "./module/images";
 import { setcodes } from "./module/setcodes";
 import { translations } from "./module/translations";
@@ -45,6 +47,7 @@ class YgoData {
         }
         setcodes.update(config.stringOpts);
         translations.update(config.transOpts);
+        updateFilterNames(config.filterNames);
         images.update(config.imageLink, config.imageExt);
         this.fuses = {};
         this.langs = Object.keys(config.cardOpts.langs);
@@ -136,4 +139,4 @@ const enumMap = {
     type: CardType
 };
 
-export { YgoData, Card, translations, enumMap as enums };
+export { YgoData, Card, translations, enumMap as enums, Filter };

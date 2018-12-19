@@ -1,5 +1,8 @@
 import * as octokit from "@octokit/rest";
 import { Card } from "../class/Card";
+export interface ICardList {
+    [id: number]: Card;
+}
 interface ICardListOpts {
     langs: {
         [lang: string]: {
@@ -20,9 +23,7 @@ declare class CardList {
     getSimpleList(lang: string): Promise<{
         [id: number]: ISimpleCard;
     }>;
-    getRawCardList(): Promise<{
-        [id: number]: Card;
-    }>;
+    getRawCardList(): Promise<ICardList>;
     private downloadSingleDB;
     private downloadDBs;
     private loadDBs;

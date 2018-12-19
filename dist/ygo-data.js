@@ -4,9 +4,12 @@ const Fuse = require("fuse.js");
 const fs = require("mz/fs");
 const Card_1 = require("./class/Card");
 exports.Card = Card_1.Card;
+const Filter_1 = require("./class/Filter");
+exports.Filter = Filter_1.Filter;
 const banlist_1 = require("./module/banlist");
 const cards_1 = require("./module/cards");
 const enums_1 = require("./module/enums");
+const filterNames_1 = require("./module/filterNames");
 const images_1 = require("./module/images");
 const setcodes_1 = require("./module/setcodes");
 const translations_1 = require("./module/translations");
@@ -46,6 +49,7 @@ class YgoData {
         }
         setcodes_1.setcodes.update(config.stringOpts);
         translations_1.translations.update(config.transOpts);
+        filterNames_1.updateFilterNames(config.filterNames);
         images_1.images.update(config.imageLink, config.imageExt);
         this.fuses = {};
         this.langs = Object.keys(config.cardOpts.langs);

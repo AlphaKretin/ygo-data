@@ -1,4 +1,5 @@
 import { Card } from "./class/Card";
+import { Filter } from "./class/Filter";
 import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType } from "./module/enums";
 import { translations } from "./module/translations";
 declare class YgoData {
@@ -21,4 +22,4 @@ declare const enumMap: {
     race: typeof CardRace;
     type: typeof CardType;
 };
-export { YgoData, Card, translations, enumMap as enums };
+export { YgoData, Card, translations, enumMap as enums, Filter };

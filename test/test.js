@@ -2,6 +2,13 @@
 const expect = require("chai").expect;
 const ygoData = require("../dist/ygo-data.js");
 const index = new ygoData.YgoData(__dirname + "/conf.json", __dirname + "/dbs/");
+const filter = new ygoData.Filter({
+    type: [{ yes: [ygoData.enums.type.TYPE_RITUAL, ygoData.enums.type.TYPE_MONSTER] }],
+    attribute: [{ yes: [ygoData.enums.attribute.ATTRIBUTE_DARK] }, { yes: [ygoData.enums.attribute.ATTRIBUTE_LIGHT] }],
+    atk: { above: 1600, below: 2400 },
+    level: { above: 6, below: 6 },
+    race: [{ no: [ygoData.enums.race.RACE_FAIRY] }]
+});
 
 describe("Testing searches", function() {
     it("Name should be Danger!? Jackalope? searching with ID", async function() {
@@ -264,5 +271,70 @@ describe("Testing Pendulum text", function() {
         expect(card.text.ja.desc.monsterHead).to.equal("モンスター効果");
         expect(card.text.ja.desc.pendBody.length).to.be.below(150);
         expect(card.text.ja.desc.monsterBody.length).to.be.below(50);
+    });
+});
+describe("Testing filter system", function() {
+    it("Testing parse function", function() {
+        const obj = ygoData.Filter.parse(
+            "type:spell+ritual/trap+!counter attribute:fire/light atk:1000 level:2-5",
+            "en"
+        );
+        expect(obj).to.deep.equal({
+            type: [
+                { yes: [ygoData.enums.type.TYPE_SPELL, ygoData.enums.type.TYPE_RITUAL], no: [] },
+                { yes: [ygoData.enums.type.TYPE_TRAP], no: [ygoData.enums.type.TYPE_COUNTER] }
+            ],
+            attribute: [
+                { yes: [ygoData.enums.attribute.ATTRIBUTE_FIRE], no: [] },
+                { yes: [ygoData.enums.attribute.ATTRIBUTE_LIGHT], no: [] }
+            ],
+            atk: { above: 1000, below: 1000 },
+            level: { above: 2, below: 5 }
+        });
+    });
+    it("Should contain only non-Fairy cards", async function() {
+        const cards = await index.getCardList();
+        const filterList = filter.filter(cards);
+        const finalCards = Object.values(filterList);
+        expect(finalCards.length > 0);
+        expect(finalCards.find(c => c.data.isRace(ygoData.enums.race.RACE_FAIRY))).to.be.undefined;
+    });
+    it("Should contain only cards that are neither LIGHT nor DARK", async function() {
+        const cards = await index.getCardList();
+        const filterList = filter.filter(cards);
+        const finalCards = Object.values(filterList);
+        expect(finalCards.length > 0);
+        expect(
+            finalCards.find(
+                c =>
+                    !c.data.isAttribute(ygoData.enums.attribute.ATTRIBUTE_LIGHT) &&
+                    !c.data.isAttribute(ygoData.enums.attribute.ATTRIBUTE_DARK)
+            )
+        ).to.be.undefined;
+    });
+    it("Should contain only cards that have between 1600 and 2400 ATK", async function() {
+        const cards = await index.getCardList();
+        const filterList = filter.filter(cards);
+        const finalCards = Object.values(filterList);
+        expect(finalCards.length > 0);
+        expect(finalCards.find(c => c.data.atk < 1600 || c.data.atk > 2400)).to.be.undefined;
+    });
+    it("Should contain only cards that are Level 6", async function() {
+        const cards = await index.getCardList();
+        const filterList = filter.filter(cards);
+        const finalCards = Object.values(filterList);
+        expect(finalCards.length > 0);
+        expect(finalCards.find(c => c.data.level !== 6)).to.be.undefined;
+    });
+    it("Should contain only Ritual monsters", async function() {
+        const cards = await index.getCardList();
+        const filterList = filter.filter(cards);
+        const finalCards = Object.values(filterList);
+        expect(finalCards.length > 0);
+        expect(
+            finalCards.find(
+                c => !c.data.isType(ygoData.enums.type.TYPE_RITUAL) && !c.isType(ygoData.enums.type.TYPE_MONSTER)
+            )
+        ).to.be.undefined;
     });
 });
