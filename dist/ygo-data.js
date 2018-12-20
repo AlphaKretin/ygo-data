@@ -108,7 +108,11 @@ class YgoData {
                 }
                 if (resultCard !== undefined && resultCard.data.alias > 0) {
                     const newCard = await this.getCard(resultCard.data.alias);
-                    if (newCard && newCard.data.ot === resultCard.data.ot) {
+                    let check = newCard && newCard.data.alias === resultCard.id && newCard.data.ot === resultCard.data.ot;
+                    if (newCard && newCard.text[lang] && resultCard.text[lang].name !== newCard.text[lang].name) {
+                        check = false;
+                    }
+                    if (check) {
                         resultCard = newCard;
                     }
                 }

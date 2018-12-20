@@ -56,8 +56,8 @@ export class Card {
                 if (list.hasOwnProperty(id)) {
                     const card = list[id];
                     let check = card && card.data.alias === baseCode && card.data.ot === baseCard.data.ot;
-                    const lang = Object.keys(this.text)[0];
-                    if (card.text[lang] && this.text[lang].name !== card.text[lang].name) {
+                    const lang = Object.keys(baseCard.text)[0];
+                    if (card.text[lang] && baseCard.text[lang].name !== card.text[lang].name) {
                         check = false;
                     }
                     if (check) {
