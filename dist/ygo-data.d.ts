@@ -1,6 +1,6 @@
 import { Card } from "./class/Card";
 import { Filter } from "./class/Filter";
-import { ICardList, ISimpleList } from "./module/cards";
+import { ICardList, ISimpleCard } from "./module/cards";
 import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType } from "./module/enums";
 import { translations } from "./module/translations";
 declare class YgoData {
@@ -11,7 +11,7 @@ declare class YgoData {
     constructor(configPath: string, savePath: string);
     getCard(id: number | string, lang?: string): Promise<Card | undefined>;
     getCardList(): Promise<ICardList>;
-    getFuseList(query: string, lang: string): Promise<ISimpleList>;
+    getFuseList(query: string, lang: string): Promise<ISimpleCard[]>;
     private getFuse;
 }
 declare const enumMap: {
