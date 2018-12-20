@@ -136,6 +136,11 @@ describe("Testing alias list", function() {
         const codes = await card.aliasIDs;
         expect(codes).to.deep.equal([513000134]);
     });
+    it("Harpie Lady's alias list should have only itself, because aliases are alt arts", async function() {
+        const card = await index.getCard("Harpie Lady", "en");
+        const codes = await card.aliasIDs;
+        expect(codes.length).to.equal(1);
+    });
 });
 describe("Testing card.data.is functions", function() {
     it("Is Beast should be true", async function() {
