@@ -1,4 +1,4 @@
-import { ICardList } from "../module/cards";
+import { cards, ICardList, ISimpleCard, ISimpleList } from "../module/cards";
 import { CardAttribute, CardCategory, CardOT, CardRace, CardType } from "../module/enums";
 import { filterNames } from "../module/filterNames";
 import { setcodes } from "../module/setcodes";
@@ -157,12 +157,24 @@ export class Filter {
         this.data = dat;
     }
 
-    public filter(i: ICardList | Card[]): ICardList {
-        const output: ICardList = {};
-        const input = Object.values(i);
+    public filter(list: ICardList | Card[]): Card[] {
+        const output: Card[] = [];
+        const input: Card[] = Object.values(list);
         for (const card of input) {
             if (this.check(card)) {
-                output[card.id] = card;
+                output.push(card);
+            }
+        }
+        return output;
+    }
+
+    public async simpleFilter(list: ISimpleList | ISimpleCard[]): Promise<Card[]> {
+        const output: Card[] = [];
+        const input: ISimpleCard[] = Object.values(list);
+        for (const c of input) {
+            const card = await cards.getCard(c.id);
+            if (card && this.check(card)) {
+                output.push(card);
             }
         }
         return output;

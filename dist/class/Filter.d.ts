@@ -1,4 +1,4 @@
-import { ICardList } from "../module/cards";
+import { ICardList, ISimpleCard, ISimpleList } from "../module/cards";
 import { CardAttribute, CardCategory, CardOT, CardRace, CardType } from "../module/enums";
 import { Card } from "./Card";
 interface IFilterProperty<T> {
@@ -24,7 +24,8 @@ export declare class Filter {
     static parse(input: string, lang: string): Promise<IFilterData>;
     private data;
     constructor(dat: IFilterData);
-    filter(i: ICardList | Card[]): ICardList;
+    filter(list: ICardList | Card[]): Card[];
+    simpleFilter(list: ISimpleList | ISimpleCard[]): Promise<Card[]>;
     private check;
     private checkProp;
 }

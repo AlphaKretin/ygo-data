@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const cards_1 = require("../module/cards");
 const filterNames_1 = require("../module/filterNames");
 const setcodes_1 = require("../module/setcodes");
 const ygo_data_1 = require("../ygo-data");
@@ -126,12 +127,23 @@ class Filter {
     constructor(dat) {
         this.data = dat;
     }
-    filter(i) {
-        const output = {};
-        const input = Object.values(i);
+    filter(list) {
+        const output = [];
+        const input = Object.values(list);
         for (const card of input) {
             if (this.check(card)) {
-                output[card.id] = card;
+                output.push(card);
+            }
+        }
+        return output;
+    }
+    async simpleFilter(list) {
+        const output = [];
+        const input = Object.values(list);
+        for (const c of input) {
+            const card = await cards_1.cards.getCard(c.id);
+            if (card && this.check(card)) {
+                output.push(card);
             }
         }
         return output;

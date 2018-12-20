@@ -311,15 +311,13 @@ describe("Testing filter system", function() {
     });
     it("Should contain only non-Fairy cards", async function() {
         const cards = await index.getCardList();
-        const filterList = filter.filter(cards);
-        const finalCards = Object.values(filterList);
+        const finalCards = filter.filter(cards);
         expect(finalCards.length).to.be.above(0);
         expect(finalCards.find(c => c.data.isRace(ygoData.enums.race.RACE_FAIRY))).to.be.undefined;
     });
     it("Should contain only cards that are neither LIGHT nor DARK", async function() {
         const cards = await index.getCardList();
-        const filterList = filter.filter(cards);
-        const finalCards = Object.values(filterList);
+        const finalCards = filter.filter(cards);
         expect(finalCards.length).to.be.above(0);
         expect(
             finalCards.find(
@@ -331,22 +329,19 @@ describe("Testing filter system", function() {
     });
     it("Should contain only cards that have between 1600 and 2400 ATK", async function() {
         const cards = await index.getCardList();
-        const filterList = filter.filter(cards);
-        const finalCards = Object.values(filterList);
+        const finalCards = filter.filter(cards);
         expect(finalCards.length).to.be.above(0);
         expect(finalCards.find(c => c.data.atk < 1600 || c.data.atk > 2400)).to.be.undefined;
     });
     it("Should contain only cards that are Level 6", async function() {
         const cards = await index.getCardList();
-        const filterList = filter.filter(cards);
-        const finalCards = Object.values(filterList);
+        const finalCards = filter.filter(cards);
         expect(finalCards.length).to.be.above(0);
         expect(finalCards.find(c => c.data.level !== 6)).to.be.undefined;
     });
     it("Should contain only Ritual monsters", async function() {
         const cards = await index.getCardList();
-        const filterList = filter.filter(cards);
-        const finalCards = Object.values(filterList);
+        const finalCards = filter.filter(cards);
         expect(finalCards.length).to.be.above(0);
         expect(
             finalCards.find(
@@ -359,7 +354,7 @@ describe("Testing filter system", function() {
         const newFilter = new ygoData.Filter({
             setcode: [{ yes: [0x8], no: [] }]
         });
-        const finalCards = Object.values(newFilter.filter(cards));
+        const finalCards = newFilter.filter(cards);
         expect(finalCards.length).to.be.above(0);
         expect(finalCards.find(c => !c.data.isSetCode(0x8))).to.be.undefined;
         expect(finalCards.filter(c => c.data.isSetCode(0x3008)).length).to.be.above(0);
@@ -375,7 +370,7 @@ describe("Testing filter system", function() {
         const newFilter = new ygoData.Filter({
             setcode: [{ yes: [0x8], no: [0x3008] }]
         });
-        const finalCards = Object.values(newFilter.filter(cards));
+        const finalCards = newFilter.filter(cards);
         expect(finalCards.length).to.be.above(0);
         expect(finalCards.find(c => !c.data.isSetCode(0x8))).to.be.undefined;
         expect(finalCards.find(c => c.data.isSetCode(0x3008))).to.be.undefined;
