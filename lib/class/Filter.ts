@@ -1,6 +1,7 @@
 import { ICardList } from "../module/cards";
 import { CardAttribute, CardCategory, CardOT, CardRace, CardType } from "../module/enums";
 import { filterNames } from "../module/filterNames";
+import { setcodes } from "../module/setcodes";
 import { translations } from "../ygo-data";
 import { Card } from "./Card";
 
@@ -15,6 +16,7 @@ interface IFilterData {
     ot?: Array<IFilterProperty<CardOT>>;
     race?: Array<IFilterProperty<CardRace>>;
     type?: Array<IFilterProperty<CardType>>;
+    setcode?: Array<IFilterProperty<number>>;
     level?: IFilterNumberProperty;
     atk?: IFilterNumberProperty;
     def?: IFilterNumberProperty;
@@ -77,7 +79,7 @@ function checkName(name: string, names: string[]) {
     return false;
 }
 
-function parseProperty<T>(query: string, f: (s: string) => T | undefined) {
+async function parseProperty<T>(query: string, f: (s: string) => T | undefined | Promise<T | undefined>) {
     const out = [];
     const ands = query.split("/");
     for (const and of ands) {
@@ -85,12 +87,12 @@ function parseProperty<T>(query: string, f: (s: string) => T | undefined) {
         const props = and.split("+");
         for (const prop of props) {
             if (prop.startsWith("!")) {
-                const p = f(prop.slice(1));
+                const p = await f(prop.slice(1));
                 if (p) {
                     a.no!.push(p);
                 }
             } else {
-                const p = f(prop);
+                const p = await f(prop);
                 if (p) {
                     a.yes!.push(p);
                 }
@@ -112,7 +114,7 @@ function parseNumberProperty(query: string): IFilterNumberProperty | undefined {
 }
 
 export class Filter {
-    public static parse(input: string, lang: string): IFilterData {
+    public static async parse(input: string, lang: string): Promise<IFilterData> {
         const dat: IFilterData = {};
         const raws = propSplit(input.toLowerCase());
         const trans = translations.getTrans(lang);
@@ -121,19 +123,22 @@ export class Filter {
             const name = a[0];
             const query = a[1];
             if (checkName(name, filterNames.attribute)) {
-                dat.attribute = parseProperty(query, s => trans.reverseAttribute(s));
+                dat.attribute = await parseProperty(query, s => trans.reverseAttribute(s));
             }
             if (checkName(name, filterNames.category)) {
-                dat.category = parseProperty(query, s => trans.reverseCategory(s));
+                dat.category = await parseProperty(query, s => trans.reverseCategory(s));
             }
             if (checkName(name, filterNames.ot)) {
-                dat.ot = parseProperty(query, s => trans.reverseOT(s));
+                dat.ot = await parseProperty(query, s => trans.reverseOT(s));
             }
             if (checkName(name, filterNames.race)) {
-                dat.race = parseProperty(query, s => trans.reverseRace(s));
+                dat.race = await parseProperty(query, s => trans.reverseRace(s));
             }
             if (checkName(name, filterNames.type)) {
-                dat.type = parseProperty(query, s => trans.reverseType(s));
+                dat.type = await parseProperty(query, s => trans.reverseType(s));
+            }
+            if (checkName(name, filterNames.setcode)) {
+                dat.setcode = await parseProperty(query, async s => await setcodes.reverseCode(s, lang));
             }
             if (checkName(name, filterNames.level)) {
                 dat.level = parseNumberProperty(query);
@@ -200,6 +205,13 @@ export class Filter {
             }
             ans = ans && tempAns;
         }
+        if (this.data.setcode) {
+            let tempAns = false;
+            for (const a of this.data.setcode) {
+                tempAns = tempAns || this.checkProp(a, n => c.data.isSetCode(n));
+            }
+            ans = ans && tempAns;
+        }
         if (this.data.level) {
             if (!(c.data.level >= this.data.level.above && c.data.level <= this.data.level.below)) {
                 return false;
@@ -220,6 +232,7 @@ export class Filter {
         }
         return ans;
     }
+
     private checkProp<T>(prop: IFilterProperty<T>, f: (n: T) => boolean): boolean {
         let ans: boolean | undefined;
         if (prop.yes && prop.yes.length > 0) {

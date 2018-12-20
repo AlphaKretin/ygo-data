@@ -7,6 +7,7 @@ interface IFilterNames {
     level: string[];
     atk: string[];
     def: string[];
+    setcode: string[];
 }
 export declare let filterNames: IFilterNames;
 export declare function updateFilterNames(input: IFilterNames): void;

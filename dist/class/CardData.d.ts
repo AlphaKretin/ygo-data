@@ -47,5 +47,6 @@ export declare class CardData {
     isRace(race: CardRace): boolean;
     isType(type: CardType): boolean;
     isLinkMarker(mark: CardLinkMarker): boolean;
+    isSetCode(code: number): boolean;
 }
 export {};

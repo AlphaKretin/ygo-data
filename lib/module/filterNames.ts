@@ -7,6 +7,7 @@ interface IFilterNames {
     level: string[];
     atk: string[];
     def: string[];
+    setcode: string[];
 }
 
 export let filterNames: IFilterNames = {
@@ -17,6 +18,7 @@ export let filterNames: IFilterNames = {
     level: [],
     ot: [],
     race: [],
+    setcode: [],
     type: []
 };
 

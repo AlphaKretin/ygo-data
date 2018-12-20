@@ -165,6 +165,21 @@ class CardData {
         }
         return (this.literalDef & mark) === mark;
     }
+    isSetCode(code) {
+        let tempCode = this.setcode;
+        const codes = [];
+        while (tempCode > 0) {
+            codes.push(tempCode & 0xffff);
+            tempCode = tempCode >> 16;
+        }
+        for (const c of codes) {
+            // 4th digit is for extensions
+            if (code === c || code === (c & 0xfff)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 exports.CardData = CardData;
 //# sourceMappingURL=CardData.js.map

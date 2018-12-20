@@ -8,6 +8,7 @@ exports.filterNames = {
     level: [],
     ot: [],
     race: [],
+    setcode: [],
     type: []
 };
 function updateFilterNames(input) {

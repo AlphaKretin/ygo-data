@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const filterNames_1 = require("../module/filterNames");
+const setcodes_1 = require("../module/setcodes");
 const ygo_data_1 = require("../ygo-data");
 function previousIndexOf(s, char, index) {
     let i = index - 1;
@@ -49,7 +50,7 @@ function checkName(name, names) {
     }
     return false;
 }
-function parseProperty(query, f) {
+async function parseProperty(query, f) {
     const out = [];
     const ands = query.split("/");
     for (const and of ands) {
@@ -57,13 +58,13 @@ function parseProperty(query, f) {
         const props = and.split("+");
         for (const prop of props) {
             if (prop.startsWith("!")) {
-                const p = f(prop.slice(1));
+                const p = await f(prop.slice(1));
                 if (p) {
                     a.no.push(p);
                 }
             }
             else {
-                const p = f(prop);
+                const p = await f(prop);
                 if (p) {
                     a.yes.push(p);
                 }
@@ -84,7 +85,7 @@ function parseNumberProperty(query) {
     }
 }
 class Filter {
-    static parse(input, lang) {
+    static async parse(input, lang) {
         const dat = {};
         const raws = propSplit(input.toLowerCase());
         const trans = ygo_data_1.translations.getTrans(lang);
@@ -93,19 +94,22 @@ class Filter {
             const name = a[0];
             const query = a[1];
             if (checkName(name, filterNames_1.filterNames.attribute)) {
-                dat.attribute = parseProperty(query, s => trans.reverseAttribute(s));
+                dat.attribute = await parseProperty(query, s => trans.reverseAttribute(s));
             }
             if (checkName(name, filterNames_1.filterNames.category)) {
-                dat.category = parseProperty(query, s => trans.reverseCategory(s));
+                dat.category = await parseProperty(query, s => trans.reverseCategory(s));
             }
             if (checkName(name, filterNames_1.filterNames.ot)) {
-                dat.ot = parseProperty(query, s => trans.reverseOT(s));
+                dat.ot = await parseProperty(query, s => trans.reverseOT(s));
             }
             if (checkName(name, filterNames_1.filterNames.race)) {
-                dat.race = parseProperty(query, s => trans.reverseRace(s));
+                dat.race = await parseProperty(query, s => trans.reverseRace(s));
             }
             if (checkName(name, filterNames_1.filterNames.type)) {
-                dat.type = parseProperty(query, s => trans.reverseType(s));
+                dat.type = await parseProperty(query, s => trans.reverseType(s));
+            }
+            if (checkName(name, filterNames_1.filterNames.setcode)) {
+                dat.setcode = await parseProperty(query, async (s) => await setcodes_1.setcodes.reverseCode(s, lang));
             }
             if (checkName(name, filterNames_1.filterNames.level)) {
                 dat.level = parseNumberProperty(query);
@@ -166,6 +170,13 @@ class Filter {
             let tempAns = false;
             for (const a of this.data.type) {
                 tempAns = tempAns || this.checkProp(a, n => c.data.isType(n));
+            }
+            ans = ans && tempAns;
+        }
+        if (this.data.setcode) {
+            let tempAns = false;
+            for (const a of this.data.setcode) {
+                tempAns = tempAns || this.checkProp(a, n => c.data.isSetCode(n));
             }
             ans = ans && tempAns;
         }

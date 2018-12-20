@@ -211,4 +211,20 @@ export class CardData {
         }
         return (this.literalDef & mark) === mark;
     }
+
+    public isSetCode(code: number): boolean {
+        let tempCode = this.setcode;
+        const codes: number[] = [];
+        while (tempCode > 0) {
+            codes.push(tempCode & 0xffff);
+            tempCode = tempCode >> 16;
+        }
+        for (const c of codes) {
+            // 4th digit is for extensions
+            if (code === c || code === (c & 0xfff)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

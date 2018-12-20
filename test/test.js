@@ -170,6 +170,22 @@ describe("Testing card.data.is functions", function() {
         const card = await index.getCard(43694650);
         expect(card.data.isOT(ygoData.enums.ot.OT_ANIME)).to.be.equal(false);
     });
+    it("Is HERO should be true", async function() {
+        const card = await index.getCard("Elemental HERO Stratos", "en");
+        expect(card.data.isSetCode(0x8)).to.be.equal(true);
+    });
+    it("Is E HERO should be true", async function() {
+        const card = await index.getCard("Elemental HERO Stratos", "en");
+        expect(card.data.isSetCode(0x3008)).to.be.equal(true);
+    });
+    it("Is D HERO should be false", async function() {
+        const card = await index.getCard("Elemental HERO Stratos", "en");
+        expect(card.data.isSetCode(0xc008)).to.be.equal(false);
+    });
+    it("Is Neos should be false", async function() {
+        const card = await index.getCard("Elemental HERO Stratos", "en");
+        expect(card.data.isSetCode(0x9)).to.be.equal(false);
+    });
 });
 describe("Testing Link/Defense interactions", function() {
     it("Link Monster should have undefined defense", async function() {
@@ -274,9 +290,9 @@ describe("Testing Pendulum text", function() {
     });
 });
 describe("Testing filter system", function() {
-    it("Testing parse function", function() {
-        const obj = ygoData.Filter.parse(
-            "type:spell+ritual/trap+!counter attribute:fire/light atk:1000 level:2-5",
+    it("Testing parse function", async function() {
+        const obj = await ygoData.Filter.parse(
+            "type:spell+ritual/trap+!counter attribute:fire/light atk:1000 level:2-5 set:hero",
             "en"
         );
         expect(obj).to.deep.equal({
@@ -289,21 +305,22 @@ describe("Testing filter system", function() {
                 { yes: [ygoData.enums.attribute.ATTRIBUTE_LIGHT], no: [] }
             ],
             atk: { above: 1000, below: 1000 },
-            level: { above: 2, below: 5 }
+            level: { above: 2, below: 5 },
+            setcode: [{ yes: [0x8], no: [] }]
         });
     });
     it("Should contain only non-Fairy cards", async function() {
         const cards = await index.getCardList();
         const filterList = filter.filter(cards);
         const finalCards = Object.values(filterList);
-        expect(finalCards.length > 0);
+        expect(finalCards.length).to.be.above(0);
         expect(finalCards.find(c => c.data.isRace(ygoData.enums.race.RACE_FAIRY))).to.be.undefined;
     });
     it("Should contain only cards that are neither LIGHT nor DARK", async function() {
         const cards = await index.getCardList();
         const filterList = filter.filter(cards);
         const finalCards = Object.values(filterList);
-        expect(finalCards.length > 0);
+        expect(finalCards.length).to.be.above(0);
         expect(
             finalCards.find(
                 c =>
@@ -316,25 +333,35 @@ describe("Testing filter system", function() {
         const cards = await index.getCardList();
         const filterList = filter.filter(cards);
         const finalCards = Object.values(filterList);
-        expect(finalCards.length > 0);
+        expect(finalCards.length).to.be.above(0);
         expect(finalCards.find(c => c.data.atk < 1600 || c.data.atk > 2400)).to.be.undefined;
     });
     it("Should contain only cards that are Level 6", async function() {
         const cards = await index.getCardList();
         const filterList = filter.filter(cards);
         const finalCards = Object.values(filterList);
-        expect(finalCards.length > 0);
+        expect(finalCards.length).to.be.above(0);
         expect(finalCards.find(c => c.data.level !== 6)).to.be.undefined;
     });
     it("Should contain only Ritual monsters", async function() {
         const cards = await index.getCardList();
         const filterList = filter.filter(cards);
         const finalCards = Object.values(filterList);
-        expect(finalCards.length > 0);
+        expect(finalCards.length).to.be.above(0);
         expect(
             finalCards.find(
                 c => !c.data.isType(ygoData.enums.type.TYPE_RITUAL) && !c.isType(ygoData.enums.type.TYPE_MONSTER)
             )
         ).to.be.undefined;
+    });
+    it("Should contain only HERO monsters, including E HERO etc.", async function() {
+        const cards = await index.getCardList();
+        const newFilter = new ygoData.Filter({
+            setcode: [{ yes: [0x8], no: [] }]
+        });
+        const finalCards = Object.values(newFilter.filter(cards));
+        expect(finalCards.length).to.be.above(0);
+        expect(finalCards.find(c => !c.data.isSetCode(0x8))).to.be.undefined;
+        expect(finalCards.filter(c => c.data.isSetCode(0x3008)).length).to.be.above(0);
     });
 });

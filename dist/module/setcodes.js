@@ -9,6 +9,20 @@ class Setcodes {
         const list = await this.codes;
         return list[lang][code];
     }
+    async reverseCode(name, lang) {
+        if (!this.codes) {
+            throw new Error("Setcode list not loaded!");
+        }
+        const query = name.toLowerCase().trim();
+        const list = await this.codes;
+        for (const code in list[lang]) {
+            if (list[lang].hasOwnProperty(code)) {
+                if (list[lang][code].toLowerCase().trim() === query) {
+                    return parseInt(code, 16);
+                }
+            }
+        }
+    }
     update(conf) {
         this.codes = this.load(conf);
     }
