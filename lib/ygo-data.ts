@@ -3,7 +3,7 @@ import * as fs from "mz/fs";
 import { Card } from "./class/Card";
 import { Filter } from "./class/Filter";
 import { banlist } from "./module/banlist";
-import { cards, ISimpleCard } from "./module/cards";
+import { cards, ICardList, ISimpleCard, ISimpleList } from "./module/cards";
 import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType } from "./module/enums";
 import { updateFilterNames } from "./module/filterNames";
 import { images } from "./module/images";
@@ -117,8 +117,13 @@ class YgoData {
         }
     }
 
-    public async getCardList(): Promise<{ [id: number]: Card }> {
+    public async getCardList(): Promise<ICardList> {
         return await cards.getRawCardList();
+    }
+
+    public async getFuseList(query: string, lang: string): Promise<ISimpleList> {
+        const fuse = await this.getFuse(lang);
+        return fuse.search(query);
     }
 
     private async getFuse(lang: string): Promise<Fuse<ISimpleCard>> {

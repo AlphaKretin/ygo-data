@@ -12,6 +12,10 @@ export interface ICardList {
     [id: number]: Card;
 }
 
+export interface ISimpleList {
+    [id: number]: ISimpleCard;
+}
+
 interface ICardListOpts {
     langs: {
         [lang: string]: {
@@ -28,7 +32,7 @@ export interface ISimpleCard {
 }
 
 class CardList {
-    private cards?: Promise<{ [id: number]: Card }>;
+    private cards?: Promise<ICardList>;
 
     public async getCard(id: number | string): Promise<Card | undefined> {
         if (!this.cards) {
@@ -47,12 +51,12 @@ class CardList {
         });
     }
 
-    public async getSimpleList(lang: string): Promise<{ [id: number]: ISimpleCard }> {
+    public async getSimpleList(lang: string): Promise<ISimpleList> {
         if (!this.cards) {
             throw new Error("Card list not loaded!");
         }
         const list = await this.cards;
-        const map: { [id: number]: ISimpleCard } = {};
+        const map: ISimpleList = {};
         for (const key in list) {
             if (list.hasOwnProperty(key)) {
                 const card = list[key];

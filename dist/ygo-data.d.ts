@@ -1,5 +1,6 @@
 import { Card } from "./class/Card";
 import { Filter } from "./class/Filter";
+import { ICardList, ISimpleList } from "./module/cards";
 import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType } from "./module/enums";
 import { translations } from "./module/translations";
 declare class YgoData {
@@ -9,9 +10,8 @@ declare class YgoData {
     private shortcuts?;
     constructor(configPath: string, savePath: string);
     getCard(id: number | string, lang?: string): Promise<Card | undefined>;
-    getCardList(): Promise<{
-        [id: number]: Card;
-    }>;
+    getCardList(): Promise<ICardList>;
+    getFuseList(query: string, lang: string): Promise<ISimpleList>;
     private getFuse;
 }
 declare const enumMap: {

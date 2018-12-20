@@ -121,6 +121,10 @@ class YgoData {
     async getCardList() {
         return await cards_1.cards.getRawCardList();
     }
+    async getFuseList(query, lang) {
+        const fuse = await this.getFuse(lang);
+        return fuse.search(query);
+    }
     async getFuse(lang) {
         if (!(lang in this.fuses)) {
             const list = await cards_1.cards.getSimpleList(lang);

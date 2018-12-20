@@ -3,6 +3,9 @@ import { Card } from "../class/Card";
 export interface ICardList {
     [id: number]: Card;
 }
+export interface ISimpleList {
+    [id: number]: ISimpleCard;
+}
 interface ICardListOpts {
     langs: {
         [lang: string]: {
@@ -20,9 +23,7 @@ declare class CardList {
     private cards?;
     getCard(id: number | string): Promise<Card | undefined>;
     update(opts: ICardListOpts, savePath: string): void;
-    getSimpleList(lang: string): Promise<{
-        [id: number]: ISimpleCard;
-    }>;
+    getSimpleList(lang: string): Promise<ISimpleList>;
     getRawCardList(): Promise<ICardList>;
     private downloadSingleDB;
     private downloadDBs;
