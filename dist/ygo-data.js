@@ -123,7 +123,8 @@ class YgoData {
     }
     async getFuseList(query, lang) {
         const fuse = await this.getFuse(lang);
-        return fuse.search(query);
+        // @ts-ignore
+        return fuse.search(query).map(r => r.item);
     }
     async getFuse(lang) {
         if (!(lang in this.fuses)) {

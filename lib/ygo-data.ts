@@ -123,13 +123,14 @@ class YgoData {
 
     public async getFuseList(query: string, lang: string): Promise<ISimpleCard[]> {
         const fuse = await this.getFuse(lang);
-        return fuse.search(query);
+        // @ts-ignore
+        return fuse.search(query).map(r => r.item);
     }
 
     private async getFuse(lang: string): Promise<Fuse<ISimpleCard>> {
         if (!(lang in this.fuses)) {
             const list = await cards.getSimpleList(lang);
-            this.fuses[lang] = await new Fuse<ISimpleCard>(Object.values(list), this.fuseOpts);
+            this.fuses[lang] = await new Fuse(Object.values(list), this.fuseOpts);
         }
         return this.fuses[lang];
     }
