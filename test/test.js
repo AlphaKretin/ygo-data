@@ -364,4 +364,21 @@ describe("Testing filter system", function() {
         expect(finalCards.find(c => !c.data.isSetCode(0x8))).to.be.undefined;
         expect(finalCards.filter(c => c.data.isSetCode(0x3008)).length).to.be.above(0);
     });
+    it("Should filter for HEROes that aren't E HEROes", async function() {
+        const newFilter = await ygoData.Filter.parse("set:hero+!elemental hero", "en");
+        expect(newFilter).to.deep.equal({
+            setcode: [{ yes: [0x8], no: [0x3008] }]
+        });
+    });
+    it("Should contain only HERO monsters, that are not E HERO", async function() {
+        const cards = await index.getCardList();
+        const newFilter = new ygoData.Filter({
+            setcode: [{ yes: [0x8], no: [0x3008] }]
+        });
+        const finalCards = Object.values(newFilter.filter(cards));
+        expect(finalCards.length).to.be.above(0);
+        expect(finalCards.find(c => !c.data.isSetCode(0x8))).to.be.undefined;
+        expect(finalCards.find(c => c.data.isSetCode(0x3008))).to.be.undefined;
+        expect(finalCards.filter(c => c.data.isSetCode(0xc008)).length).to.be.above(0);
+    });
 });

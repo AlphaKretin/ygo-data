@@ -24,7 +24,7 @@ class Setcodes {
         for (const code in list[lang]) {
             if (list[lang].hasOwnProperty(code)) {
                 if (list[lang][code].toLowerCase().trim() === query) {
-                    return parseInt(code, 16);
+                    return parseInt(code, 10);
                 }
             }
         }
