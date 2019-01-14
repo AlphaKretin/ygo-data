@@ -382,3 +382,23 @@ describe("Testing filter system", function() {
         expect(finalCards.filter(c => c.data.isSetCode(0xc008)).length).to.be.above(0);
     });
 });
+describe("Testing setcodes", function() {
+    it("Testing straight search", async function() {
+        const arch = await ygoData.setcodes.getCode(0x1, "en");
+        expect(arch).to.equal("Ally of Justice");
+    });
+    it("Testing reverse search", async function() {
+        const code = await ygoData.setcodes.reverseCode("Ally of Justice", "en");
+        expect(code).to.equal(0x1);
+    });
+});
+describe("Testing counters", function() {
+    it("Testing straight search", async function() {
+        const ct = await ygoData.counters.getCounter(0x1, "en");
+        expect(ct).to.equal("Spell Counter");
+    });
+    it("Testing reverse search", async function() {
+        const ct = await ygoData.counters.reverseCounter("Spell Counter", "en");
+        expect(ct).to.equal(0x1);
+    });
+});

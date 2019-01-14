@@ -8,10 +8,13 @@ const Filter_1 = require("./class/Filter");
 exports.Filter = Filter_1.Filter;
 const banlist_1 = require("./module/banlist");
 const cards_1 = require("./module/cards");
+const counters_1 = require("./module/counters");
+exports.counters = counters_1.counters;
 const enums_1 = require("./module/enums");
 const filterNames_1 = require("./module/filterNames");
 const images_1 = require("./module/images");
 const setcodes_1 = require("./module/setcodes");
+exports.setcodes = setcodes_1.setcodes;
 const translations_1 = require("./module/translations");
 exports.translations = translations_1.translations;
 class YgoData {
@@ -47,6 +50,7 @@ class YgoData {
         catch (e) {
             throw e;
         }
+        counters_1.counters.update(config.stringOpts);
         setcodes_1.setcodes.update(config.stringOpts);
         translations_1.translations.update(config.transOpts);
         filterNames_1.updateFilterNames(config.filterNames);

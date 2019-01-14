@@ -4,6 +4,7 @@ import { Card } from "./class/Card";
 import { Filter } from "./class/Filter";
 import { banlist } from "./module/banlist";
 import { cards, ICardList, ISimpleCard } from "./module/cards";
+import { counters } from "./module/counters";
 import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType } from "./module/enums";
 import { updateFilterNames } from "./module/filterNames";
 import { images } from "./module/images";
@@ -45,6 +46,7 @@ class YgoData {
         } catch (e) {
             throw e;
         }
+        counters.update(config.stringOpts);
         setcodes.update(config.stringOpts);
         translations.update(config.transOpts);
         updateFilterNames(config.filterNames);
@@ -150,4 +152,4 @@ const enumMap = {
     type: CardType
 };
 
-export { YgoData, Card, translations, enumMap as enums, Filter };
+export { YgoData, Card, translations, enumMap as enums, Filter, setcodes, counters };
