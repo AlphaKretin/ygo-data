@@ -159,7 +159,7 @@ class CardList {
                             } else {
                                 const cardRaw: ICardRaw = {
                                     data,
-                                    dbs: [dbName],
+                                    dbs: [langName + "/" + dbName],
                                     id: card.id,
                                     text: {}
                                 };

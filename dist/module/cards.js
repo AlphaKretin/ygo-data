@@ -128,7 +128,7 @@ class CardList {
                             else {
                                 const cardRaw = {
                                     data,
-                                    dbs: [dbName],
+                                    dbs: [langName + "/" + dbName],
                                     id: card.id,
                                     text: {}
                                 };
