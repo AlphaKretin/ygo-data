@@ -123,7 +123,7 @@ class CardList {
                             };
                             if (card.id in raw) {
                                 raw[card.id].text[langName] = text;
-                                raw[card.id].dbs.push(dbName);
+                                raw[card.id].dbs.push(langName + "/" + dbName);
                             }
                             else {
                                 const cardRaw = {
