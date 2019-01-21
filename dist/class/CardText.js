@@ -5,6 +5,7 @@ class CardText {
         this.name = dbData.name;
         this.literalDesc = dbData.desc;
         this.strings = [];
+        this.strings.push(dbData.string1, dbData.string2, dbData.string3, dbData.string4, dbData.string5, dbData.string6, dbData.string7, dbData.string8, dbData.string9, dbData.string10, dbData.string11, dbData.string12, dbData.string13, dbData.string14, dbData.string15, dbData.string16);
     }
     getPText() {
         const lines = this.literalDesc.split(/\r\n|\n|\r/);

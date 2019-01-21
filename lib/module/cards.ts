@@ -136,22 +136,22 @@ class CardList {
                             const text: ICardTextRaw = {
                                 desc: card.desc,
                                 name: card.name,
-                                string1: card.string1,
-                                string10: card.string10,
-                                string11: card.string11,
-                                string12: card.string12,
-                                string13: card.string13,
-                                string14: card.string14,
-                                string15: card.string15,
-                                string16: card.string16,
-                                string2: card.string2,
-                                string3: card.string3,
-                                string4: card.string4,
-                                string5: card.string5,
-                                string6: card.string6,
-                                string7: card.string7,
-                                string8: card.string8,
-                                string9: card.string9
+                                string1: card.str1,
+                                string10: card.str10,
+                                string11: card.str11,
+                                string12: card.str12,
+                                string13: card.str13,
+                                string14: card.str14,
+                                string15: card.str15,
+                                string16: card.str16,
+                                string2: card.str2,
+                                string3: card.str3,
+                                string4: card.str4,
+                                string5: card.str5,
+                                string6: card.str6,
+                                string7: card.str7,
+                                string8: card.str8,
+                                string9: card.str9
                             };
                             if (card.id in raw) {
                                 raw[card.id].text[langName] = text;

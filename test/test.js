@@ -76,9 +76,9 @@ describe("Testing basic properties", function() {
         const card = await index.getCard(43694650);
         expect(card.data.names.en.category).to.be.a("array");
     });
-    it("List of databases should be [prerelease-cyho.cdb]", async function() {
+    it("List of databases should be [en/prerelease-cyho.cdb]", async function() {
         const card = await index.getCard(43694650);
-        expect(card.dbs).to.deep.equal(["prerelease-cyho.cdb"]);
+        expect(card.dbs).to.deep.equal(["en/prerelease-cyho.cdb"]);
     });
 });
 describe("Testing banlist", function() {
@@ -400,5 +400,17 @@ describe("Testing counters", function() {
     it("Testing reverse search", async function() {
         const ct = await ygoData.counters.reverseCounter("Spell Counter", "en");
         expect(ct).to.equal(0x1);
+    });
+});
+describe("Testing strings", function() {
+    it("Testing card with no strings", async function() {
+        const card = await index.getCard(55144522);
+        expect(card.text.en.strings.length).to.be.equal(16);
+        expect(card.text.en.strings[0].trim().length).to.be.equal(0);
+    });
+    it("Testing card with strings", async function() {
+        const card = await index.getCard(10000020);
+        expect(card.text.en.strings.length).to.be.equal(16);
+        expect(card.text.en.strings[0].trim().length).to.be.above(0);
     });
 });
