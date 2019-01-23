@@ -46,11 +46,8 @@ class CardList {
     }
 
     public update(opts: ICardListOpts, savePath: string) {
-        return new Promise((resolve, reject) => {
-            this.cards = this.load(opts, savePath);
-            this.cards.then(resolve);
-            this.cards.catch(reject);
-        });
+        // returns the same promise it registers to this.cards, so awaiting the function will await the update process
+        return (this.cards = this.load(opts, savePath));
     }
 
     public async getSimpleList(lang: string): Promise<ISimpleList> {

@@ -31,11 +31,7 @@ class Setcodes {
     }
 
     public update(conf: ISetcodesConf) {
-        return new Promise((resolve, reject) => {
-            this.codes = this.load(conf);
-            this.codes.then(resolve);
-            this.codes.catch(reject);
-        });
+        return (this.codes = this.load(conf));
     }
 
     private async loadConf(url: string): Promise<{ [code: number]: string }> {

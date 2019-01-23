@@ -31,11 +31,7 @@ class Counters {
     }
 
     public update(conf: ISetcodesConf) {
-        return new Promise((resolve, reject) => {
-            this.counters = this.load(conf);
-            this.counters.then(resolve);
-            this.counters.catch(reject);
-        });
+        return (this.counters = this.load(conf));
     }
 
     private async loadConf(url: string): Promise<{ [counter: number]: string }> {

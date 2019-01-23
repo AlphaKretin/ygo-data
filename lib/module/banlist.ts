@@ -15,11 +15,7 @@ class Banlist {
     }
 
     public update(url: string) {
-        return new Promise((resolve, reject) => {
-            this.lflist = this.load(url);
-            this.lflist.then(resolve);
-            this.lflist.catch(reject);
-        });
+        return (this.lflist = this.load(url));
     }
 
     private async load(url: string): Promise<{ [list: string]: { [code: number]: number } }> {
