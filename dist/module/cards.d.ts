@@ -22,7 +22,7 @@ export interface ISimpleCard {
 declare class CardList {
     private cards?;
     getCard(id: number | string): Promise<Card | undefined>;
-    update(opts: ICardListOpts, savePath: string): void;
+    update(opts: ICardListOpts, savePath: string): Promise<{}>;
     getSimpleList(lang: string): Promise<ISimpleList>;
     getRawCardList(): Promise<ICardList>;
     private downloadSingleDB;

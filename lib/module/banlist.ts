@@ -15,8 +15,10 @@ class Banlist {
     }
 
     public update(url: string) {
-        this.lflist = this.load(url).catch(e => {
-            throw e;
+        return new Promise((resolve, reject) => {
+            this.lflist = this.load(url);
+            this.lflist.then(resolve);
+            this.lflist.catch(reject);
         });
     }
 

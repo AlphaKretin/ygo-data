@@ -19,7 +19,7 @@ const translations_1 = require("./module/translations");
 exports.translations = translations_1.translations;
 class YgoData {
     constructor(configPath, savePath) {
-        // TODO: Add some configurability here
+        // TODO: Add some this.configurability here
         this.fuseOpts = {
             distance: 100,
             includeScore: true,
@@ -30,7 +30,7 @@ class YgoData {
             shouldSort: true,
             threshold: 0.2
         };
-        const config = JSON.parse(fs.readFileSync(configPath, "utf8"), (key, value) => {
+        this.config = JSON.parse(fs.readFileSync(configPath, "utf8"), (key, value) => {
             // if object with hex keys
             if (typeof value === "object" && Object.keys(value).length > 0 && Object.keys(value)[0].startsWith("0x")) {
                 const newObj = {};
@@ -43,21 +43,25 @@ class YgoData {
             }
             return value;
         });
-        try {
-            cards_1.cards.update(config.cardOpts, savePath);
-            banlist_1.banlist.update(config.banlist);
-        }
-        catch (e) {
-            throw e;
-        }
-        counters_1.counters.update(config.stringOpts);
-        setcodes_1.setcodes.update(config.stringOpts);
-        translations_1.translations.update(config.transOpts);
-        filterNames_1.updateFilterNames(config.filterNames);
-        images_1.images.update(config.imageLink, config.imageExt);
+        this.savePath = savePath;
+        this.update();
+    }
+    async update() {
+        const proms = [];
+        proms.push(cards_1.cards.update(this.config.cardOpts, this.savePath));
+        proms.push(banlist_1.banlist.update(this.config.banlist));
+        proms.push(counters_1.counters.update(this.config.stringOpts));
+        proms.push(setcodes_1.setcodes.update(this.config.stringOpts));
+        translations_1.translations.update(this.config.transOpts);
+        filterNames_1.updateFilterNames(this.config.filterNames);
+        images_1.images.update(this.config.imageLink, this.config.imageExt);
         this.fuses = {};
-        this.langs = Object.keys(config.cardOpts.langs);
-        this.shortcuts = config.shortcuts;
+        this.internalLangs = Object.keys(this.config.cardOpts.langs);
+        this.shortcuts = this.config.shortcuts;
+        await Promise.all(proms);
+    }
+    get langs() {
+        return this.internalLangs;
     }
     async getCard(id, lang) {
         if (typeof id === "number") {

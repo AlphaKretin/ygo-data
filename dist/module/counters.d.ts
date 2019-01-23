@@ -5,7 +5,7 @@ declare class Counters {
     private counters?;
     getCounter(counter: number, lang: string): Promise<string | undefined>;
     reverseCounter(name: string, lang: string): Promise<number | undefined>;
-    update(conf: ISetcodesConf): void;
+    update(conf: ISetcodesConf): Promise<{}>;
     private loadConf;
     private load;
 }

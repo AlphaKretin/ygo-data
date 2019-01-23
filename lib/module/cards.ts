@@ -46,8 +46,10 @@ class CardList {
     }
 
     public update(opts: ICardListOpts, savePath: string) {
-        this.cards = this.load(opts, savePath).catch(e => {
-            throw e;
+        return new Promise((resolve, reject) => {
+            this.cards = this.load(opts, savePath);
+            this.cards.then(resolve);
+            this.cards.catch(reject);
         });
     }
 

@@ -6,11 +6,15 @@ import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType
 import { setcodes } from "./module/setcodes";
 import { translations } from "./module/translations";
 declare class YgoData {
-    readonly langs: string[];
+    private internalLangs;
     private fuseOpts;
     private fuses;
     private shortcuts?;
+    private config;
+    private savePath;
     constructor(configPath: string, savePath: string);
+    update(): Promise<void>;
+    readonly langs: string[];
     getCard(id: number | string, lang?: string): Promise<Card | undefined>;
     getCardList(): Promise<ICardList>;
     getFuseList(query: string, lang: string): Promise<ISimpleCard[]>;

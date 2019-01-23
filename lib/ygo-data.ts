@@ -12,8 +12,8 @@ import { setcodes } from "./module/setcodes";
 import { translations } from "./module/translations";
 
 class YgoData {
-    public readonly langs: string[];
-    // TODO: Add some configurability here
+    private internalLangs!: string[];
+    // TODO: Add some this.configurability here
     private fuseOpts: Fuse.FuseOptions<ISimpleCard> = {
         distance: 100,
         includeScore: true,
@@ -24,10 +24,12 @@ class YgoData {
         shouldSort: true,
         threshold: 0.2
     };
-    private fuses: { [lang: string]: Fuse<ISimpleCard> };
+    private fuses!: { [lang: string]: Fuse<ISimpleCard> };
     private shortcuts?: { [lang: string]: { [short: string]: string } };
+    private config: any;
+    private savePath: string;
     constructor(configPath: string, savePath: string) {
-        const config = JSON.parse(fs.readFileSync(configPath, "utf8"), (key, value) => {
+        this.config = JSON.parse(fs.readFileSync(configPath, "utf8"), (key, value) => {
             // if object with hex keys
             if (typeof value === "object" && Object.keys(value).length > 0 && Object.keys(value)[0].startsWith("0x")) {
                 const newObj: { [i: number]: any } = {};
@@ -40,20 +42,27 @@ class YgoData {
             }
             return value;
         });
-        try {
-            cards.update(config.cardOpts, savePath);
-            banlist.update(config.banlist);
-        } catch (e) {
-            throw e;
-        }
-        counters.update(config.stringOpts);
-        setcodes.update(config.stringOpts);
-        translations.update(config.transOpts);
-        updateFilterNames(config.filterNames);
-        images.update(config.imageLink, config.imageExt);
+        this.savePath = savePath;
+        this.update();
+    }
+
+    public async update() {
+        const proms: Array<Promise<any>> = [];
+        proms.push(cards.update(this.config.cardOpts, this.savePath));
+        proms.push(banlist.update(this.config.banlist));
+        proms.push(counters.update(this.config.stringOpts));
+        proms.push(setcodes.update(this.config.stringOpts));
+        translations.update(this.config.transOpts);
+        updateFilterNames(this.config.filterNames);
+        images.update(this.config.imageLink, this.config.imageExt);
         this.fuses = {};
-        this.langs = Object.keys(config.cardOpts.langs);
-        this.shortcuts = config.shortcuts;
+        this.internalLangs = Object.keys(this.config.cardOpts.langs);
+        this.shortcuts = this.config.shortcuts;
+        await Promise.all(proms);
+    }
+
+    get langs(): string[] {
+        return this.internalLangs;
     }
 
     public async getCard(id: number | string, lang?: string): Promise<Card | undefined> {

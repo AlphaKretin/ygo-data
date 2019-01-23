@@ -24,7 +24,11 @@ class Setcodes {
         }
     }
     update(conf) {
-        this.codes = this.load(conf);
+        return new Promise((resolve, reject) => {
+            this.codes = this.load(conf);
+            this.codes.then(resolve);
+            this.codes.catch(reject);
+        });
     }
     async loadConf(url) {
         const re = /!setname (0x[\da-fA-F]+) (.+)/g;
