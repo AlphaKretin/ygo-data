@@ -24,11 +24,7 @@ class Counters {
         }
     }
     update(conf) {
-        return new Promise((resolve, reject) => {
-            this.counters = this.load(conf);
-            this.counters.then(resolve);
-            this.counters.catch(reject);
-        });
+        return (this.counters = this.load(conf));
     }
     async loadConf(url) {
         const re = /!counter (0x[\da-fA-F]+) (.+)/g;
