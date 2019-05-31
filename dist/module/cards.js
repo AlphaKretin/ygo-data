@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const octokit = require("@octokit/rest");
 const mkdirp = require("mkdirp");
 const fs = require("mz/fs");
-const request = require("request-promise-native");
+const node_fetch_1 = require("node-fetch");
 const sqlite = require("sqlite");
 const util = require("util");
 const Card_1 = require("../class/Card");
@@ -46,10 +46,7 @@ class CardList {
     }
     async downloadSingleDB(file, filePath) {
         const fullPath = filePath + file.name;
-        const result = await request({
-            encoding: null,
-            url: file.download_url
-        });
+        const result = await (await node_fetch_1.default(file.download_url)).buffer();
         await fs.writeFile(fullPath, result);
     }
     async downloadDBs(opts, savePath) {

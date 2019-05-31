@@ -1,4 +1,4 @@
-import * as request from "request-promise-native";
+import fetch from "node-fetch";
 
 interface ISetcodesConf {
     [lang: string]: string;
@@ -36,7 +36,7 @@ class Setcodes {
 
     private async loadConf(url: string): Promise<{ [code: number]: string }> {
         const re = /!setname (0x[\da-fA-F]+) (.+)/g;
-        const stringsConf = await request(url);
+        const stringsConf = await (await fetch(url)).text();
         const file = stringsConf.split(/\n|\r|\r\n/);
         const list: { [code: number]: string } = {};
         for (const line of file) {

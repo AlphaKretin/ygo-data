@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { CardData, ICardDataRaw } from "./CardData";
 import { CardText, ICardTextRaw } from "./CardText";
 export interface ICardRaw {

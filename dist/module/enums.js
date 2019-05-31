@@ -40,6 +40,11 @@ var CardType;
     CardType[CardType["TYPE_PLUS"] = 536870912] = "TYPE_PLUS";
     CardType[CardType["TYPE_MINUS"] = 1073741824] = "TYPE_MINUS";
 })(CardType = exports.CardType || (exports.CardType = {}));
+// TYPES_NORTUNER = 0x1011
+// TYPES_EFFTUNER = 0x1021
+// TYPES_EFFPEND = 0x1000021
+// TYPES_EFFSYNC = 0x2021
+// TYPES_TOKEN = 0x4011
 var CardAttribute;
 (function (CardAttribute) {
     CardAttribute[CardAttribute["ATTRIBUTE_EARTH"] = 1] = "ATTRIBUTE_EARTH";

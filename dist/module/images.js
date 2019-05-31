@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const request = require("request-promise-native");
+const node_fetch_1 = require("node-fetch");
 class Images {
     getLink(code) {
         if (!this.link || !this.ext) {
@@ -13,7 +13,7 @@ class Images {
             throw new Error("Image URL not loaded!");
         }
         try {
-            const image = await request(this.getLink(code), { encoding: null });
+            const image = await (await node_fetch_1.default(this.getLink(code))).buffer();
             return image;
         }
         catch (e) {

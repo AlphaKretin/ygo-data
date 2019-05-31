@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const request = require("request-promise-native");
+const node_fetch_1 = require("node-fetch");
 class Banlist {
     async getStatus(code, list) {
         if (!this.lflist) {
@@ -16,7 +16,7 @@ class Banlist {
         return (this.lflist = this.load(url));
     }
     async load(url) {
-        const lflistConf = await request(url);
+        const lflistConf = await (await node_fetch_1.default(url)).text();
         const file = lflistConf.split(/\n|\r|\r\n/);
         const list = {};
         let curList;

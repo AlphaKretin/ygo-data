@@ -1,4 +1,4 @@
-import * as request from "request-promise-native";
+import fetch from "node-fetch";
 
 class Banlist {
     private lflist?: Promise<{ [list: string]: { [code: number]: number } }>;
@@ -19,7 +19,7 @@ class Banlist {
     }
 
     private async load(url: string): Promise<{ [list: string]: { [code: number]: number } }> {
-        const lflistConf = await request(url);
+        const lflistConf = await (await fetch(url)).text();
         const file = lflistConf.split(/\n|\r|\r\n/);
         const list: { [list: string]: { [code: number]: number } } = {};
         let curList: string | undefined;

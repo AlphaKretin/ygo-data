@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const request = require("request-promise-native");
+const node_fetch_1 = require("node-fetch");
 class Setcodes {
     async getCode(code, lang) {
         if (!this.codes) {
@@ -28,7 +28,7 @@ class Setcodes {
     }
     async loadConf(url) {
         const re = /!setname (0x[\da-fA-F]+) (.+)/g;
-        const stringsConf = await request(url);
+        const stringsConf = await (await node_fetch_1.default(url)).text();
         const file = stringsConf.split(/\n|\r|\r\n/);
         const list = {};
         for (const line of file) {

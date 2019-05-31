@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const request = require("request-promise-native");
+const node_fetch_1 = require("node-fetch");
 const banlist_1 = require("../module/banlist");
 const cards_1 = require("../module/cards");
 const images_1 = require("../module/images");
@@ -83,8 +83,8 @@ class Card {
             try {
                 // TODO: again this is hardcoded but it has to be in english for this to work so.
                 // The source for OCG prices is dying :(
-                const body = await request("https://yugiohprices.com/api/get_card_prices/" + encodeURIComponent(this.text.en.name));
-                let result = JSON.parse(body);
+                const body = await node_fetch_1.default("https://yugiohprices.com/api/get_card_prices/" + encodeURIComponent(this.text.en.name));
+                let result = await body.json();
                 if (result instanceof Array) {
                     result = result[0];
                 }

@@ -1,4 +1,4 @@
-import * as request from "request-promise-native";
+import fetch from "node-fetch";
 import { banlist } from "../module/banlist";
 import { cards } from "../module/cards";
 import { images } from "../module/images";
@@ -107,10 +107,10 @@ export class Card {
             try {
                 // TODO: again this is hardcoded but it has to be in english for this to work so.
                 // The source for OCG prices is dying :(
-                const body = await request(
+                const body = await fetch(
                     "https://yugiohprices.com/api/get_card_prices/" + encodeURIComponent(this.text.en.name)
                 );
-                let result = JSON.parse(body);
+                let result = await body.json();
                 if (result instanceof Array) {
                     result = result[0];
                 }

@@ -1,7 +1,7 @@
 import * as octokit from "@octokit/rest";
 import * as mkdirp from "mkdirp";
 import * as fs from "mz/fs";
-import * as request from "request-promise-native";
+import fetch from "node-fetch";
 import * as sqlite from "sqlite";
 import * as util from "util";
 import { Card, ICardRaw } from "../class/Card";
@@ -76,10 +76,7 @@ class CardList {
 
     private async downloadSingleDB(file: any, filePath: string): Promise<void> {
         const fullPath = filePath + file.name;
-        const result = await request({
-            encoding: null,
-            url: file.download_url
-        });
+        const result = await (await fetch(file.download_url)).buffer();
         await fs.writeFile(fullPath, result);
     }
 

@@ -1,4 +1,4 @@
-import * as request from "request-promise-native";
+import fetch from "node-fetch";
 
 interface ISetcodesConf {
     [lang: string]: string;
@@ -36,7 +36,7 @@ class Counters {
 
     private async loadConf(url: string): Promise<{ [counter: number]: string }> {
         const re = /!counter (0x[\da-fA-F]+) (.+)/g;
-        const stringsConf = await request(url);
+        const stringsConf = await (await fetch(url)).text();
         const file = stringsConf.split(/\n|\r|\r\n/);
         const list: { [counter: number]: string } = {};
         for (const line of file) {

@@ -1,4 +1,3 @@
-/// <reference types="node" />
 declare class Images {
     private link?;
     private ext?;

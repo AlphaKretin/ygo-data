@@ -1,4 +1,4 @@
-import * as request from "request-promise-native";
+import fetch from "node-fetch";
 
 class Images {
     private link?: string;
@@ -16,7 +16,7 @@ class Images {
             throw new Error("Image URL not loaded!");
         }
         try {
-            const image = await request(this.getLink(code), { encoding: null });
+            const image = await (await fetch(this.getLink(code))).buffer();
             return image;
         } catch (e) {
             return undefined;
