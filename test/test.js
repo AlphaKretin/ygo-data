@@ -10,6 +10,12 @@ const filter = new ygoData.Filter({
     race: [{ no: [ygoData.enums.race.RACE_FAIRY] }]
 });
 
+describe("Testing loading order", function() {
+    it("Underclock Taker should be TCG", async function() {
+        const card = await index.getCard("Underclock Taker", "en");
+        expect(card.data.isOT(ygoData.enums.ot.OT_TCG)).to.be.true;
+    });
+});
 describe("Testing searches", function() {
     it("Name should be Danger!? Jackalope? searching with ID", async function() {
         const card = await index.getCard(43694650);
