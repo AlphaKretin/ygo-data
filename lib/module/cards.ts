@@ -151,6 +151,12 @@ class CardList {
                             };
                             if (card.id in raw) {
                                 raw[card.id].text[langName] = text;
+                                const firstLang = raw[card.id].dbs[0].split("/")[0]; // get first language loaded
+                                if (dbName !== "cards.cdb" && langName === firstLang) {
+                                    // overwrite data with what should be more updated version,
+                                    // if same lang as first and not the base DB
+                                    raw[card.id].data = data;
+                                }
                                 raw[card.id].dbs.push(langName + "/" + dbName);
                             } else {
                                 const cardRaw: ICardRaw = {
