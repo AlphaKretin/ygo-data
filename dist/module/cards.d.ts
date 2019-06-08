@@ -13,6 +13,7 @@ interface ICardListOpts {
             remoteDBs?: octokit.ReposGetContentsParams[];
         };
     };
+    baseDbs?: string[];
     gitAuth?: octokit.Auth;
 }
 export interface ISimpleCard {

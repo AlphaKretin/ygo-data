@@ -19,7 +19,7 @@ const translations_1 = require("./module/translations");
 exports.translations = translations_1.translations;
 class YgoData {
     constructor(configPath, savePath) {
-        // TODO: Add some this.configurability here
+        // TODO: Add some configurability here
         this.fuseOpts = {
             distance: 100,
             includeScore: true,

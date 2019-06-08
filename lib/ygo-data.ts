@@ -13,7 +13,7 @@ import { translations } from "./module/translations";
 
 class YgoData {
     private internalLangs!: string[];
-    // TODO: Add some this.configurability here
+    // TODO: Add some configurability here
     private fuseOpts: Fuse.FuseOptions<ISimpleCard> = {
         distance: 100,
         includeScore: true,

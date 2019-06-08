@@ -15,6 +15,10 @@ describe("Testing loading order", function() {
         const card = await index.getCard("Underclock Taker", "en");
         expect(card.data.isOT(ygoData.enums.ot.OT_TCG)).to.be.true;
     });
+    it("Drain Time should be tokenised", async function() {
+        const card = await index.getCard("Drain Time", "en");
+        expect(card.data.isType(ygoData.enums.type.TYPE_TOKEN)).to.be.true;
+    });
 });
 describe("Testing searches", function() {
     it("Name should be Danger!? Jackalope? searching with ID", async function() {
