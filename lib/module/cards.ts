@@ -151,14 +151,35 @@ class CardList {
                                 string9: card.str9
                             };
                             if (card.id in raw) {
-                                raw[card.id].text[langName] = text;
                                 const firstLang = raw[card.id].dbs[0].split("/")[0]; // get first language loaded
-                                if (langName === firstLang && opts.baseDbs && !opts.baseDbs.includes(dbName)) {
-                                    // overwrite data with what should be more updated version,
-                                    // if same lang as first and not the base DB
-                                    raw[card.id].data = data;
+                                raw[card.id].dbs.push(langName + "/" + dbName); // update DB list no matter what
+                                if (langName === firstLang) {
+                                    // only pull data updates from same language as initial
+                                    if (opts.baseDbs) {
+                                        // don't update from a base DB, those should be superceded
+                                        if (!opts.baseDbs.includes(dbName)) {
+                                            raw[card.id].data = data;
+                                        }
+                                    } else {
+                                        // if no base DBs, update no matter what
+                                        raw[card.id].data = data;
+                                    }
                                 }
-                                raw[card.id].dbs.push(langName + "/" + dbName);
+                                // text updates need to follow logic regardless of current language
+                                if (langName in raw[card.id].text) {
+                                    if (opts.baseDbs) {
+                                        // don't update from a base DB, those should be superceded
+                                        if (!opts.baseDbs.includes(dbName)) {
+                                            raw[card.id].text[langName] = text;
+                                        }
+                                    } else {
+                                        // if no base DBs, update no matter what
+                                        raw[card.id].text[langName] = text;
+                                    }
+                                } else {
+                                    // always push the text if we don't have any for this language yet
+                                    raw[card.id].text[langName] = text;
+                                }
                             } else {
                                 const cardRaw: ICardRaw = {
                                     data,

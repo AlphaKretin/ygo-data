@@ -19,6 +19,14 @@ describe("Testing loading order", function() {
         const card = await index.getCard("Drain Time", "en");
         expect(card.data.isType(ygoData.enums.type.TYPE_TOKEN)).to.be.true;
     });
+    it("Divine Gate should use latest name", async function() {
+        const card = await index.getCard(511002326);
+        expect(card.text.en.name).to.equal("Divine Gate");
+    });
+    it("Odd-Eyes Pendulum Dragon's pendulum heading should be updated", async function() {
+        const card = await index.getCard("Odd-Eyes Pendulum Dragon", "en");
+        expect(card.text.en.desc.pendHead).to.equal("Pendulum Effect");
+    });
 });
 describe("Testing searches", function() {
     it("Name should be Danger!? Jackalope? searching with ID", async function() {
@@ -291,7 +299,7 @@ describe("Testing Pendulum text", function() {
     });
     it("Pendulum should have 4 properties", async function() {
         const card = await index.getCard("Odd-Eyes Pendulum Dragon", "en");
-        expect(card.text.en.desc.pendHead).to.equal("Pendulum Effect");
+        expect(card.text.en.desc.pendHead).to.contain("Pendulum");
         expect(card.text.en.desc.monsterHead).to.equal("Monster Effect");
         expect(card.text.en.desc.pendBody.length).to.be.below(350);
         expect(card.text.en.desc.monsterBody.length).to.be.below(125);
