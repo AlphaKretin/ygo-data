@@ -52,7 +52,7 @@ class CardList {
     async downloadDBs(opts, savePath) {
         const github = new octokit();
         if (opts.gitAuth) {
-            github.authenticate(opts.gitAuth);
+            github.authenticate({ type: "token", token: opts.gitAuth });
         }
         const proms = [];
         for (const langName in opts.langs) {

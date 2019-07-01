@@ -24,7 +24,7 @@ interface ICardListOpts {
         };
     };
     baseDbs?: string[];
-    gitAuth?: octokit.Auth;
+    gitAuth?: string;
 }
 
 export interface ISimpleCard {
@@ -84,7 +84,7 @@ class CardList {
     private async downloadDBs(opts: ICardListOpts, savePath: string): Promise<void> {
         const github = new octokit();
         if (opts.gitAuth) {
-            github.authenticate(opts.gitAuth);
+            github.authenticate({ type: "token", token: opts.gitAuth });
         }
         const proms: Array<Promise<void>> = [];
         for (const langName in opts.langs) {

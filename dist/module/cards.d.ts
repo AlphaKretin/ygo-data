@@ -14,7 +14,7 @@ interface ICardListOpts {
         };
     };
     baseDbs?: string[];
-    gitAuth?: octokit.Auth;
+    gitAuth?: string;
 }
 export interface ISimpleCard {
     id: number;
