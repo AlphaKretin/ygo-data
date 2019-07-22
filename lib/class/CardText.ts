@@ -55,30 +55,33 @@ export class CardText {
     }
 
     private getPText(): string[] {
-        const lines = this.literalDesc.split(/\r\n|\n|\r/);
-        if (lines.length > 1) {
-            let ind = lines.findIndex(l => l.indexOf("---") > -1);
-            if (ind === -1) {
-                for (let i = lines.length - 1; i >= 0; i--) {
-                    if (lines[i].indexOf("【") > -1) {
-                        ind = i;
-                        break;
-                    }
-                }
-                if (ind === -1) {
-                    return [this.literalDesc];
-                }
-                lines.splice(ind, 0, "---");
+        // english regex from https://github.com/247321453/DataEditorX/blob/master/DataEditorX/data/mse_English.txt#L25
+        const ENG_PEND_REG = /\[ Pendulum Effect \]\s*\n(?:-n\/a-)*([\S\s]*?)\n---/;
+        const ENG_MON_REG = /(Monster Effect|Flavor Text) \]\s*\n([\S\s]*)/;
+        const engPendResult = ENG_PEND_REG.exec(this.literalDesc);
+        if (engPendResult) {
+            const engMonResult = ENG_MON_REG.exec(this.literalDesc);
+            if (engMonResult) {
+                // we expect the monster text should always exist
+                // if it doesn't just continue as if not a pend and figure it out later
+                return ["Pendulum Effect", engPendResult[1], engMonResult[1], engMonResult[2]];
             }
-            const bracketReg = /\[|\]|【|】/g;
-            const head1 = lines[0].replace(bracketReg, "").trim();
-            const head2 = lines
-                .slice(ind + 1, ind + 2)[0]
-                .replace(bracketReg, "")
-                .trim();
-            // a few lines are skipped because each section has headings
-            return [head1, lines.slice(1, ind).join("\n"), head2, lines.slice(ind + 2).join("\n")];
+            console.error("Malformed Pend Monster text in English for %s!", this.name);
         }
+        // jpn regex from https://github.com/247321453/DataEditorX/blob/master/DataEditorX/data/mse_Japanese.txt#L27
+        const JPN_PEND_REG = /】[\s\S]*?\n([\S\s]*?)\n【/;
+        const JPN_MON_REG = /【([\S\s]*?[果|介|述|報])】\n([\S\s]*)/;
+        const jpnPendResult = JPN_PEND_REG.exec(this.literalDesc);
+        if (jpnPendResult) {
+            const jpnMonResult = JPN_MON_REG.exec(this.literalDesc);
+            if (jpnMonResult) {
+                return ["Ｐ効果", jpnPendResult[1], jpnMonResult[1], jpnMonResult[2]];
+            }
+            console.error("Malformed Pend Monster text in Japanese or Chinese for %s!", this.name);
+        }
+        // chinese regexes appear to be the same, but for posterity:
+        // trad: https://github.com/247321453/DataEditorX/blob/master/DataEditorX/data/mse_Chinese-Traditional.txt#L29
+        // simple: https://github.com/247321453/DataEditorX/blob/master/DataEditorX/data/mse_Chinese-Simplified.txt#L29
         return [this.literalDesc];
     }
 
