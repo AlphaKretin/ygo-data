@@ -332,6 +332,14 @@ describe("Testing filter system", function() {
             setcode: [{ yes: [0x8], no: [] }]
         });
     });
+    it("Test for D/D error", async function() {
+        const obj = await ygoData.Filter.parse("set:D/D/Tindangle", "en");
+        const filter = new ygoData.Filter(obj);
+        const cards = await index.getCardList();
+        const finalCards = filter.filter(cards);
+        expect(finalCards.find(c => c.data.isSetCode(0xaf))).to.not.be.undefined;
+        expect(finalCards.find(c => c.data.isSetCode(0x10b))).to.not.be.undefined;
+    });
     it("Should contain only non-Fairy cards", async function() {
         const cards = await index.getCardList();
         const finalCards = filter.filter(cards);
@@ -406,8 +414,8 @@ describe("Testing setcodes", function() {
         expect(arch).to.equal("Ally of Justice");
     });
     it("Testing reverse search", async function() {
-        const code = await ygoData.setcodes.reverseCode("Ally of Justice", "en");
-        expect(code).to.equal(0x1);
+        const code = await ygoData.setcodes.reverseCode("D/D", "en");
+        expect(code).to.equal(0xaf);
     });
 });
 describe("Testing counters", function() {
