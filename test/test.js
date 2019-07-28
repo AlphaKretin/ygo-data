@@ -122,6 +122,49 @@ describe("Testing translation", function() {
         expect(card.text.ja.name).to.equal("寝ガエル");
     });
 });
+describe("Testing string dictionary", function() {
+    const tl = ygoData.translations.getTrans("en");
+    it("Testing straight type search", async function() {
+        const race = tl.getType(ygoData.enums.type.TYPE_RITUAL);
+        expect(race).to.equal("Ritual");
+    });
+    it("Testing reverse type search", async function() {
+        const val = tl.reverseType("Ritual");
+        expect(val).to.equal(ygoData.enums.type.TYPE_RITUAL);
+    });
+    it("Testing straight race search", async function() {
+        const race = tl.getRace(ygoData.enums.race.RACE_FAIRY);
+        expect(race).to.equal("Fairy");
+    });
+    it("Testing reverse race search", async function() {
+        const val = tl.reverseRace("Fairy");
+        expect(val).to.equal(ygoData.enums.race.RACE_FAIRY);
+    });
+    it("Testing straight att search", async function() {
+        const race = tl.getAttribute(ygoData.enums.attribute.ATTRIBUTE_DARK);
+        expect(race).to.equal("Dark");
+    });
+    it("Testing reverse att search", async function() {
+        const val = tl.reverseAttribute("Dark");
+        expect(val).to.equal(ygoData.enums.attribute.ATTRIBUTE_DARK);
+    });
+    it("Testing straight OT search", async function() {
+        const race = tl.getOT(ygoData.enums.ot.OT_TCG);
+        expect(race).to.equal("TCG");
+    });
+    it("Testing reverse OT search", async function() {
+        const val = tl.reverseOT("TCG");
+        expect(val).to.equal(ygoData.enums.ot.OT_TCG);
+    });
+    it("Testing straight category search", async function() {
+        const race = tl.getCategory(ygoData.enums.category.CATEGORY_BANISH);
+        expect(race).to.equal("Banish");
+    });
+    it("Testing reverse OT search", async function() {
+        const val = tl.reverseCategory("Banish");
+        expect(val).to.equal(ygoData.enums.category.CATEGORY_BANISH);
+    });
+});
 describe("Testing image functions", function() {
     it("Image should be a buffer", async function() {
         const card = await index.getCard(47346782);
@@ -332,6 +375,14 @@ describe("Testing filter system", function() {
             setcode: [{ yes: [0x8], no: [] }]
         });
     });
+    it("Test for D/D error", async function() {
+        const obj = await ygoData.Filter.parse("set:D/D/Tindangle", "en");
+        const filter = new ygoData.Filter(obj);
+        const cards = await index.getCardList();
+        const finalCards = filter.filter(cards);
+        expect(finalCards.find(c => c.data.isSetCode(0xaf))).to.not.be.undefined;
+        expect(finalCards.find(c => c.data.isSetCode(0x10b))).to.not.be.undefined;
+    });
     it("Should contain only non-Fairy cards", async function() {
         const cards = await index.getCardList();
         const finalCards = filter.filter(cards);
@@ -406,8 +457,8 @@ describe("Testing setcodes", function() {
         expect(arch).to.equal("Ally of Justice");
     });
     it("Testing reverse search", async function() {
-        const code = await ygoData.setcodes.reverseCode("Ally of Justice", "en");
-        expect(code).to.equal(0x1);
+        const code = await ygoData.setcodes.reverseCode("D/D", "en");
+        expect(code).to.equal(0xaf);
     });
 });
 describe("Testing counters", function() {

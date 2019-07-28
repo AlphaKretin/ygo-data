@@ -51,10 +51,17 @@ function checkName(name, names) {
     }
     return false;
 }
+const FILLER_CHAR = "Φ"; // any string that shouldn't appear in a query, for temporary find-replacing
 async function parseProperty(query, f) {
     const out = [];
-    const ands = query.split("/");
-    for (const and of ands) {
+    // special case for D/D breaking the OR notation
+    const cleanQuery = query
+        .replace(/d\/d\/d/g, `d${FILLER_CHAR}d${FILLER_CHAR}d`)
+        .replace(/d\/d/g, `d${FILLER_CHAR}d`);
+    const ands = cleanQuery.split("/");
+    for (const temp of ands) {
+        // convert back from D/D special case
+        const and = temp.replace(new RegExp(FILLER_CHAR, "g"), "/");
         const a = { yes: [], no: [] };
         const props = and.split("+");
         for (const prop of props) {
