@@ -351,7 +351,7 @@ describe("Testing Pendulum text", function() {
         const card = await index.getCard("オッドアイズ・ペンデュラム・ドラゴン", "ja");
         expect(card.text.ja.desc.pendHead).to.equal("Ｐ効果");
         expect(card.text.ja.desc.monsterHead).to.equal("モンスター効果");
-        expect(card.text.ja.desc.pendBody.length).to.be.below(150);
+        expect(card.text.ja.desc.pendBody.length).to.be.below(200);
         expect(card.text.ja.desc.monsterBody.length).to.be.below(50);
     });
 });
