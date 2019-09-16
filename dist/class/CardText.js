@@ -13,24 +13,48 @@ class CardText {
         const ENG_MON_REG = /(Monster Effect|Flavor Text) \]\s*[\r\n|\r|\n]([\S\s]*)/;
         const engPendResult = ENG_PEND_REG.exec(this.literalDesc);
         if (engPendResult) {
+            let pendEff = engPendResult[1].trim();
+            if (pendEff.length < 1) {
+                pendEff = "[no card text]";
+            }
+            let monHead = "";
+            let monText = "";
             const engMonResult = ENG_MON_REG.exec(this.literalDesc);
             if (engMonResult) {
-                // we expect the monster text should always exist
-                // if it doesn't just continue as if not a pend and figure it out later
-                return ["Pendulum Effect", engPendResult[1].trim(), engMonResult[1].trim(), engMonResult[2].trim()];
+                monHead = engMonResult[1].trim();
+                monText = engMonResult[2].trim();
             }
-            console.error("Malformed Pend Monster text in English for %s!", this.name);
+            if (monHead.length < 1) {
+                monHead = "Card Text";
+            }
+            if (monText.length < 1) {
+                monText = "[no card text]";
+            }
+            return ["Pendulum Effect", pendEff, monHead, monText];
         }
         // jpn regex from https://github.com/247321453/DataEditorX/blob/master/DataEditorX/data/mse_Japanese.txt#L27
         const JPN_PEND_REG = /】[\s\S]*?[\r\n|\r|\n]([\S\s]*?)[\r\n|\r|\n]【/;
         const JPN_MON_REG = /[\r\n|\r|\n]【([\S\s]*?[果|介|述|報])】[\r\n|\r|\n]([\S\s]*)/;
         const jpnPendResult = JPN_PEND_REG.exec(this.literalDesc);
         if (jpnPendResult) {
+            let pendEff = jpnPendResult[1].trim();
+            if (pendEff.length < 1) {
+                pendEff = "テキストはありません。";
+            }
+            let monHead = "";
+            let monText = "";
             const jpnMonResult = JPN_MON_REG.exec(this.literalDesc);
             if (jpnMonResult) {
-                return ["Ｐ効果", jpnPendResult[1].trim(), jpnMonResult[1].trim(), jpnMonResult[2].trim()];
+                monHead = jpnMonResult[1].trim();
+                monText = jpnMonResult[2].trim();
             }
-            console.error("Malformed Pend Monster text in Japanese or Chinese for %s!", this.name);
+            if (monHead.length < 1) {
+                monHead = "テキスト";
+            }
+            if (monText.length < 1) {
+                monText = "テキストはありません。";
+            }
+            return ["Ｐ効果", pendEff, monHead, monText];
         }
         // chinese regexes appear to be the same, but for posterity:
         // trad: https://github.com/247321453/DataEditorX/blob/master/DataEditorX/data/mse_Chinese-Traditional.txt#L29
