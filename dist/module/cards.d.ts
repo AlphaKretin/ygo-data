@@ -19,6 +19,8 @@ interface ICardListOpts {
 export interface ISimpleCard {
     id: number;
     name: string;
+    anime: boolean;
+    custom: boolean;
 }
 declare class CardList {
     private cards?;

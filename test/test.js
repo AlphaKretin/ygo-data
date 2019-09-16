@@ -492,3 +492,14 @@ describe("Testing strings", function() {
         expect(card.text.en.strings[0].trim().length).to.be.above(0);
     });
 });
+describe("Test anime shortcut", function() {
+    it("Should find anime card", async function() {
+        const card = await index.getCard("Tindangle Acute Cerberus (Anime)", "en", true, true);
+        expect(card.data.isOT(ygoData.enums.ot.OT_ANIME)).to.be.true;
+    });
+    it("Should exclude anime card", async function() {
+        const card = await index.getCard("Tindangle Acute Cerberus (Anime)", "en", false, false);
+        expect(card).to.exist;
+        expect(card.data.isOT(ygoData.enums.ot.OT_ANIME)).to.be.false;
+    });
+});

@@ -28,7 +28,8 @@ class YgoData {
             maxPatternLength: 52,
             minMatchCharLength: 1,
             shouldSort: true,
-            threshold: 0.2
+            threshold: 0.25,
+            tokenize: true
         };
         this.config = JSON.parse(fs.readFileSync(configPath, "utf8"), (key, value) => {
             // if object with hex keys
@@ -63,7 +64,7 @@ class YgoData {
     get langs() {
         return this.internalLangs;
     }
-    async getCard(id, lang) {
+    async getCard(id, lang, allowAnime = true, allowCustom = true) {
         if (typeof id === "number") {
             const card = await cards_1.cards.getCard(id);
             return card;
@@ -76,7 +77,10 @@ class YgoData {
                 let resultCard;
                 for (const code in simpList) {
                     if (simpList.hasOwnProperty(code)) {
-                        if (simpList[code].name.toLowerCase() === term) {
+                        const entry = simpList[code];
+                        if (entry.name.toLowerCase() === term &&
+                            (allowAnime || !entry.anime) &&
+                            (allowCustom || !entry.custom)) {
                             const c = await cards_1.cards.getCard(code);
                             if (c) {
                                 resultCard = c;
@@ -95,7 +99,10 @@ class YgoData {
                     term = terms.join(" ");
                     for (const code in simpList) {
                         if (simpList.hasOwnProperty(code)) {
-                            if (simpList[code].name.toLowerCase() === term) {
+                            const entry = simpList[code];
+                            if (entry.name.toLowerCase() === term &&
+                                (allowAnime || !entry.anime) &&
+                                (allowCustom || !entry.custom)) {
                                 const c = await cards_1.cards.getCard(code);
                                 if (c) {
                                     resultCard = c;
@@ -107,7 +114,10 @@ class YgoData {
                 }
                 if (resultCard === undefined) {
                     const fuse = await this.getFuse(lang);
-                    const result = fuse.search(term);
+                    const result = fuse
+                        .search(term)
+                        // @ts-ignore
+                        .filter(r => (allowAnime || !r.item.anime) && (allowCustom || !r.item.custom));
                     if (result.length < 1) {
                         return undefined;
                     }

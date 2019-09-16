@@ -7,6 +7,7 @@ const node_fetch_1 = require("node-fetch");
 const sqlite = require("sqlite");
 const util = require("util");
 const Card_1 = require("../class/Card");
+const ygo_data_1 = require("../ygo-data");
 class CardList {
     async getCard(id) {
         if (!this.cards) {
@@ -31,8 +32,17 @@ class CardList {
         for (const key in list) {
             if (list.hasOwnProperty(key)) {
                 const card = list[key];
+                const anime = card.data.isOT(ygo_data_1.enums.ot.OT_ANIME) ||
+                    card.data.isOT(ygo_data_1.enums.ot.OT_ILLEGAL) ||
+                    card.data.isOT(ygo_data_1.enums.ot.OT_VIDEO_GAME);
                 if (lang in card.text) {
-                    map[card.id] = { id: card.id, name: card.text[lang].name };
+                    map[card.id] = {
+                        id: card.id,
+                        name: card.text[lang].name,
+                        // tslint:disable-next-line: object-literal-sort-keys
+                        anime,
+                        custom: card.data.isOT(ygo_data_1.enums.ot.OT_CUSTOM)
+                    };
                 }
             }
         }

@@ -22,7 +22,8 @@ class YgoData {
         maxPatternLength: 52,
         minMatchCharLength: 1,
         shouldSort: true,
-        threshold: 0.2
+        threshold: 0.25,
+        tokenize: true
     };
     private fuses!: { [lang: string]: Fuse<ISimpleCard> };
     private shortcuts?: { [lang: string]: { [short: string]: string } };
@@ -65,7 +66,12 @@ class YgoData {
         return this.internalLangs;
     }
 
-    public async getCard(id: number | string, lang?: string): Promise<Card | undefined> {
+    public async getCard(
+        id: number | string,
+        lang?: string,
+        allowAnime: boolean = true,
+        allowCustom: boolean = true
+    ): Promise<Card | undefined> {
         if (typeof id === "number") {
             const card = await cards.getCard(id);
             return card;
@@ -77,7 +83,12 @@ class YgoData {
                 let resultCard: Card | undefined;
                 for (const code in simpList) {
                     if (simpList.hasOwnProperty(code)) {
-                        if (simpList[code].name.toLowerCase() === term) {
+                        const entry = simpList[code];
+                        if (
+                            entry.name.toLowerCase() === term &&
+                            (allowAnime || !entry.anime) &&
+                            (allowCustom || !entry.custom)
+                        ) {
                             const c = await cards.getCard(code);
                             if (c) {
                                 resultCard = c;
@@ -96,7 +107,12 @@ class YgoData {
                     term = terms.join(" ");
                     for (const code in simpList) {
                         if (simpList.hasOwnProperty(code)) {
-                            if (simpList[code].name.toLowerCase() === term) {
+                            const entry = simpList[code];
+                            if (
+                                entry.name.toLowerCase() === term &&
+                                (allowAnime || !entry.anime) &&
+                                (allowCustom || !entry.custom)
+                            ) {
                                 const c = await cards.getCard(code);
                                 if (c) {
                                     resultCard = c;
@@ -108,7 +124,10 @@ class YgoData {
                 }
                 if (resultCard === undefined) {
                     const fuse = await this.getFuse(lang);
-                    const result = fuse.search(term);
+                    const result = fuse
+                        .search(term)
+                        // @ts-ignore
+                        .filter(r => (allowAnime || !r.item.anime) && (allowCustom || !r.item.custom));
                     if (result.length < 1) {
                         return undefined;
                     }

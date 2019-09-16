@@ -7,6 +7,7 @@ import * as util from "util";
 import { Card, ICardRaw } from "../class/Card";
 import { ICardDataRaw } from "../class/CardData";
 import { ICardTextRaw } from "../class/CardText";
+import { enums } from "../ygo-data";
 
 export interface ICardList {
     [id: number]: Card;
@@ -30,6 +31,8 @@ interface ICardListOpts {
 export interface ISimpleCard {
     id: number;
     name: string;
+    anime: boolean;
+    custom: boolean;
 }
 
 class CardList {
@@ -60,8 +63,18 @@ class CardList {
         for (const key in list) {
             if (list.hasOwnProperty(key)) {
                 const card = list[key];
+                const anime =
+                    card.data.isOT(enums.ot.OT_ANIME) ||
+                    card.data.isOT(enums.ot.OT_ILLEGAL) ||
+                    card.data.isOT(enums.ot.OT_VIDEO_GAME);
                 if (lang in card.text) {
-                    map[card.id] = { id: card.id, name: card.text[lang].name };
+                    map[card.id] = {
+                        id: card.id,
+                        name: card.text[lang].name,
+                        // tslint:disable-next-line: object-literal-sort-keys
+                        anime,
+                        custom: card.data.isOT(enums.ot.OT_CUSTOM)
+                    };
                 }
             }
         }
