@@ -450,6 +450,15 @@ describe("Testing filter system", function() {
         expect(finalCards.find(c => c.data.isSetCode(0x3008))).to.be.undefined;
         expect(finalCards.filter(c => c.data.isSetCode(0xc008)).length).to.be.above(0);
     });
+    it("Should not exclude alises such as Pacifis", async function() {
+        const cards = await index.getCardList();
+        const newFilter = new ygoData.Filter({
+            type: [{ yes: [ygoData.enums.type.TYPE_SPELL, ygoData.enums.type.TYPE_FIELD], no: [] }]
+        });
+        const finalCards = newFilter.filter(cards);
+        expect(finalCards.find(c => c.id === 22702055)).to.exist;
+        expect(finalCards.find(c => c.id === 2819435)).to.exist;
+    });
 });
 describe("Testing setcodes", function() {
     it("Testing straight search", async function() {
