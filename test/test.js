@@ -110,10 +110,10 @@ describe("Testing banlist", function() {
         const status = await card.status;
         expect(status).to.equal("Illegal: 3");
     });
-    it("OCG-Banned card should be OCG: 0/TCG: 3", async function() {
+    it("OCG-Limited card should be OCG: 1/TCG: 3", async function() {
         const card = await index.getCard("Dragonic Diagram", "en");
         const status = await card.status;
-        expect(status).to.equal("OCG: 0/TCG: 3");
+        expect(status).to.equal("OCG: 1/TCG: 3");
     });
 });
 describe("Testing translation", function() {
@@ -353,6 +353,15 @@ describe("Testing Pendulum text", function() {
         expect(card.text.ja.desc.monsterHead).to.equal("モンスター効果");
         expect(card.text.ja.desc.pendBody.length).to.be.below(200);
         expect(card.text.ja.desc.monsterBody.length).to.be.below(50);
+    });
+    it("Should handle missing Pendulum effect", async function() {
+        const card = await index.getCard(511009641);
+        expect(card.text.en.desc.pendBody).to.equal("[no card text]");
+    });
+    it("Should handle missing Monster text", async function() {
+        const card = await index.getCard(511007001);
+        expect(card.text.en.desc.monsterHead).to.equal("Card Text");
+        expect(card.text.en.desc.monsterBody).to.equal("[no card text]");
     });
 });
 describe("Testing filter system", function() {
