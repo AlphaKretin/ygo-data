@@ -512,3 +512,41 @@ describe("Test anime shortcut", function() {
         expect(card.data.isOT(ygoData.enums.ot.OT_ANIME)).to.be.false;
     });
 });
+describe("Testing Skill values", async function() {
+    it("Skill Card should be Skill type", async function() {
+        const card = await index.getCard("Viral Infection", "en");
+        expect(card.data.isType(ygoData.enums.type.TYPE_SKILL)).to.be.true;
+        expect(card.data.names.en.type).to.include("Skill");
+    });
+    it("Skill Card should be Speed Duel OT", async function() {
+        const card = await index.getCard("Viral Infection", "en");
+        expect(card.data.isOT(ygoData.enums.ot.OT_SPEED)).to.be.true;
+        expect(card.data.names.en.ot).to.include("Speed Duel");
+    });
+    it("Skill Card should have special Race", async function() {
+        const card = await index.getCard("Viral Infection", "en");
+        expect(card.data.isRace(ygoData.enums.skillRace.RACE_SKILL_KAIBA)).to.be.true;
+        expect(card.data.names.en.race).to.include("Kaiba");
+        expect(card.data.names.en.race).to.not.include("Fiend");
+    });
+    it("Skill Card's Type String should go Speed, Race, Other types", async function() {
+        const card = await index.getCard("It's a Toon World!", "en");
+        expect(card.data.isType(ygoData.enums.type.TYPE_SKILL)).to.be.true;
+        expect(card.data.isType(ygoData.enums.type.TYPE_SPELL)).to.be.true;
+        expect(card.data.isType(ygoData.enums.type.TYPE_CONTINUOUS)).to.be.true;
+        expect(card.data.isRace(ygoData.enums.skillRace.RACE_SKILL_PEGASUS)).to.be.true;
+        expect(card.data.names.en.typeString).to.equal("Skill/Pegasus/Spell/Continuous");
+    });
+    it("Skill Race should filter properly", async function() {
+        const filterData = await ygoData.Filter.parse("race:Kaiba", "en");
+        const filter = new ygoData.Filter(filterData);
+        const cards = await index.getCardList();
+        const results = filter.filter(cards);
+        expect(results.length).to.be.greaterThan(0);
+        expect(results.filter(r => r.data.isRace(ygoData.enums.skillRace.RACE_SKILL_KAIBA)).length).to.be.greaterThan(
+            0
+        );
+        expect(results.filter(r => r.data.names.en.type.includes("Kaiba")).length).to.be.greaterThan(0);
+        expect(results.filter(r => r.data.names.en.type.includes("Fiend")).length).to.equal(0);
+    });
+});
