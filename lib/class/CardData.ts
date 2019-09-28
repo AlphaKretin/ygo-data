@@ -114,7 +114,7 @@ export class CardData {
                     attribute: getNames(this.attribute, v => trans.getAttribute(v)),
                     category: getNames(this.category, v => trans.getCategory(v)),
                     ot: getNames(this.ot, v => trans.getOT(v)),
-                    race: getNames(this.race, v => trans.getRace(v)),
+                    race: getNames(this.race, v => trans.getRace(v, this.isType(CardType.TYPE_SKILL))),
                     setcode: getSetcodeNames(this.setcode, lang),
                     type: getNames(this.type, v => trans.getType(v)),
                     typeString: CardData.generateTypeString(this.type, this.race, trans)

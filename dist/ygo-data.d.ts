@@ -2,7 +2,7 @@ import { Card } from "./class/Card";
 import { Filter } from "./class/Filter";
 import { ICardList, ISimpleCard } from "./module/cards";
 import { counters } from "./module/counters";
-import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType, CardSkillRace } from "./module/enums";
+import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardSkillRace, CardType } from "./module/enums";
 import { setcodes } from "./module/setcodes";
 import { translations } from "./module/translations";
 declare class YgoData {

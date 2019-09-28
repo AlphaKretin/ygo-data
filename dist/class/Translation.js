@@ -6,6 +6,7 @@ class Translation {
         this.lang = name;
         this.type = raw.type;
         this.race = raw.race;
+        this.skillRace = raw.skillRace;
         this.attribute = raw.attribute;
         this.ot = raw.ot;
         this.category = raw.category;
@@ -25,15 +26,19 @@ class Translation {
             t = t * 2;
         }
     }
-    getRace(r) {
+    getRace(r, isSkill = false) {
+        if (isSkill) {
+            const sr = r;
+            return this.skillRace[sr];
+        }
         return this.race[r];
     }
-    reverseRace(s) {
+    reverseRace(s, isSkill = false) {
         const maxRace = enums_1.CardRace.RACE_CHARISMA;
         const q = s.toLowerCase().trim();
         let r = 1;
         while (r <= maxRace) {
-            const name = this.getRace(r);
+            const name = this.getRace(r, isSkill);
             if (name && name.toLowerCase().trim() === q) {
                 return r;
             }
