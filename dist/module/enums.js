@@ -37,10 +37,10 @@ var CardType;
     CardType[CardType["TYPE_PENDULUM"] = 16777216] = "TYPE_PENDULUM";
     CardType[CardType["TYPE_SPSUMMON"] = 33554432] = "TYPE_SPSUMMON";
     CardType[CardType["TYPE_LINK"] = 67108864] = "TYPE_LINK";
+    CardType[CardType["TYPE_SKILL"] = 134217728] = "TYPE_SKILL";
     CardType[CardType["TYPE_ARMOR"] = 268435456] = "TYPE_ARMOR";
     CardType[CardType["TYPE_PLUS"] = 536870912] = "TYPE_PLUS";
     CardType[CardType["TYPE_MINUS"] = 1073741824] = "TYPE_MINUS";
-    CardType[CardType["TYPE_SKILL"] = 2147483648] = "TYPE_SKILL";
 })(CardType = exports.CardType || (exports.CardType = {}));
 // TYPES_NORTUNER = 0x1011
 // TYPES_EFFTUNER = 0x1021
