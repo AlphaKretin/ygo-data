@@ -539,10 +539,11 @@ describe("Testing Skill values", async function() {
     });
     it("Skill Text should have 4 fields like Pendulum", async function() {
         const card = await index.getCard("Viral Infection", "en");
-        expect(card.text.en.desc.pendHead).to.contain("Skill Activation");
-        expect(card.text.en.desc.monsterHead).to.equal("Skill Effect");
-        expect(card.text.en.desc.pendBody.length).to.be.above(0);
-        expect(card.text.en.desc.monsterBody.length).to.be.above(0);
+        const desc = card.text.en.desc;
+        expect(desc.pendHead).to.equal("Skill Activation");
+        expect(desc.monsterHead).to.equal("Skill Effect");
+        expect(desc.pendBody.length).to.be.above(0);
+        expect(desc.monsterBody.length).to.be.above(0);
     });
     it("Skill Race should filter properly", async function() {
         const filterData = await ygoData.Filter.parse("race:Kaiba", "en");

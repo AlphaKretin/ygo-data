@@ -9,11 +9,12 @@ class CardText {
     }
     getPText() {
         // english regex from https://github.com/247321453/DataEditorX/blob/master/DataEditorX/data/mse_English.txt#L25
-        const ENG_PEND_REG = /\[ Pendulum Effect \]\s*[\r\n|\r|\n](?:-n\/a-)*([\S\s]*?)[\r\n|\r|\n]---/;
-        const ENG_MON_REG = /(Monster Effect|Flavor Text) \]\s*[\r\n|\r|\n]([\S\s]*)/;
+        const ENG_PEND_REG = /\[ (Pendulum Effect|Skill Activation) \]\s*[\r\n|\r|\n](?:-n\/a-)*([\S\s]*?)[\r\n|\r|\n]---/;
+        const ENG_MON_REG = /(Monster Effect|Flavor Text|Skill Effect) \]\s*[\r\n|\r|\n]([\S\s]*)/;
         const engPendResult = ENG_PEND_REG.exec(this.literalDesc);
         if (engPendResult) {
-            let pendEff = engPendResult[1].trim();
+            const pendHead = engPendResult[1].trim();
+            let pendEff = engPendResult[2].trim();
             if (pendEff.length < 1) {
                 pendEff = "[no card text]";
             }
@@ -30,7 +31,7 @@ class CardText {
             if (monText.length < 1) {
                 monText = "[no card text]";
             }
-            return ["Pendulum Effect", pendEff, monHead, monText];
+            return [pendHead, pendEff, monHead, monText];
         }
         // jpn regex from https://github.com/247321453/DataEditorX/blob/master/DataEditorX/data/mse_Japanese.txt#L27
         const JPN_PEND_REG = /】[\s\S]*?[\r\n|\r|\n]([\S\s]*?)[\r\n|\r|\n]【/;
