@@ -31,7 +31,7 @@ export declare class Translation {
     getType(t: CardType): string;
     reverseType(s: string): CardType | undefined;
     getRace(r: CardRace | CardSkillRace, isSkill?: boolean): string;
-    reverseRace(s: string, isSkill?: boolean): CardRace | undefined;
+    reverseRace(s: string): CardRace | undefined;
     getAttribute(a: CardAttribute): string;
     reverseAttribute(s: string): CardAttribute | undefined;
     getOT(o: CardOT): string;

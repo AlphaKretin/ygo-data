@@ -537,6 +537,13 @@ describe("Testing Skill values", async function() {
         expect(card.data.isRace(ygoData.enums.skillRace.RACE_SKILL_PEGASUS)).to.be.true;
         expect(card.data.names.en.typeString).to.equal("Skill/Pegasus/Spell/Continuous");
     });
+    it("Skill Text should have 4 fields like Pendulum", async function() {
+        const card = await index.getCard("Viral Infection", "en");
+        expect(card.text.en.desc.pendHead).to.contain("Skill Activation");
+        expect(card.text.en.desc.monsterHead).to.equal("Skill Effect");
+        expect(card.text.en.desc.pendBody.length).to.be.above(0);
+        expect(card.text.en.desc.monsterBody.length).to.be.above(0);
+    });
     it("Skill Race should filter properly", async function() {
         const filterData = await ygoData.Filter.parse("race:Kaiba", "en");
         const filter = new ygoData.Filter(filterData);
@@ -546,7 +553,7 @@ describe("Testing Skill values", async function() {
         expect(results.filter(r => r.data.isRace(ygoData.enums.skillRace.RACE_SKILL_KAIBA)).length).to.be.greaterThan(
             0
         );
-        expect(results.filter(r => r.data.names.en.type.includes("Kaiba")).length).to.be.greaterThan(0);
-        expect(results.filter(r => r.data.names.en.type.includes("Fiend")).length).to.equal(0);
+        const kaibs = results.filter(r => r.data.names.en && r.data.names.en.race.includes("Kaiba"));
+        expect(kaibs.length).to.be.greaterThan(0);
     });
 });

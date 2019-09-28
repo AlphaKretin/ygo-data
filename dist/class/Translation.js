@@ -33,12 +33,20 @@ class Translation {
         }
         return this.race[r];
     }
-    reverseRace(s, isSkill = false) {
+    reverseRace(s) {
         const maxRace = enums_1.CardRace.RACE_CHARISMA;
         const q = s.toLowerCase().trim();
         let r = 1;
         while (r <= maxRace) {
-            const name = this.getRace(r, isSkill);
+            const name = this.getRace(r, false);
+            if (name && name.toLowerCase().trim() === q) {
+                return r;
+            }
+            r = r * 2;
+        }
+        r = 1;
+        while (r <= maxRace) {
+            const name = this.getRace(r, true);
             if (name && name.toLowerCase().trim() === q) {
                 return r;
             }

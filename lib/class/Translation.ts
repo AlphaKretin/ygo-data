@@ -52,12 +52,20 @@ export class Translation {
         return this.race[r];
     }
 
-    public reverseRace(s: string, isSkill: boolean = false): CardRace | undefined {
+    public reverseRace(s: string): CardRace | undefined {
         const maxRace = CardRace.RACE_CHARISMA;
         const q = s.toLowerCase().trim();
         let r = 1;
         while (r <= maxRace) {
-            const name = this.getRace(r, isSkill);
+            const name = this.getRace(r, false);
+            if (name && name.toLowerCase().trim() === q) {
+                return r;
+            }
+            r = r * 2;
+        }
+        r = 1;
+        while (r <= maxRace) {
+            const name = this.getRace(r, true);
             if (name && name.toLowerCase().trim() === q) {
                 return r;
             }
