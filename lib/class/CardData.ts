@@ -92,7 +92,7 @@ export class CardData {
             .replace(trans.getType(CardType.TYPE_MONSTER), getNames(race, v => trans.getRace(v)).join("|"))
             .replace(
                 trans.getType(CardType.TYPE_SKILL),
-                trans.getType(CardType.TYPE_SKILL) + " " + getNames(race, v => trans.getRace(v)).join("|")
+                trans.getType(CardType.TYPE_SKILL) + "/" + getNames(race, v => trans.getRace(v)).join("|")
             );
     }
     public readonly ot: number;
