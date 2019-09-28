@@ -221,6 +221,19 @@
                 "0x80000000": "Yokai",
                 "0x100000000": "Charisma"
             },
+            "skillRace": {
+                "0x1": "Bonz",
+                "0x2": "Ishizu",
+                "0x4": "Joey",
+                "0x8": "Kaiba",
+                "0x10": "Keith",
+                "0x20": "Mai",
+                "0x40": "Mako",
+                "0x80": "Pegasus",
+                "0x100": "Rex",
+                "0x200": "Weevil",
+                "0x400": "Yami Yugi"
+            },
             "type": {
                 "0x1": "Monster",
                 "0x2": "Spell",

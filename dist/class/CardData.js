@@ -163,7 +163,7 @@ class CardData {
         for (const t of hoisted) {
             if (this.isType(t)) {
                 const name = trans.getType(t);
-                names.push();
+                names.push(name);
                 hoistNames[t] = name;
             }
         }
@@ -188,7 +188,7 @@ class CardData {
         return names
             .join("/")
             .replace(trans.getType(enums_1.CardType.TYPE_MONSTER), getNames(this.race, v => trans.getRace(v)).join("|"))
-            .replace(trans.getType(enums_1.CardType.TYPE_SKILL), trans.getType(enums_1.CardType.TYPE_SKILL) + "/" + getNames(this.race, v => trans.getRace(v)).join("|"));
+            .replace(trans.getType(enums_1.CardType.TYPE_SKILL), trans.getType(enums_1.CardType.TYPE_SKILL) + "/" + getNames(this.race, v => trans.getRace(v, true)).join("|"));
     }
 }
 exports.CardData = CardData;
