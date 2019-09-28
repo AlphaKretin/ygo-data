@@ -62,7 +62,8 @@
                 "0x4": "Anime",
                 "0x8": "Illegal",
                 "0x10": "Video Game",
-                "0x20": "Custom"
+                "0x20": "Custom",
+                "0x40": "Speed Duel"
             },
             "race": {
                 "0x1": "Warrior",
@@ -93,6 +94,19 @@
                 "0x80000000": "Yokai",
                 "0x100000000": "Charisma"
             },
+            "skillRace": {
+                "0x1": "Bonz",
+                "0x2": "Ishizu",
+                "0x4": "Joey",
+                "0x8": "Kaiba",
+                "0x10": "Keith",
+                "0x20": "Mai",
+                "0x40": "Mako",
+                "0x80": "Pegasus",
+                "0x100": "Rex",
+                "0x200": "Weevil",
+                "0x400": "Yami Yugi"
+            },
             "type": {
                 "0x1": "Monster",
                 "0x2": "Spell",
@@ -119,6 +133,7 @@
                 "0x1000000": "Pendulum",
                 "0x2000000": "Special Summon",
                 "0x4000000": "Link",
+                "0x8000000": "Skill",
                 "0x10000000": "Armor",
                 "0x20000000": "Plus",
                 "0x40000000": "Minus"
@@ -205,6 +220,19 @@
                 "0x1000000": "Cyberse",
                 "0x80000000": "Yokai",
                 "0x100000000": "Charisma"
+            },
+            "skillRace": {
+                "0x1": "Bonz",
+                "0x2": "Ishizu",
+                "0x4": "Joey",
+                "0x8": "Kaiba",
+                "0x10": "Keith",
+                "0x20": "Mai",
+                "0x40": "Mako",
+                "0x80": "Pegasus",
+                "0x100": "Rex",
+                "0x200": "Weevil",
+                "0x400": "Yami Yugi"
             },
             "type": {
                 "0x1": "Monster",

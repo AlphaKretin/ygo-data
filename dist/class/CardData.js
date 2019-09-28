@@ -31,33 +31,6 @@ async function getSetcodeNames(setcode, lang) {
     return names;
 }
 class CardData {
-    static generateTypeString(type, race, trans) {
-        // list of types to defer in order they should appear
-        const deferred = [enums_1.CardType.TYPE_TUNER, enums_1.CardType.TYPE_NORMAL, enums_1.CardType.TYPE_EFFECT];
-        let i = 1;
-        const names = [];
-        const defNames = {};
-        while (i <= type) {
-            if ((i & type) === i) {
-                const name = trans.getType(i);
-                if (deferred.indexOf(i) > -1) {
-                    defNames[i] = name;
-                }
-                else {
-                    names.push(name);
-                }
-            }
-            i = i * 2;
-        }
-        for (const def of deferred) {
-            if (def in defNames) {
-                names.push(defNames[def]);
-            }
-        }
-        return names
-            .join("/")
-            .replace(trans.getType(enums_1.CardType.TYPE_MONSTER), getNames(race, v => trans.getRace(v)).join("|"));
-    }
     constructor(dbData, langs) {
         this.ot = dbData.ot;
         this.alias = dbData.alias;
@@ -77,10 +50,10 @@ class CardData {
                     attribute: getNames(this.attribute, v => trans.getAttribute(v)),
                     category: getNames(this.category, v => trans.getCategory(v)),
                     ot: getNames(this.ot, v => trans.getOT(v)),
-                    race: getNames(this.race, v => trans.getRace(v)),
+                    race: getNames(this.race, v => trans.getRace(v, this.isType(enums_1.CardType.TYPE_SKILL))),
                     setcode: getSetcodeNames(this.setcode, lang),
                     type: getNames(this.type, v => trans.getType(v)),
-                    typeString: CardData.generateTypeString(this.type, this.race, trans)
+                    typeString: this.generateTypeString(trans)
                 };
             }
         }
@@ -179,6 +152,43 @@ class CardData {
             }
         }
         return false;
+    }
+    generateTypeString(trans) {
+        // list of types to defer in order they should appear
+        const deferred = [enums_1.CardType.TYPE_TUNER, enums_1.CardType.TYPE_NORMAL, enums_1.CardType.TYPE_EFFECT];
+        const hoisted = [enums_1.CardType.TYPE_SKILL]; // Skill is enumerated last but needs to come first
+        const names = [];
+        const defNames = {};
+        const hoistNames = {};
+        for (const t of hoisted) {
+            if (this.isType(t)) {
+                const name = trans.getType(t);
+                names.push(name);
+                hoistNames[t] = name;
+            }
+        }
+        let i = 1;
+        while (i <= this.type) {
+            if (this.isType(i) && !(i in hoistNames)) {
+                const name = trans.getType(i);
+                if (deferred.indexOf(i) > -1) {
+                    defNames[i] = name;
+                }
+                else {
+                    names.push(name);
+                }
+            }
+            i = i * 2;
+        }
+        for (const def of deferred) {
+            if (def in defNames) {
+                names.push(defNames[def]);
+            }
+        }
+        return names
+            .join("/")
+            .replace(trans.getType(enums_1.CardType.TYPE_MONSTER), getNames(this.race, v => trans.getRace(v)).join("|"))
+            .replace(trans.getType(enums_1.CardType.TYPE_SKILL), trans.getType(enums_1.CardType.TYPE_SKILL) + "/" + getNames(this.race, v => trans.getRace(v, true)).join("|"));
     }
 }
 exports.CardData = CardData;

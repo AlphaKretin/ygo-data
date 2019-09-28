@@ -2,7 +2,7 @@ import { Card } from "./class/Card";
 import { Filter } from "./class/Filter";
 import { ICardList, ISimpleCard } from "./module/cards";
 import { counters } from "./module/counters";
-import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType } from "./module/enums";
+import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardSkillRace, CardType } from "./module/enums";
 import { setcodes } from "./module/setcodes";
 import { translations } from "./module/translations";
 declare class YgoData {
@@ -26,6 +26,7 @@ declare const enumMap: {
     marker: typeof CardLinkMarker;
     ot: typeof CardOT;
     race: typeof CardRace;
+    skillRace: typeof CardSkillRace;
     type: typeof CardType;
 };
 export { YgoData, Card, translations, enumMap as enums, Filter, setcodes, counters };

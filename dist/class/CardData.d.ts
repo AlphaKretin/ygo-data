@@ -21,7 +21,6 @@ interface ICardDataNames {
     typeString: string;
 }
 export declare class CardData {
-    private static generateTypeString;
     readonly ot: number;
     readonly alias: number;
     readonly setcode: number;
@@ -48,5 +47,6 @@ export declare class CardData {
     isType(type: CardType): boolean;
     isLinkMarker(mark: CardLinkMarker): boolean;
     isSetCode(code: number): boolean;
+    private generateTypeString;
 }
 export {};

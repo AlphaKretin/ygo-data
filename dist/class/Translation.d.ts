@@ -1,10 +1,13 @@
-import { CardAttribute, CardCategory, CardOT, CardRace, CardType } from "../module/enums";
+import { CardAttribute, CardCategory, CardOT, CardRace, CardSkillRace, CardType } from "../module/enums";
 export interface ITranslationRaw {
     type: {
         [t in CardType]: string;
     };
     race: {
         [r in CardRace]: string;
+    };
+    skillRace: {
+        [r in CardSkillRace]: string;
     };
     attribute: {
         [a in CardAttribute]: string;
@@ -20,13 +23,14 @@ export declare class Translation {
     readonly lang: string;
     private type;
     private race;
+    private skillRace;
     private attribute;
     private ot;
     private category;
     constructor(name: string, raw: ITranslationRaw);
     getType(t: CardType): string;
     reverseType(s: string): CardType | undefined;
-    getRace(r: CardRace): string;
+    getRace(r: CardRace | CardSkillRace, isSkill?: boolean): string;
     reverseRace(s: string): CardRace | undefined;
     getAttribute(a: CardAttribute): string;
     reverseAttribute(s: string): CardAttribute | undefined;

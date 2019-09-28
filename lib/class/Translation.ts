@@ -1,8 +1,9 @@
-import { CardAttribute, CardCategory, CardOT, CardRace, CardType } from "../module/enums";
+import { CardAttribute, CardCategory, CardOT, CardRace, CardSkillRace, CardType } from "../module/enums";
 
 export interface ITranslationRaw {
     type: { [t in CardType]: string };
     race: { [r in CardRace]: string };
+    skillRace: { [r in CardSkillRace]: string };
     attribute: { [a in CardAttribute]: string };
     ot: { [o in CardOT]: string };
     category: { [o in CardCategory]: string };
@@ -12,6 +13,7 @@ export class Translation {
     public readonly lang: string;
     private type: { [t in CardType]: string };
     private race: { [r in CardRace]: string };
+    private skillRace: { [r in CardSkillRace]: string };
     private attribute: { [a in CardAttribute]: string };
     private ot: { [o in CardOT]: string };
     private category: { [c in CardCategory]: string };
@@ -19,6 +21,7 @@ export class Translation {
         this.lang = name;
         this.type = raw.type;
         this.race = raw.race;
+        this.skillRace = raw.skillRace;
         this.attribute = raw.attribute;
         this.ot = raw.ot;
         this.category = raw.category;
@@ -41,7 +44,11 @@ export class Translation {
         }
     }
 
-    public getRace(r: CardRace): string {
+    public getRace(r: CardRace | CardSkillRace, isSkill: boolean = false): string {
+        if (isSkill) {
+            const sr = r as CardSkillRace;
+            return this.skillRace[sr];
+        }
         return this.race[r];
     }
 
@@ -50,7 +57,15 @@ export class Translation {
         const q = s.toLowerCase().trim();
         let r = 1;
         while (r <= maxRace) {
-            const name = this.getRace(r);
+            const name = this.getRace(r, false);
+            if (name && name.toLowerCase().trim() === q) {
+                return r;
+            }
+            r = r * 2;
+        }
+        r = 1;
+        while (r <= maxRace) {
+            const name = this.getRace(r, true);
             if (name && name.toLowerCase().trim() === q) {
                 return r;
             }

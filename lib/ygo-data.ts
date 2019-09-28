@@ -5,7 +5,7 @@ import { Filter } from "./class/Filter";
 import { banlist } from "./module/banlist";
 import { cards, ICardList, ISimpleCard } from "./module/cards";
 import { counters } from "./module/counters";
-import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType } from "./module/enums";
+import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardSkillRace, CardType } from "./module/enums";
 import { updateFilterNames } from "./module/filterNames";
 import { images } from "./module/images";
 import { setcodes } from "./module/setcodes";
@@ -177,6 +177,7 @@ const enumMap = {
     marker: CardLinkMarker,
     ot: CardOT,
     race: CardRace,
+    skillRace: CardSkillRace,
     type: CardType
 };
 
