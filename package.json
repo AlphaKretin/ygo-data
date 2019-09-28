@@ -1,6 +1,6 @@
 {
     "name": "ygopro-data",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "Parses information from YGOPro card databases",
     "main": "dist/ygo-data.js",
     "types": "dist/ygo-data.d.ts",
