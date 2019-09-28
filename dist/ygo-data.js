@@ -163,6 +163,7 @@ const enumMap = {
     marker: enums_1.CardLinkMarker,
     ot: enums_1.CardOT,
     race: enums_1.CardRace,
+    skillRace: enums_1.CardSkillRace,
     type: enums_1.CardType
 };
 exports.enums = enumMap;

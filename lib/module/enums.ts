@@ -4,7 +4,8 @@ export enum CardOT {
     OT_ANIME = 0x4,
     OT_ILLEGAL = 0x8,
     OT_VIDEO_GAME = 0x10,
-    OT_CUSTOM = 0x20
+    OT_CUSTOM = 0x20,
+    OT_SPEED = 0x40
 }
 
 export enum CardType {
@@ -35,7 +36,8 @@ export enum CardType {
     TYPE_LINK = 0x4000000,
     TYPE_ARMOR = 0x10000000,
     TYPE_PLUS = 0x20000000,
-    TYPE_MINUS = 0x40000000
+    TYPE_MINUS = 0x40000000,
+    TYPE_SKILL = 0x80000000
 }
 // TYPES_NORTUNER = 0x1011
 // TYPES_EFFTUNER = 0x1021
@@ -82,6 +84,20 @@ export enum CardRace {
     RACE_CYBERSE = 0x1000000,
     RACE_YOKAI = 0x80000000,
     RACE_CHARISMA = 0x100000000
+}
+
+export enum CardSkillRace {
+    RACE_SKILL_BONZ = 0x1,
+    RACE_SKILL_ISHIZU = 0x2,
+    RACE_SKILL_JOEY = 0x4,
+    RACE_SKILL_KAIBA = 0x8,
+    RACE_SKILL_KEITH = 0x10,
+    RACE_SKILL_MAI = 0x20,
+    RACE_SKILL_MAKO = 0x40,
+    RACE_SKILL_PEGASUS = 0x80,
+    RACE_SKILL_REX = 0x100,
+    RACE_SKILL_WEEVIL = 0x200,
+    RACE_SKILL_YAMI = 0x400
 }
 
 export enum CardLinkMarker {

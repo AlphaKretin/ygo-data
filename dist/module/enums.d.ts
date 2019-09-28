@@ -4,7 +4,8 @@ export declare enum CardOT {
     OT_ANIME = 4,
     OT_ILLEGAL = 8,
     OT_VIDEO_GAME = 16,
-    OT_CUSTOM = 32
+    OT_CUSTOM = 32,
+    OT_SPEED = 64
 }
 export declare enum CardType {
     TYPE_MONSTER = 1,
@@ -34,7 +35,8 @@ export declare enum CardType {
     TYPE_LINK = 67108864,
     TYPE_ARMOR = 268435456,
     TYPE_PLUS = 536870912,
-    TYPE_MINUS = 1073741824
+    TYPE_MINUS = 1073741824,
+    TYPE_SKILL = 2147483648
 }
 export declare enum CardAttribute {
     ATTRIBUTE_EARTH = 1,
@@ -74,6 +76,19 @@ export declare enum CardRace {
     RACE_CYBERSE = 16777216,
     RACE_YOKAI = 2147483648,
     RACE_CHARISMA = 4294967296
+}
+export declare enum CardSkillRace {
+    RACE_SKILL_BONZ = 1,
+    RACE_SKILL_ISHIZU = 2,
+    RACE_SKILL_JOEY = 4,
+    RACE_SKILL_KAIBA = 8,
+    RACE_SKILL_KEITH = 16,
+    RACE_SKILL_MAI = 32,
+    RACE_SKILL_MAKO = 64,
+    RACE_SKILL_PEGASUS = 128,
+    RACE_SKILL_REX = 256,
+    RACE_SKILL_WEEVIL = 512,
+    RACE_SKILL_YAMI = 1024
 }
 export declare enum CardLinkMarker {
     LINK_MARKER_BOTTOM_LEFT = 1,

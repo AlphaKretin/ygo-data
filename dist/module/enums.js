@@ -8,6 +8,7 @@ var CardOT;
     CardOT[CardOT["OT_ILLEGAL"] = 8] = "OT_ILLEGAL";
     CardOT[CardOT["OT_VIDEO_GAME"] = 16] = "OT_VIDEO_GAME";
     CardOT[CardOT["OT_CUSTOM"] = 32] = "OT_CUSTOM";
+    CardOT[CardOT["OT_SPEED"] = 64] = "OT_SPEED";
 })(CardOT = exports.CardOT || (exports.CardOT = {}));
 var CardType;
 (function (CardType) {
@@ -39,6 +40,7 @@ var CardType;
     CardType[CardType["TYPE_ARMOR"] = 268435456] = "TYPE_ARMOR";
     CardType[CardType["TYPE_PLUS"] = 536870912] = "TYPE_PLUS";
     CardType[CardType["TYPE_MINUS"] = 1073741824] = "TYPE_MINUS";
+    CardType[CardType["TYPE_SKILL"] = 2147483648] = "TYPE_SKILL";
 })(CardType = exports.CardType || (exports.CardType = {}));
 // TYPES_NORTUNER = 0x1011
 // TYPES_EFFTUNER = 0x1021
@@ -86,6 +88,20 @@ var CardRace;
     CardRace[CardRace["RACE_YOKAI"] = 2147483648] = "RACE_YOKAI";
     CardRace[CardRace["RACE_CHARISMA"] = 4294967296] = "RACE_CHARISMA";
 })(CardRace = exports.CardRace || (exports.CardRace = {}));
+var CardSkillRace;
+(function (CardSkillRace) {
+    CardSkillRace[CardSkillRace["RACE_SKILL_BONZ"] = 1] = "RACE_SKILL_BONZ";
+    CardSkillRace[CardSkillRace["RACE_SKILL_ISHIZU"] = 2] = "RACE_SKILL_ISHIZU";
+    CardSkillRace[CardSkillRace["RACE_SKILL_JOEY"] = 4] = "RACE_SKILL_JOEY";
+    CardSkillRace[CardSkillRace["RACE_SKILL_KAIBA"] = 8] = "RACE_SKILL_KAIBA";
+    CardSkillRace[CardSkillRace["RACE_SKILL_KEITH"] = 16] = "RACE_SKILL_KEITH";
+    CardSkillRace[CardSkillRace["RACE_SKILL_MAI"] = 32] = "RACE_SKILL_MAI";
+    CardSkillRace[CardSkillRace["RACE_SKILL_MAKO"] = 64] = "RACE_SKILL_MAKO";
+    CardSkillRace[CardSkillRace["RACE_SKILL_PEGASUS"] = 128] = "RACE_SKILL_PEGASUS";
+    CardSkillRace[CardSkillRace["RACE_SKILL_REX"] = 256] = "RACE_SKILL_REX";
+    CardSkillRace[CardSkillRace["RACE_SKILL_WEEVIL"] = 512] = "RACE_SKILL_WEEVIL";
+    CardSkillRace[CardSkillRace["RACE_SKILL_YAMI"] = 1024] = "RACE_SKILL_YAMI";
+})(CardSkillRace = exports.CardSkillRace || (exports.CardSkillRace = {}));
 var CardLinkMarker;
 (function (CardLinkMarker) {
     CardLinkMarker[CardLinkMarker["LINK_MARKER_BOTTOM_LEFT"] = 1] = "LINK_MARKER_BOTTOM_LEFT";
