@@ -59,11 +59,20 @@ export class CardData {
     private static generateTypeString(type: number, race: number, trans: Translation): string {
         // list of types to defer in order they should appear
         const deferred = [CardType.TYPE_TUNER, CardType.TYPE_NORMAL, CardType.TYPE_EFFECT];
-        let i = 1;
+        const hoisted = [CardType.TYPE_SKILL]; // Skill is enumerated last but needs to come first
         const names = [];
         const defNames: { [type: number]: string } = {};
+        const hoistNames: { [type: number]: string } = {};
+        for (const t of hoisted) {
+            if ((type & t) === t) {
+                const name = trans.getType(t);
+                names.push();
+                hoistNames[t] = name;
+            }
+        }
+        let i = 1;
         while (i <= type) {
-            if ((i & type) === i) {
+            if ((i & type) === i && !(i in hoistNames)) {
                 const name = trans.getType(i);
                 if (deferred.indexOf(i) > -1) {
                     defNames[i] = name;
@@ -80,7 +89,11 @@ export class CardData {
         }
         return names
             .join("/")
-            .replace(trans.getType(CardType.TYPE_MONSTER), getNames(race, v => trans.getRace(v)).join("|"));
+            .replace(trans.getType(CardType.TYPE_MONSTER), getNames(race, v => trans.getRace(v)).join("|"))
+            .replace(
+                trans.getType(CardType.TYPE_SKILL),
+                trans.getType(CardType.TYPE_SKILL) + " " + getNames(race, v => trans.getRace(v)).join("|")
+            );
     }
     public readonly ot: number;
     public readonly alias: number;
