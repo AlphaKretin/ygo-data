@@ -46,9 +46,9 @@ export class Card {
             if (this.data.alias > 0) {
                 const alCard = list[this.data.alias];
                 if (!alCard) {
-                    return reject("Undefined alias " + this.data.alias + " for card " + this.id + "!");
+                    console.warn("Undefined alias " + this.data.alias + " for card " + this.id + "!");
                 }
-                if (alCard.data.ot !== this.data.ot) {
+                if (alCard && alCard.data.ot !== this.data.ot) {
                     return resolve([this.id]);
                 }
             }
