@@ -24,10 +24,7 @@ class Card {
             const list = await cards_1.cards.getRawCardList();
             if (this.data.alias > 0) {
                 const alCard = list[this.data.alias];
-                if (!alCard) {
-                    console.warn("Undefined alias " + this.data.alias + " for card " + this.id + "!");
-                }
-                if (alCard && alCard.data.ot !== this.data.ot) {
+                if (!alCard || alCard.data.ot !== this.data.ot) {
                     return resolve([this.id]);
                 }
             }
