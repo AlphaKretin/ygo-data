@@ -93,6 +93,9 @@ function parseNumberProperty(query) {
     }
 }
 class Filter {
+    constructor(dat) {
+        this.data = dat;
+    }
     static async parse(input, lang) {
         const dat = {};
         const raws = propSplit(input.toLowerCase());
@@ -130,9 +133,6 @@ class Filter {
             }
         }
         return dat;
-    }
-    constructor(dat) {
-        this.data = dat;
     }
     filter(list) {
         const output = [];

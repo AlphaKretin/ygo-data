@@ -5,9 +5,10 @@
     "main": "dist/ygo-data.js",
     "types": "dist/ygo-data.d.ts",
     "scripts": {
-        "test": "mocha --reporter spec",
-        "build": "tsc",
-        "cover": "istanbul cover node_modules/mocha/bin/_mocha test/*.js - - -R spec"
+        "test": "mocha",
+        "build": "./node_modules/.bin/tsc",
+        "cover": "nyc npm run test",
+        "lint": "eslint --ext .ts ./lib/*"
     },
     "keywords": [
         "sqlite",
@@ -25,7 +26,7 @@
     },
     "homepage": "https://github.com/AlphaKretin/ygo-data#ygo-data",
     "dependencies": {
-        "@octokit/rest": "^15.18.1",
+        "@octokit/rest": "^16.33.1",
         "fuse.js": "^3.4.5",
         "jimp": "^0.5.6",
         "mkdirp": "^0.5.1",
@@ -34,24 +35,21 @@
         "sqlite": "^2.9.3"
     },
     "devDependencies": {
+        "@istanbuljs/nyc-config-typescript": "^0.1.3",
         "@types/mkdirp": "^0.5.2",
         "@types/mz": "0.0.32",
         "@types/node": "^10.14.8",
         "@types/node-fetch": "^2.3.4",
         "@types/sqlite3": "^3.1.5",
+        "@typescript-eslint/eslint-plugin": "^2.5.0",
+        "@typescript-eslint/parser": "^2.5.0",
         "chai": "^4.2.0",
         "coveralls": "^3.0.3",
-        "istanbul": "^0.4.5",
-        "mocha": "^5.2.0"
-    },
-    "prettier": {
-        "printWidth": 120,
-        "tabWidth": 4,
-        "useTabs": false,
-        "semi": true,
-        "singleQuote": false,
-        "trailingComma": "none",
-        "bracketSpacing": true,
-        "arrowParens": "avoid"
+        "eslint": "^6.5.1",
+        "mocha": "^5.2.0",
+        "nyc": "^14.1.1",
+        "source-map-support": "^0.5.13",
+        "ts-node": "^8.4.1",
+        "typescript": "^3.6.4"
     }
 }

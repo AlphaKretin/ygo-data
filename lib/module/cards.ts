@@ -108,8 +108,8 @@ class CardList {
                 if (lang.remoteDBs) {
                     for (const repo of lang.remoteDBs) {
                         const contents = await github.repos.getContents(repo);
-                        for (const file of contents.data) {
-                            if (file.name.endsWith(".cdb")) {
+                        for (const file of contents) {
+                            if (file.data.name.endsWith(".cdb")) {
                                 proms.push(this.downloadSingleDB(file, filePath));
                             }
                         }
