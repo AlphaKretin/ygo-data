@@ -171,7 +171,7 @@ class CardData {
         while (i <= this.type) {
             if (this.isType(i) && !(i in hoistNames)) {
                 const name = trans.getType(i);
-                if (deferred.indexOf(i) > -1) {
+                if (deferred.includes(i)) {
                     defNames[i] = name;
                 }
                 else {

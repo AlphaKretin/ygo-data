@@ -1,12 +1,12 @@
 import * as octokit from "@octokit/rest";
 import { Card } from "../class/Card";
-export interface ICardList {
+export interface CardArray {
     [id: number]: Card;
 }
-export interface ISimpleList {
-    [id: number]: ISimpleCard;
+export interface SimpleList {
+    [id: number]: SimpleCard;
 }
-interface ICardListOpts {
+interface CardListOpts {
     langs: {
         [lang: string]: {
             stringsConf: string;
@@ -16,7 +16,7 @@ interface ICardListOpts {
     baseDbs?: string[];
     gitAuth?: string;
 }
-export interface ISimpleCard {
+export interface SimpleCard {
     id: number;
     name: string;
     anime: boolean;
@@ -25,11 +25,11 @@ export interface ISimpleCard {
 declare class CardList {
     private cards?;
     getCard(id: number | string): Promise<Card | undefined>;
-    update(opts: ICardListOpts, savePath: string): Promise<{
+    update(opts: CardListOpts, savePath: string): Promise<{
         [id: number]: Card;
     }>;
-    getSimpleList(lang: string): Promise<ISimpleList>;
-    getRawCardList(): Promise<ICardList>;
+    getSimpleList(lang: string): Promise<SimpleList>;
+    getRawCardList(): Promise<CardArray>;
     private downloadSingleDB;
     private downloadDBs;
     private loadDBs;

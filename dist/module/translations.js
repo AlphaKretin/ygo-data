@@ -7,9 +7,7 @@ class Translations {
     }
     update(raw) {
         for (const langName in raw) {
-            if (raw.hasOwnProperty(langName)) {
-                this.trans[langName] = new Translation_1.Translation(langName, raw[langName]);
-            }
+            this.trans[langName] = new Translation_1.Translation(langName, raw[langName]);
         }
     }
     getTrans(lang) {

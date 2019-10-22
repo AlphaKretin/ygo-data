@@ -1,5 +1,5 @@
 import { CardAttribute, CardCategory, CardOT, CardRace, CardSkillRace, CardType } from "../module/enums";
-export interface ITranslationRaw {
+export interface TranslationRaw {
     type: {
         [t in CardType]: string;
     };
@@ -27,7 +27,7 @@ export declare class Translation {
     private attribute;
     private ot;
     private category;
-    constructor(name: string, raw: ITranslationRaw);
+    constructor(name: string, raw: TranslationRaw);
     getType(t: CardType): string;
     reverseType(s: string): CardType | undefined;
     getRace(r: CardRace | CardSkillRace, isSkill?: boolean): string;

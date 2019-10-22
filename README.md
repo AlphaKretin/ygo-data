@@ -19,7 +19,7 @@ const ygoData = require("ygopro-data");
 const options = require("./options.json");
 const data = new ygoData.YgoData(options);
 data.getCard("Pot of Greed", "en").then(card => {
-    console.log(card.text["en"].name);
+	console.log(card.text["en"].name);
 });
 ```
 
@@ -35,7 +35,7 @@ import { YgoData } from "ygopro-data";
 const options = require("./options.json");
 const data = new ygoData(options);
 data.getCard(55144522).then(card => {
-    console.log(card.text["en"].name);
+	console.log(card.text["en"].name);
 });
 ```
 
@@ -67,59 +67,59 @@ The options file should be a JSON Object, with string keys representing differen
 
 ```json
 {
-    "cardOpts": {
-        "langs": {
-            "en": {
-                "remoteDBs": [
-                    {
-                        "owner": "Ygoproco",
-                        "repo": "Live2017Links",
-                        "path": ""
-                    }
-                ]
-            }
-        }
-    },
-    "stringOpts": {
-        "en": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf"
-    },
-    "transOpts": {
-        "en": {
-            "attribute": {
-                "0x1": "Earth"
-            },
-            "category": {
-                "0x1": "Destroy Spell/Trap"
-            },
-            "ot": {
-                "0x1": "OCG"
-            },
-            "race": {
-                "0x1": "Warrior"
-            },
-            "type": {
-                "0x1": "Monster"
-            }
-        }
-    },
-    "shortcuts": {
-        "en": {
-            "mst": "Mystical Space Typhoon"
-        }
-    },
-    "filterNames": {
-        "attribute": ["att", "attribute"],
-        "category": ["cat", "category"],
-        "ot": ["ot", "status", "region"],
-        "race": ["race", "mtype", "monstertype"],
-        "type": ["type", "ctype", "cardtype"],
-        "level": ["lvl", "level", "rank", "link"],
-        "atk": ["atk", "attack"],
-        "def": ["def", "defense", "defence"],
-        "setcode": ["set", "setcode", "archetype", "series", "theme", "arch"]
-    },
-    "banlist": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/lflist.conf",
-    "imageLink": "https://cdn.exampleimagesite.fake/images/",
-    "imageExt": "png"
+	"cardOpts": {
+		"langs": {
+			"en": {
+				"remoteDBs": [
+					{
+						"owner": "Ygoproco",
+						"repo": "Live2017Links",
+						"path": ""
+					}
+				]
+			}
+		}
+	},
+	"stringOpts": {
+		"en": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf"
+	},
+	"transOpts": {
+		"en": {
+			"attribute": {
+				"0x1": "Earth"
+			},
+			"category": {
+				"0x1": "Destroy Spell/Trap"
+			},
+			"ot": {
+				"0x1": "OCG"
+			},
+			"race": {
+				"0x1": "Warrior"
+			},
+			"type": {
+				"0x1": "Monster"
+			}
+		}
+	},
+	"shortcuts": {
+		"en": {
+			"mst": "Mystical Space Typhoon"
+		}
+	},
+	"filterNames": {
+		"attribute": ["att", "attribute"],
+		"category": ["cat", "category"],
+		"ot": ["ot", "status", "region"],
+		"race": ["race", "mtype", "monstertype"],
+		"type": ["type", "ctype", "cardtype"],
+		"level": ["lvl", "level", "rank", "link"],
+		"atk": ["atk", "attack"],
+		"def": ["def", "defense", "defence"],
+		"setcode": ["set", "setcode", "archetype", "series", "theme", "arch"]
+	},
+	"banlist": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/lflist.conf",
+	"imageLink": "https://cdn.exampleimagesite.fake/images/",
+	"imageExt": "png"
 }
 ```

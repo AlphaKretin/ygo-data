@@ -1,11 +1,11 @@
-import { ITranslationRaw, Translation } from "../class/Translation";
-interface ITranslationsRaw {
-    [lang: string]: ITranslationRaw;
+import { TranslationRaw, Translation } from "../class/Translation";
+interface TranslationsRaw {
+    [lang: string]: TranslationRaw;
 }
 declare class Translations {
     private trans;
     constructor();
-    update(raw: ITranslationsRaw): void;
+    update(raw: TranslationsRaw): void;
     getTrans(lang: string): Translation;
 }
 export declare const translations: Translations;

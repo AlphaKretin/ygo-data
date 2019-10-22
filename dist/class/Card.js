@@ -14,13 +14,13 @@ class Card {
         this.text = {};
         this.dbs = dbData.dbs;
         for (const lang in dbData.text) {
-            if (dbData.text.hasOwnProperty(lang)) {
-                this.text[lang] = new CardText_1.CardText(dbData.text[lang]);
-            }
+            this.text[lang] = new CardText_1.CardText(dbData.text[lang]);
         }
     }
     get aliasIDs() {
-        return new Promise(async (resolve, reject) => {
+        // async promise to circumvent synchronous getters
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve) => {
             const list = await cards_1.cards.getRawCardList();
             if (this.data.alias > 0) {
                 const alCard = list[this.data.alias];
@@ -32,22 +32,21 @@ class Card {
             const baseCard = list[baseCode];
             const ids = [baseCode];
             for (const id in list) {
-                if (list.hasOwnProperty(id)) {
-                    const card = list[id];
-                    let check = card && card.data.alias === baseCode && card.data.ot === baseCard.data.ot;
-                    const lang = Object.keys(baseCard.text)[0];
-                    if (card.text[lang] && baseCard.text[lang].name !== card.text[lang].name) {
-                        check = false;
-                    }
-                    if (check) {
-                        ids.push(parseInt(id, 10));
-                    }
+                const card = list[id];
+                let check = card && card.data.alias === baseCode && card.data.ot === baseCard.data.ot;
+                const lang = Object.keys(baseCard.text)[0];
+                if (card.text[lang] && baseCard.text[lang].name !== card.text[lang].name) {
+                    check = false;
+                }
+                if (check) {
+                    ids.push(parseInt(id, 10));
                 }
             }
             resolve(ids);
         });
     }
     get status() {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve) => {
             const stats = [];
             // TODO: yeah ik this is hardcoded but it should share names with the banlist file...
@@ -67,6 +66,7 @@ class Card {
         });
     }
     get image() {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve) => {
             const image = await images_1.images.getImage(this.id);
             resolve(image);
@@ -76,6 +76,7 @@ class Card {
         return images_1.images.getLink(this.id);
     }
     get price() {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve) => {
             try {
                 // TODO: again this is hardcoded but it has to be in english for this to work so.

@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+// ts-ignore allowed in this file because fuse.js has incorrect typings
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 const Fuse = require("fuse.js");
 const fs = require("mz/fs");
 const Card_1 = require("./class/Card");
@@ -34,11 +36,11 @@ class YgoData {
         this.config = JSON.parse(fs.readFileSync(configPath, "utf8"), (key, value) => {
             // if object with hex keys
             if (typeof value === "object" && Object.keys(value).length > 0 && Object.keys(value)[0].startsWith("0x")) {
+                // any allowed here because could apply to any part of config
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const newObj = {};
                 for (const k in value) {
-                    if (value.hasOwnProperty(k)) {
-                        newObj[parseInt(k, 16)] = value[k];
-                    }
+                    newObj[parseInt(k, 16)] = value[k];
                 }
                 return newObj;
             }
@@ -48,6 +50,8 @@ class YgoData {
         this.update();
     }
     async update() {
+        // any allowed here because array of different promises
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const proms = [];
         proms.push(cards_1.cards.update(this.config.cardOpts, this.savePath));
         proms.push(banlist_1.banlist.update(this.config.banlist));
@@ -76,16 +80,14 @@ class YgoData {
                 let term = id.trim().toLowerCase();
                 let resultCard;
                 for (const code in simpList) {
-                    if (simpList.hasOwnProperty(code)) {
-                        const entry = simpList[code];
-                        if (entry.name.toLowerCase() === term &&
-                            (allowAnime || !entry.anime) &&
-                            (allowCustom || !entry.custom)) {
-                            const c = await cards_1.cards.getCard(code);
-                            if (c) {
-                                resultCard = c;
-                                break;
-                            }
+                    const entry = simpList[code];
+                    if (entry.name.toLowerCase() === term &&
+                        (allowAnime || !entry.anime) &&
+                        (allowCustom || !entry.custom)) {
+                        const c = await cards_1.cards.getCard(code);
+                        if (c) {
+                            resultCard = c;
+                            break;
                         }
                     }
                 }
@@ -98,16 +100,14 @@ class YgoData {
                     }
                     term = terms.join(" ");
                     for (const code in simpList) {
-                        if (simpList.hasOwnProperty(code)) {
-                            const entry = simpList[code];
-                            if (entry.name.toLowerCase() === term &&
-                                (allowAnime || !entry.anime) &&
-                                (allowCustom || !entry.custom)) {
-                                const c = await cards_1.cards.getCard(code);
-                                if (c) {
-                                    resultCard = c;
-                                    break;
-                                }
+                        const entry = simpList[code];
+                        if (entry.name.toLowerCase() === term &&
+                            (allowAnime || !entry.anime) &&
+                            (allowCustom || !entry.custom)) {
+                            const c = await cards_1.cards.getCard(code);
+                            if (c) {
+                                resultCard = c;
+                                break;
                             }
                         }
                     }
@@ -116,12 +116,12 @@ class YgoData {
                     const fuse = await this.getFuse(lang);
                     const result = fuse
                         .search(term)
-                        // @ts-ignore
+                        //@ts-ignore
                         .filter(r => (allowAnime || !r.item.anime) && (allowCustom || !r.item.custom));
                     if (result.length < 1) {
                         return undefined;
                     }
-                    // @ts-ignore
+                    //@ts-ignore
                     resultCard = await this.getCard(result[0].item.id);
                 }
                 if (resultCard !== undefined && resultCard.data.alias > 0) {
@@ -145,13 +145,13 @@ class YgoData {
     }
     async getFuseList(query, lang) {
         const fuse = await this.getFuse(lang);
-        // @ts-ignore
+        //@ts-ignore
         return fuse.search(query).map(r => r.item);
     }
     async getFuse(lang) {
         if (!(lang in this.fuses)) {
             const list = await cards_1.cards.getSimpleList(lang);
-            this.fuses[lang] = await new Fuse(Object.values(list), this.fuseOpts);
+            this.fuses[lang] = new Fuse(Object.values(list), this.fuseOpts);
         }
         return this.fuses[lang];
     }

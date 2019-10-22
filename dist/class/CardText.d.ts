@@ -1,4 +1,4 @@
-export interface ICardTextRaw {
+export interface CardTextRaw {
     name: string;
     desc: string;
     string1: string;
@@ -18,7 +18,7 @@ export interface ICardTextRaw {
     string15: string;
     string16: string;
 }
-interface ICardDesc {
+interface CardDesc {
     pendHead?: string;
     pendBody?: string;
     monsterHead?: string;
@@ -28,8 +28,8 @@ export declare class CardText {
     readonly name: string;
     readonly strings: string[];
     private literalDesc;
-    constructor(dbData: ICardTextRaw);
+    constructor(dbData: CardTextRaw);
     private getPText;
-    readonly desc: ICardDesc;
+    readonly desc: CardDesc;
 }
 export {};

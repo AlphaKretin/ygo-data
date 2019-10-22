@@ -67,13 +67,13 @@ async function parseProperty(query, f) {
         for (const prop of props) {
             if (prop.startsWith("!")) {
                 const p = await f(prop.slice(1));
-                if (p) {
+                if (p && a.no) {
                     a.no.push(p);
                 }
             }
             else {
                 const p = await f(prop);
-                if (p) {
+                if (p && a.yes) {
                     a.yes.push(p);
                 }
             }

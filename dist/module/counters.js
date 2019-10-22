@@ -16,10 +16,8 @@ class Counters {
         const query = name.toLowerCase().trim();
         const list = await this.counters;
         for (const counter in list[lang]) {
-            if (list[lang].hasOwnProperty(counter)) {
-                if (list[lang][counter].toLowerCase().trim() === query) {
-                    return parseInt(counter, 10);
-                }
+            if (list[lang][counter].toLowerCase().trim() === query) {
+                return parseInt(counter, 10);
             }
         }
     }
@@ -44,10 +42,8 @@ class Counters {
     async load(conf) {
         const map = {};
         for (const lang in conf) {
-            if (conf.hasOwnProperty(lang)) {
-                const ct = await this.loadConf(conf[lang]);
-                map[lang] = ct;
-            }
+            const ct = await this.loadConf(conf[lang]);
+            map[lang] = ct;
         }
         return map;
     }

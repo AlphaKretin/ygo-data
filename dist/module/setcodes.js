@@ -16,10 +16,8 @@ class Setcodes {
         const query = name.toLowerCase().trim();
         const list = await this.codes;
         for (const code in list[lang]) {
-            if (list[lang].hasOwnProperty(code)) {
-                if (list[lang][code].toLowerCase().trim() === query) {
-                    return parseInt(code, 10);
-                }
+            if (list[lang][code].toLowerCase().trim() === query) {
+                return parseInt(code, 10);
             }
         }
     }
@@ -44,10 +42,8 @@ class Setcodes {
     async load(conf) {
         const map = {};
         for (const lang in conf) {
-            if (conf.hasOwnProperty(lang)) {
-                const sc = await this.loadConf(conf[lang]);
-                map[lang] = sc;
-            }
+            const sc = await this.loadConf(conf[lang]);
+            map[lang] = sc;
         }
         return map;
     }

@@ -1,10 +1,10 @@
 language: node_js
 node_js:
-    - stable
+	- stable
 install:
-    - npm install sqlite3 --build-from-source
-    - npm install
+	- npm install sqlite3 --build-from-source
+	- npm install
 script:
-    - npm run cover
+	- npm run cover
 # Send coverage data to Coveralls
 after_script: "cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js"

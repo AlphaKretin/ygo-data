@@ -1,6 +1,6 @@
 import { Card } from "./class/Card";
 import { Filter } from "./class/Filter";
-import { ICardList, ISimpleCard } from "./module/cards";
+import { CardArray, SimpleCard } from "./module/cards";
 import { counters } from "./module/counters";
 import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardSkillRace, CardType } from "./module/enums";
 import { setcodes } from "./module/setcodes";
@@ -16,8 +16,8 @@ declare class YgoData {
     update(): Promise<void>;
     readonly langs: string[];
     getCard(id: number | string, lang?: string, allowAnime?: boolean, allowCustom?: boolean): Promise<Card | undefined>;
-    getCardList(): Promise<ICardList>;
-    getFuseList(query: string, lang: string): Promise<ISimpleCard[]>;
+    getCardList(): Promise<CardArray>;
+    getFuseList(query: string, lang: string): Promise<SimpleCard[]>;
     private getFuse;
 }
 declare const enumMap: {

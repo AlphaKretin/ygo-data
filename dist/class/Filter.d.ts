@@ -1,31 +1,31 @@
-import { ICardList, ISimpleCard, ISimpleList } from "../module/cards";
+import { CardArray, SimpleCard, SimpleList } from "../module/cards";
 import { CardAttribute, CardCategory, CardOT, CardRace, CardType } from "../module/enums";
 import { Card } from "./Card";
-interface IFilterProperty<T> {
+interface FilterProperty<T> {
     yes?: T[];
     no?: T[];
 }
-interface IFilterData {
-    attribute?: Array<IFilterProperty<CardAttribute>>;
-    category?: Array<IFilterProperty<CardCategory>>;
-    ot?: Array<IFilterProperty<CardOT>>;
-    race?: Array<IFilterProperty<CardRace>>;
-    type?: Array<IFilterProperty<CardType>>;
-    setcode?: Array<IFilterProperty<number>>;
-    level?: IFilterNumberProperty;
-    atk?: IFilterNumberProperty;
-    def?: IFilterNumberProperty;
+interface FilterData {
+    attribute?: Array<FilterProperty<CardAttribute>>;
+    category?: Array<FilterProperty<CardCategory>>;
+    ot?: Array<FilterProperty<CardOT>>;
+    race?: Array<FilterProperty<CardRace>>;
+    type?: Array<FilterProperty<CardType>>;
+    setcode?: Array<FilterProperty<number>>;
+    level?: FilterNumberProperty;
+    atk?: FilterNumberProperty;
+    def?: FilterNumberProperty;
 }
-interface IFilterNumberProperty {
+interface FilterNumberProperty {
     above: number;
     below: number;
 }
 export declare class Filter {
-    static parse(input: string, lang: string): Promise<IFilterData>;
+    static parse(input: string, lang: string): Promise<FilterData>;
     private data;
-    constructor(dat: IFilterData);
-    filter(list: ICardList | Card[]): Card[];
-    simpleFilter(list: ISimpleList | ISimpleCard[]): Promise<Card[]>;
+    constructor(dat: FilterData);
+    filter(list: CardArray | Card[]): Card[];
+    simpleFilter(list: SimpleList | SimpleCard[]): Promise<Card[]>;
     private check;
     private checkProp;
 }

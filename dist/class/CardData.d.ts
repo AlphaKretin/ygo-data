@@ -1,5 +1,5 @@
 import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType } from "../module/enums";
-export interface ICardDataRaw {
+export interface CardDataRaw {
     ot: number;
     alias: number;
     setcode: number;
@@ -11,7 +11,7 @@ export interface ICardDataRaw {
     attribute: number;
     category: number;
 }
-interface ICardDataNames {
+interface CardDataNames {
     ot: string[];
     setcode: Promise<string[]>;
     type: string[];
@@ -30,11 +30,11 @@ export declare class CardData {
     readonly attribute: number;
     readonly category: number;
     readonly names: {
-        [lang: string]: ICardDataNames;
+        [lang: string]: CardDataNames;
     };
     private literalDef;
     private literalLevel;
-    constructor(dbData: ICardDataRaw, langs: string[]);
+    constructor(dbData: CardDataRaw, langs: string[]);
     readonly def: number | undefined;
     readonly level: number;
     readonly lscale: number | undefined;

@@ -1,4 +1,4 @@
-interface IFilterNames {
+interface FilterNames {
     attribute: string[];
     category: string[];
     ot: string[];
@@ -9,6 +9,6 @@ interface IFilterNames {
     def: string[];
     setcode: string[];
 }
-export declare let filterNames: IFilterNames;
-export declare function updateFilterNames(input: IFilterNames): void;
+export declare let filterNames: FilterNames;
+export declare function updateFilterNames(input: FilterNames): void;
 export {};

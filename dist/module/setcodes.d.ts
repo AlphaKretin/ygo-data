@@ -1,13 +1,13 @@
-interface ISetcodesConf {
+interface SetcodesConf {
     [lang: string]: string;
 }
 declare class Setcodes {
     private codes?;
     getCode(code: number, lang: string): Promise<string | undefined>;
     reverseCode(name: string, lang: string): Promise<number | undefined>;
-    update(conf: ISetcodesConf): Promise<{
+    update(conf: SetcodesConf): Promise<{
         [lang: string]: {
-            [code: number]: string;
+            [setcode: number]: string;
         };
     }>;
     private loadConf;

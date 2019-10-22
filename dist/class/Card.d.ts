@@ -1,15 +1,15 @@
 /// <reference types="node" />
-import { CardData, ICardDataRaw } from "./CardData";
-import { CardText, ICardTextRaw } from "./CardText";
-export interface ICardRaw {
+import { CardData, CardDataRaw } from "./CardData";
+import { CardText, CardTextRaw } from "./CardText";
+export interface CardRaw {
     id: number;
-    data: ICardDataRaw;
+    data: CardDataRaw;
     dbs: string[];
     text: {
-        [lang: string]: ICardTextRaw;
+        [lang: string]: CardTextRaw;
     };
 }
-interface ICardPrice {
+interface CardPrice {
     low: number;
     avg: number;
     hi: number;
@@ -21,11 +21,11 @@ export declare class Card {
         [lang: string]: CardText;
     };
     readonly dbs: string[];
-    constructor(dbData: ICardRaw);
+    constructor(dbData: CardRaw);
     readonly aliasIDs: Promise<number[]>;
     readonly status: Promise<string>;
     readonly image: Promise<Buffer | undefined>;
     readonly imageLink: string;
-    readonly price: Promise<ICardPrice | undefined>;
+    readonly price: Promise<CardPrice | undefined>;
 }
 export {};
