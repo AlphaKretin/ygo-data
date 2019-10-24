@@ -70,11 +70,17 @@ class CardList {
             const lang = opts.langs[langName];
             if (lang.remoteDBs) {
                 for (const repo of lang.remoteDBs) {
-                    const contents = await github.repos.getContents(repo);
-                    for (const file of contents) {
-                        if (file.data.name.endsWith(".cdb")) {
-                            proms.push(this.downloadSingleDB(file, filePath));
+                    const res = await github.repos.getContents(repo);
+                    const contents = res.data;
+                    if (contents instanceof Array) {
+                        for (const file of contents) {
+                            if (file.name.endsWith(".cdb")) {
+                                proms.push(this.downloadSingleDB(file, filePath));
+                            }
                         }
+                    }
+                    else if (contents.name.endsWith(".cdb")) {
+                        proms.push(this.downloadSingleDB(contents, filePath));
                     }
                 }
             }

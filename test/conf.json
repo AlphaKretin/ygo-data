@@ -1,7 +1,15 @@
 {
 	"cardOpts": {
 		"langs": {
-			"en": {},
+			"en": {
+				"remoteDBs": [
+					{
+						"owner": "EerieCode",
+						"repo": "Percy-Alpha-Testing",
+						"path": "Skill Database"
+					}
+				]
+			},
 			"ja": {}
 		},
 		"baseDbs": ["cards.cdb", "cards-tf.cdb"]
