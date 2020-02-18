@@ -57,9 +57,9 @@ describe("Testing utilities", function() {
 	});
 });
 describe("Testing basic properties", function() {
-	it("OT should be TCG", async function() {
+	it("OT should be OCG and TCG", async function() {
 		const card = await index.getCard(43694650);
-		expect(card.data.names.en.ot).to.deep.equal(["TCG"]);
+		expect(card.data.names.en.ot).to.deep.equal(["OCG", "TCG"]);
 	});
 	it("Race should be Beast", async function() {
 		const card = await index.getCard(43694650);
@@ -94,9 +94,9 @@ describe("Testing basic properties", function() {
 		const card = await index.getCard(43694650);
 		expect(card.data.names.en.category).to.be.a("array");
 	});
-	it("List of databases should be [en/prerelease-cyho.cdb]", async function() {
+	it("List of databases should be [en/offciial.cdb]", async function() {
 		const card = await index.getCard(43694650);
-		expect(card.dbs).to.deep.equal(["en/prerelease-cyho.cdb"]);
+		expect(card.dbs).to.deep.equal(["en/official.cdb"]);
 	});
 });
 describe("Testing banlist", function() {
@@ -105,15 +105,16 @@ describe("Testing banlist", function() {
 		const status = await card.status;
 		expect(status).to.equal("OCG: 3/TCG: 3");
 	});
-	it("Illegal card should be Illegal: 3 for anime coercion", async function() {
+	// Anime banlist removed
+	/*it("Illegal card should be Illegal: 3 for anime coercion", async function() {
 		const card = await index.getCard("Noritoshi, in Darkest Rainment", "en");
 		const status = await card.status;
 		expect(status).to.equal("Illegal: 3");
-	});
-	it("OCG-Limited card should be OCG: 1/TCG: 3", async function() {
-		const card = await index.getCard("Dragonic Diagram", "en");
+	});*/
+	it("TCG-Limited card should be OCG: 3/TCG: 1", async function() {
+		const card = await index.getCard("Danger! Nessie!", "en");
 		const status = await card.status;
-		expect(status).to.equal("OCG: 1/TCG: 3");
+		expect(status).to.equal("OCG: 3/TCG: 1");
 	});
 });
 describe("Testing translation", function() {
