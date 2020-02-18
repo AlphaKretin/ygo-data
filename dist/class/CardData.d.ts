@@ -35,11 +35,11 @@ export declare class CardData {
     private literalDef;
     private literalLevel;
     constructor(dbData: CardDataRaw, langs: string[]);
-    readonly def: number | undefined;
-    readonly level: number;
-    readonly lscale: number | undefined;
-    readonly rscale: number | undefined;
-    readonly linkMarker: string[] | undefined;
+    get def(): number | undefined;
+    get level(): number;
+    get lscale(): number | undefined;
+    get rscale(): number | undefined;
+    get linkMarker(): string[] | undefined;
     isAttribute(att: CardAttribute): boolean;
     isCategory(cat: CardCategory): boolean;
     isOT(ot: CardOT): boolean;

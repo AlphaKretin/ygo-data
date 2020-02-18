@@ -22,10 +22,10 @@ export declare class Card {
     };
     readonly dbs: string[];
     constructor(dbData: CardRaw);
-    readonly aliasIDs: Promise<number[]>;
-    readonly status: Promise<string>;
-    readonly image: Promise<Buffer | undefined>;
-    readonly imageLink: string;
-    readonly price: Promise<CardPrice | undefined>;
+    get aliasIDs(): Promise<number[]>;
+    get status(): Promise<string>;
+    get image(): Promise<Buffer | undefined>;
+    get imageLink(): string;
+    get price(): Promise<CardPrice | undefined>;
 }
 export {};

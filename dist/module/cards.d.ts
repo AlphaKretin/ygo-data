@@ -1,4 +1,4 @@
-import * as octokit from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import { Card } from "../class/Card";
 export interface CardArray {
     [id: number]: Card;
@@ -10,7 +10,7 @@ interface CardListOpts {
     langs: {
         [lang: string]: {
             stringsConf: string;
-            remoteDBs?: octokit.ReposGetContentsParams[];
+            remoteDBs?: Octokit.ReposGetContentsParams[];
         };
     };
     baseDbs?: string[];

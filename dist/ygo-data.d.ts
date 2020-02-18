@@ -14,7 +14,7 @@ declare class YgoData {
     private savePath;
     constructor(configPath: string, savePath: string);
     update(): Promise<void>;
-    readonly langs: string[];
+    get langs(): string[];
     getCard(id: number | string, lang?: string, allowAnime?: boolean, allowCustom?: boolean): Promise<Card | undefined>;
     getCardList(): Promise<CardArray>;
     getFuseList(query: string, lang: string): Promise<SimpleCard[]>;

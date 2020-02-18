@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const octokit = require("@octokit/rest");
+const rest_1 = require("@octokit/rest");
 const mkdirp = require("mkdirp");
 const fs = require("mz/fs");
 const node_fetch_1 = require("node-fetch");
@@ -59,10 +59,13 @@ class CardList {
         }
     }
     async downloadDBs(opts, savePath) {
-        const github = new octokit();
+        let options = undefined;
         if (opts.gitAuth) {
-            github.authenticate({ type: "token", token: opts.gitAuth });
+            options = {
+                auth: opts.gitAuth
+            };
         }
+        const github = new rest_1.Octokit(options);
         const proms = [];
         for (const langName in opts.langs) {
             const filePath = savePath + "/" + langName + "/";

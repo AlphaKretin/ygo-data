@@ -30,6 +30,6 @@ export declare class CardText {
     private literalDesc;
     constructor(dbData: CardTextRaw);
     private getPText;
-    readonly desc: CardDesc;
+    get desc(): CardDesc;
 }
 export {};

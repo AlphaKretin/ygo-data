@@ -1,4 +1,4 @@
-import * as octokit from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import * as mkdirp from "mkdirp";
 import * as fs from "mz/fs";
 import fetch from "node-fetch";
@@ -8,7 +8,6 @@ import { Card, CardRaw } from "../class/Card";
 import { CardDataRaw } from "../class/CardData";
 import { CardTextRaw } from "../class/CardText";
 import { enums } from "../ygo-data";
-import Octokit = require("@octokit/rest");
 
 export interface CardArray {
 	[id: number]: Card;
@@ -22,7 +21,7 @@ interface CardListOpts {
 	langs: {
 		[lang: string]: {
 			stringsConf: string;
-			remoteDBs?: octokit.ReposGetContentsParams[];
+			remoteDBs?: Octokit.ReposGetContentsParams[];
 		};
 	};
 	baseDbs?: string[];
@@ -95,10 +94,13 @@ class CardList {
 	}
 
 	private async downloadDBs(opts: CardListOpts, savePath: string): Promise<void> {
-		const github = new octokit();
+		let options: Octokit.Options | undefined = undefined;
 		if (opts.gitAuth) {
-			github.authenticate({ type: "token", token: opts.gitAuth });
+			options = {
+				auth: opts.gitAuth
+			};
 		}
+		const github = new Octokit(options);
 		const proms: Array<Promise<void>> = [];
 		for (const langName in opts.langs) {
 			const filePath = savePath + "/" + langName + "/";

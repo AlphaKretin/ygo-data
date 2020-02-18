@@ -27,7 +27,7 @@ class YgoData {
 		threshold: 0.25,
 		tokenize: true
 	};
-	private fuses!: { [lang: string]: Fuse<SimpleCard> };
+	private fuses!: { [lang: string]: Fuse<SimpleCard, Fuse.FuseOptions<SimpleCard>> };
 	private shortcuts?: { [lang: string]: { [short: string]: string } };
 	// any allowed here because config is subject to change
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -164,7 +164,7 @@ class YgoData {
 		return fuse.search(query).map(r => r.item);
 	}
 
-	private async getFuse(lang: string): Promise<Fuse<SimpleCard>> {
+	private async getFuse(lang: string): Promise<Fuse<SimpleCard, Fuse.FuseOptions<SimpleCard>>> {
 		if (!(lang in this.fuses)) {
 			const list = await cards.getSimpleList(lang);
 			this.fuses[lang] = new Fuse(Object.values(list), this.fuseOpts);
