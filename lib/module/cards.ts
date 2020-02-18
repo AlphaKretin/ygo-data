@@ -95,6 +95,12 @@ class CardList {
 
 	private async downloadDBs(opts: CardListOpts, savePath: string): Promise<void> {
 		let options: Octokit.Options | undefined = undefined;
+		// for travis
+		if (process.env.GITHUB_TOKEN) {
+			options = {
+				auth: process.env.GITHUB_TOKEN
+			};
+		}
 		if (opts.gitAuth) {
 			options = {
 				auth: opts.gitAuth

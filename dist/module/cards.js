@@ -60,6 +60,12 @@ class CardList {
     }
     async downloadDBs(opts, savePath) {
         let options = undefined;
+        // for travis
+        if (process.env.GITHUB_TOKEN) {
+            options = {
+                auth: process.env.GITHUB_TOKEN
+            };
+        }
         if (opts.gitAuth) {
             options = {
                 auth: opts.gitAuth
