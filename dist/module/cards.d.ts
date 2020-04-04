@@ -13,7 +13,6 @@ interface CardListOpts {
         };
     };
     baseDbs?: string[];
-    gitAuth?: string;
 }
 export interface SimpleCard {
     id: number;

@@ -296,7 +296,11 @@
 		"def": ["def", "defense", "defence"],
 		"setcode": ["set", "setcode", "arch", "archetype", "series", "theme"]
 	},
-	"banlist": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/lflist.conf",
+	"banlist": {
+		"owner": "ProjectIgnis",
+		"repo": "LFLists",
+		"path": ""
+	},
 	"imageLink": "https://raw.githubusercontent.com/AlphaKretin/AlphaKretin.github.io/master/miscstorage/",
 	"imageExt": "png"
 }
