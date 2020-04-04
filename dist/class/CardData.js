@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const enums_1 = require("../module/enums");
-const setcodes_1 = require("../module/setcodes");
+const strings_1 = require("../module/strings");
 const translations_1 = require("../module/translations");
 function getNames(val, func) {
     let i = 1;
@@ -23,7 +23,7 @@ async function getSetcodeNames(setcode, lang) {
     }
     const names = [];
     for (const code of codes) {
-        const name = await setcodes_1.setcodes.getCode(code, lang);
+        const name = await strings_1.strings.getCode(code, lang);
         if (name) {
             names.push(name);
         }

@@ -15,8 +15,12 @@
 		"baseDbs": ["cards.cdb", "cards-tf.cdb"]
 	},
 	"stringOpts": {
-		"en": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf",
-		"ja": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf"
+		"en": {
+			"local": "strings.conf"
+		},
+		"ja": {
+			"remote": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf"
+		}
 	},
 	"transOpts": {
 		"en": {

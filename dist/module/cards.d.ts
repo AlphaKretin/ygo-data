@@ -9,7 +9,6 @@ export interface SimpleList {
 interface CardListOpts {
     langs: {
         [lang: string]: {
-            stringsConf: string;
             remoteDBs?: Octokit.ReposGetContentsParams[];
         };
     };

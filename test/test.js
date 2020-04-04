@@ -480,21 +480,21 @@ describe("Testing filter system", function () {
 });
 describe("Testing setcodes", function () {
 	it("Testing straight search", async function () {
-		const arch = await ygoData.setcodes.getCode(0x1, "en");
+		const arch = await ygoData.strings.getCode(0x1, "en");
 		expect(arch).to.equal("Ally of Justice");
 	});
 	it("Testing reverse search", async function () {
-		const code = await ygoData.setcodes.reverseCode("D/D", "en");
+		const code = await ygoData.strings.reverseCode("D/D", "en");
 		expect(code).to.equal(0xaf);
 	});
 });
 describe("Testing counters", function () {
 	it("Testing straight search", async function () {
-		const ct = await ygoData.counters.getCounter(0x1, "en");
+		const ct = await ygoData.strings.getCounter(0x1, "en");
 		expect(ct).to.equal("Spell Counter");
 	});
 	it("Testing reverse search", async function () {
-		const ct = await ygoData.counters.reverseCounter("Spell Counter", "en");
+		const ct = await ygoData.strings.reverseCounter("Spell Counter", "en");
 		expect(ct).to.equal(0x1);
 	});
 });

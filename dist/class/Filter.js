@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const cards_1 = require("../module/cards");
 const filterNames_1 = require("../module/filterNames");
-const setcodes_1 = require("../module/setcodes");
+const strings_1 = require("../module/strings");
 const ygo_data_1 = require("../ygo-data");
 function previousIndexOf(s, char, index) {
     let i = index - 1;
@@ -55,9 +55,7 @@ const FILLER_CHAR = "Φ"; // any string that shouldn't appear in a query, for te
 async function parseProperty(query, f) {
     const out = [];
     // special case for D/D breaking the OR notation
-    const cleanQuery = query
-        .replace(/d\/d\/d/g, `d${FILLER_CHAR}d${FILLER_CHAR}d`)
-        .replace(/d\/d/g, `d${FILLER_CHAR}d`);
+    const cleanQuery = query.replace(/d\/d\/d/g, `d${FILLER_CHAR}d${FILLER_CHAR}d`).replace(/d\/d/g, `d${FILLER_CHAR}d`);
     const ands = cleanQuery.split("/");
     for (const temp of ands) {
         // convert back from D/D special case
@@ -120,7 +118,7 @@ class Filter {
                 dat.type = await parseProperty(query, s => trans.reverseType(s));
             }
             if (checkName(name, filterNames_1.filterNames.setcode)) {
-                dat.setcode = await parseProperty(query, async (s) => await setcodes_1.setcodes.reverseCode(s, lang));
+                dat.setcode = await parseProperty(query, async (s) => await strings_1.strings.reverseCode(s, lang));
             }
             if (checkName(name, filterNames_1.filterNames.level)) {
                 dat.level = parseNumberProperty(query);
