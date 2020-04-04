@@ -4,9 +4,9 @@
 			"en": {
 				"remoteDBs": [
 					{
-						"owner": "EerieCode",
-						"repo": "Percy-Alpha-Testing",
-						"path": "Skill Database"
+						"owner": "ProjectIgnis",
+						"repo": "BabelCDB",
+						"path": ""
 					}
 				]
 			},
@@ -15,8 +15,12 @@
 		"baseDbs": ["cards.cdb", "cards-tf.cdb"]
 	},
 	"stringOpts": {
-		"en": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf",
-		"ja": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf"
+		"en": {
+			"local": "strings.conf"
+		},
+		"ja": {
+			"remote": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf"
+		}
 	},
 	"transOpts": {
 		"en": {
@@ -103,17 +107,21 @@
 				"0x100000000": "Charisma"
 			},
 			"skillRace": {
-				"0x1": "Bonz",
+				"0x1": "Yami Yugi",
 				"0x2": "Ishizu",
-				"0x4": "Joey",
+				"0x4": "Pegasus",
 				"0x8": "Kaiba",
-				"0x10": "Keith",
+				"0x10": "Joey",
 				"0x20": "Mai",
-				"0x40": "Mako",
-				"0x80": "Pegasus",
+				"0x40": "Bonz",
+				"0x80": "Mako",
 				"0x100": "Rex",
 				"0x200": "Weevil",
-				"0x400": "Yami Yugi"
+				"0x400": "Keith",
+				"0x800": "Christine",
+				"0x1000": "Emma",
+				"0x2000": "Andrew",
+				"0x4000": "David"
 			},
 			"type": {
 				"0x1": "Monster",
@@ -288,7 +296,11 @@
 		"def": ["def", "defense", "defence"],
 		"setcode": ["set", "setcode", "arch", "archetype", "series", "theme"]
 	},
-	"banlist": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/lflist.conf",
+	"banlist": {
+		"owner": "ProjectIgnis",
+		"repo": "LFLists",
+		"path": ""
+	},
 	"imageLink": "https://raw.githubusercontent.com/AlphaKretin/AlphaKretin.github.io/master/miscstorage/",
 	"imageExt": "png"
 }

@@ -1,7 +1,7 @@
 import { cards, CardArray, SimpleCard, SimpleList } from "../module/cards";
 import { CardAttribute, CardCategory, CardOT, CardRace, CardType } from "../module/enums";
 import { filterNames } from "../module/filterNames";
-import { setcodes } from "../module/setcodes";
+import { strings } from "../module/strings";
 import { translations } from "../ygo-data";
 import { Card } from "./Card";
 
@@ -80,12 +80,13 @@ function checkName(name: string, names: string[]): boolean {
 }
 
 const FILLER_CHAR = "Φ"; // any string that shouldn't appear in a query, for temporary find-replacing
-async function parseProperty<T>(query: string, f: (s: string) => T | undefined | Promise<T | undefined>): Promise<FilterProperty<T>[]> {
+async function parseProperty<T>(
+	query: string,
+	f: (s: string) => T | undefined | Promise<T | undefined>
+): Promise<FilterProperty<T>[]> {
 	const out = [];
 	// special case for D/D breaking the OR notation
-	const cleanQuery = query
-		.replace(/d\/d\/d/g, `d${FILLER_CHAR}d${FILLER_CHAR}d`)
-		.replace(/d\/d/g, `d${FILLER_CHAR}d`);
+	const cleanQuery = query.replace(/d\/d\/d/g, `d${FILLER_CHAR}d${FILLER_CHAR}d`).replace(/d\/d/g, `d${FILLER_CHAR}d`);
 	const ands = cleanQuery.split("/");
 	for (const temp of ands) {
 		// convert back from D/D special case
@@ -145,7 +146,7 @@ export class Filter {
 				dat.type = await parseProperty(query, s => trans.reverseType(s));
 			}
 			if (checkName(name, filterNames.setcode)) {
-				dat.setcode = await parseProperty(query, async s => await setcodes.reverseCode(s, lang));
+				dat.setcode = await parseProperty(query, async s => await strings.reverseCode(s, lang));
 			}
 			if (checkName(name, filterNames.level)) {
 				dat.level = parseNumberProperty(query);

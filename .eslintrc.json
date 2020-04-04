@@ -7,7 +7,8 @@
 		"eslint:recommended",
 		"plugin:@typescript-eslint/eslint-recommended",
 		"plugin:@typescript-eslint/recommended",
-		"plugin:@typescript-eslint/recommended-requiring-type-checking"
+		"plugin:@typescript-eslint/recommended-requiring-type-checking",
+		"prettier/@typescript-eslint"
 	],
 	"globals": {
 		"Atomics": "readonly",
@@ -19,35 +20,21 @@
 		"sourceType": "module",
 		"project": "./tsconfig.json"
 	},
-	"plugins": [
-		"@typescript-eslint"
-	],
+	"plugins": ["@typescript-eslint"],
 	"rules": {
-		"indent": [
-			"error",
-			"tab"
-		],
-		"linebreak-style": [
-			"error",
-			"unix"
-		],
-		"quotes": [
-			"error",
-			"double"
-		],
-		"semi": [
-			"error",
-			"always"
-		],
+		"indent": ["error", "tab"],
+		"linebreak-style": ["error", "unix"],
+		"quotes": ["error", "double"],
+		"semi": ["error", "always"],
 		"comma-spacing": "error",
 		"comma-dangle": "error",
 		"array-bracket-spacing": "error",
-        "prefer-arrow-callback": "error",
-        "@typescript-eslint/no-misused-promises": [
-            "error",
-            {
-              "checksVoidReturn": false
-            }
-        ]
+		"prefer-arrow-callback": "error",
+		"@typescript-eslint/no-misused-promises": [
+			"error",
+			{
+				"checksVoidReturn": false
+			}
+		]
 	}
 }

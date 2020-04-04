@@ -1,5 +1,5 @@
 import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardType } from "../module/enums";
-import { setcodes } from "../module/setcodes";
+import { strings } from "../module/strings";
 import { translations } from "../module/translations";
 import { Translation } from "./Translation";
 
@@ -47,7 +47,7 @@ async function getSetcodeNames(setcode: number, lang: string): Promise<string[]>
 	}
 	const names: string[] = [];
 	for (const code of codes) {
-		const name = await setcodes.getCode(code, lang);
+		const name = await strings.getCode(code, lang);
 		if (name) {
 			names.push(name);
 		}

@@ -10,13 +10,11 @@ const Filter_1 = require("./class/Filter");
 exports.Filter = Filter_1.Filter;
 const banlist_1 = require("./module/banlist");
 const cards_1 = require("./module/cards");
-const counters_1 = require("./module/counters");
-exports.counters = counters_1.counters;
+const strings_1 = require("./module/strings");
+exports.strings = strings_1.strings;
 const enums_1 = require("./module/enums");
 const filterNames_1 = require("./module/filterNames");
 const images_1 = require("./module/images");
-const setcodes_1 = require("./module/setcodes");
-exports.setcodes = setcodes_1.setcodes;
 const translations_1 = require("./module/translations");
 exports.translations = translations_1.translations;
 class YgoData {
@@ -55,8 +53,7 @@ class YgoData {
         const proms = [];
         proms.push(cards_1.cards.update(this.config.cardOpts, this.savePath));
         proms.push(banlist_1.banlist.update(this.config.banlist));
-        proms.push(counters_1.counters.update(this.config.stringOpts));
-        proms.push(setcodes_1.setcodes.update(this.config.stringOpts));
+        proms.push(strings_1.strings.update(this.config.stringOpts, this.savePath));
         translations_1.translations.update(this.config.transOpts);
         filterNames_1.updateFilterNames(this.config.filterNames);
         images_1.images.update(this.config.imageLink, this.config.imageExt);
@@ -81,9 +78,7 @@ class YgoData {
                 let resultCard;
                 for (const code in simpList) {
                     const entry = simpList[code];
-                    if (entry.name.toLowerCase() === term &&
-                        (allowAnime || !entry.anime) &&
-                        (allowCustom || !entry.custom)) {
+                    if (entry.name.toLowerCase() === term && (allowAnime || !entry.anime) && (allowCustom || !entry.custom)) {
                         const c = await cards_1.cards.getCard(code);
                         if (c) {
                             resultCard = c;
@@ -101,9 +96,7 @@ class YgoData {
                     term = terms.join(" ");
                     for (const code in simpList) {
                         const entry = simpList[code];
-                        if (entry.name.toLowerCase() === term &&
-                            (allowAnime || !entry.anime) &&
-                            (allowCustom || !entry.custom)) {
+                        if (entry.name.toLowerCase() === term && (allowAnime || !entry.anime) && (allowCustom || !entry.custom)) {
                             const c = await cards_1.cards.getCard(code);
                             if (c) {
                                 resultCard = c;

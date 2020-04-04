@@ -1,9 +1,8 @@
 import { Card } from "./class/Card";
 import { Filter } from "./class/Filter";
 import { CardArray, SimpleCard } from "./module/cards";
-import { counters } from "./module/counters";
+import { strings } from "./module/strings";
 import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardSkillRace, CardType } from "./module/enums";
-import { setcodes } from "./module/setcodes";
 import { translations } from "./module/translations";
 declare class YgoData {
     private internalLangs;
@@ -29,4 +28,4 @@ declare const enumMap: {
     skillRace: typeof CardSkillRace;
     type: typeof CardType;
 };
-export { YgoData, Card, translations, enumMap as enums, Filter, setcodes, counters };
+export { YgoData, Card, translations, enumMap as enums, Filter, strings };

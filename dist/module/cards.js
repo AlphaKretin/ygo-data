@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const rest_1 = require("@octokit/rest");
 const mkdirp = require("mkdirp");
 const fs = require("mz/fs");
 const node_fetch_1 = require("node-fetch");
@@ -8,6 +7,7 @@ const sqlite = require("sqlite");
 const util = require("util");
 const Card_1 = require("../class/Card");
 const ygo_data_1 = require("../ygo-data");
+const github_1 = require("./github");
 class CardList {
     async getCard(id) {
         if (!this.cards) {
@@ -59,19 +59,6 @@ class CardList {
         }
     }
     async downloadDBs(opts, savePath) {
-        let options = undefined;
-        // for travis
-        if (process.env.GITHUB_TOKEN) {
-            options = {
-                auth: process.env.GITHUB_TOKEN
-            };
-        }
-        if (opts.gitAuth) {
-            options = {
-                auth: opts.gitAuth
-            };
-        }
-        const github = new rest_1.Octokit(options);
         const proms = [];
         for (const langName in opts.langs) {
             const filePath = savePath + "/" + langName + "/";
@@ -79,7 +66,7 @@ class CardList {
             const lang = opts.langs[langName];
             if (lang.remoteDBs) {
                 for (const repo of lang.remoteDBs) {
-                    const res = await github.repos.getContents(repo);
+                    const res = await github_1.github.repos.getContents(repo);
                     const contents = res.data;
                     if (contents instanceof Array) {
                         for (const file of contents) {

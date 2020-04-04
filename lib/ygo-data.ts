@@ -6,11 +6,10 @@ import { Card } from "./class/Card";
 import { Filter } from "./class/Filter";
 import { banlist } from "./module/banlist";
 import { cards, CardArray, SimpleCard } from "./module/cards";
-import { counters } from "./module/counters";
+import { strings } from "./module/strings";
 import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardSkillRace, CardType } from "./module/enums";
 import { updateFilterNames } from "./module/filterNames";
 import { images } from "./module/images";
-import { setcodes } from "./module/setcodes";
 import { translations } from "./module/translations";
 
 class YgoData {
@@ -57,8 +56,7 @@ class YgoData {
 		const proms: Array<Promise<any>> = [];
 		proms.push(cards.update(this.config.cardOpts, this.savePath));
 		proms.push(banlist.update(this.config.banlist));
-		proms.push(counters.update(this.config.stringOpts));
-		proms.push(setcodes.update(this.config.stringOpts));
+		proms.push(strings.update(this.config.stringOpts, this.savePath));
 		translations.update(this.config.transOpts);
 		updateFilterNames(this.config.filterNames);
 		images.update(this.config.imageLink, this.config.imageExt);
@@ -89,11 +87,7 @@ class YgoData {
 				let resultCard: Card | undefined;
 				for (const code in simpList) {
 					const entry = simpList[code];
-					if (
-						entry.name.toLowerCase() === term &&
-							(allowAnime || !entry.anime) &&
-							(allowCustom || !entry.custom)
-					) {
+					if (entry.name.toLowerCase() === term && (allowAnime || !entry.anime) && (allowCustom || !entry.custom)) {
 						const c = await cards.getCard(code);
 						if (c) {
 							resultCard = c;
@@ -111,11 +105,7 @@ class YgoData {
 					term = terms.join(" ");
 					for (const code in simpList) {
 						const entry = simpList[code];
-						if (
-							entry.name.toLowerCase() === term &&
-								(allowAnime || !entry.anime) &&
-								(allowCustom || !entry.custom)
-						) {
+						if (entry.name.toLowerCase() === term && (allowAnime || !entry.anime) && (allowCustom || !entry.custom)) {
 							const c = await cards.getCard(code);
 							if (c) {
 								resultCard = c;
@@ -138,8 +128,7 @@ class YgoData {
 				}
 				if (resultCard !== undefined && resultCard.data.alias > 0) {
 					const newCard = await this.getCard(resultCard.data.alias);
-					let check =
-						newCard && newCard.data.alias === resultCard.id && newCard.data.ot === resultCard.data.ot;
+					let check = newCard && newCard.data.alias === resultCard.id && newCard.data.ot === resultCard.data.ot;
 					if (newCard && newCard.text[lang] && resultCard.text[lang].name !== newCard.text[lang].name) {
 						check = false;
 					}
@@ -183,4 +172,4 @@ const enumMap = {
 	type: CardType
 };
 
-export { YgoData, Card, translations, enumMap as enums, Filter, setcodes, counters };
+export { YgoData, Card, translations, enumMap as enums, Filter, strings };
