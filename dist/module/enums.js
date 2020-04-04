@@ -90,17 +90,21 @@ var CardRace;
 })(CardRace = exports.CardRace || (exports.CardRace = {}));
 var CardSkillRace;
 (function (CardSkillRace) {
-    CardSkillRace[CardSkillRace["RACE_SKILL_BONZ"] = 1] = "RACE_SKILL_BONZ";
+    CardSkillRace[CardSkillRace["RACE_SKILL_YAMI"] = 1] = "RACE_SKILL_YAMI";
     CardSkillRace[CardSkillRace["RACE_SKILL_ISHIZU"] = 2] = "RACE_SKILL_ISHIZU";
-    CardSkillRace[CardSkillRace["RACE_SKILL_JOEY"] = 4] = "RACE_SKILL_JOEY";
+    CardSkillRace[CardSkillRace["RACE_SKILL_PEGASUS"] = 4] = "RACE_SKILL_PEGASUS";
     CardSkillRace[CardSkillRace["RACE_SKILL_KAIBA"] = 8] = "RACE_SKILL_KAIBA";
-    CardSkillRace[CardSkillRace["RACE_SKILL_KEITH"] = 16] = "RACE_SKILL_KEITH";
+    CardSkillRace[CardSkillRace["RACE_SKILL_JOEY"] = 16] = "RACE_SKILL_JOEY";
     CardSkillRace[CardSkillRace["RACE_SKILL_MAI"] = 32] = "RACE_SKILL_MAI";
-    CardSkillRace[CardSkillRace["RACE_SKILL_MAKO"] = 64] = "RACE_SKILL_MAKO";
-    CardSkillRace[CardSkillRace["RACE_SKILL_PEGASUS"] = 128] = "RACE_SKILL_PEGASUS";
+    CardSkillRace[CardSkillRace["RACE_SKILL_BONZ"] = 64] = "RACE_SKILL_BONZ";
+    CardSkillRace[CardSkillRace["RACE_SKILL_MAKO"] = 128] = "RACE_SKILL_MAKO";
     CardSkillRace[CardSkillRace["RACE_SKILL_REX"] = 256] = "RACE_SKILL_REX";
     CardSkillRace[CardSkillRace["RACE_SKILL_WEEVIL"] = 512] = "RACE_SKILL_WEEVIL";
-    CardSkillRace[CardSkillRace["RACE_SKILL_YAMI"] = 1024] = "RACE_SKILL_YAMI";
+    CardSkillRace[CardSkillRace["RACE_SKILL_KEITH"] = 1024] = "RACE_SKILL_KEITH";
+    CardSkillRace[CardSkillRace["RACE_SKILL_CHRISTINE"] = 2048] = "RACE_SKILL_CHRISTINE";
+    CardSkillRace[CardSkillRace["RACE_SKILL_EMMA"] = 4096] = "RACE_SKILL_EMMA";
+    CardSkillRace[CardSkillRace["RACE_SKILL_ANDREW"] = 8192] = "RACE_SKILL_ANDREW";
+    CardSkillRace[CardSkillRace["RACE_SKILL_DAVID"] = 16384] = "RACE_SKILL_DAVID";
 })(CardSkillRace = exports.CardSkillRace || (exports.CardSkillRace = {}));
 var CardLinkMarker;
 (function (CardLinkMarker) {

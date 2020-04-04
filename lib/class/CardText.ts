@@ -57,7 +57,7 @@ export class CardText {
 	private getPText(): string[] {
 		// english regex from https://github.com/247321453/DataEditorX/blob/master/DataEditorX/data/mse_English.txt#L25
 		const ENG_PEND_REG = /\[ (Pendulum Effect|Skill Activation) \]\s*[\r\n|\r|\n](?:-n\/a-)*([\S\s]*?)[\r\n|\r|\n]---/;
-		const ENG_MON_REG = /(Monster Effect|Flavor Text|Effect) \]\s*[\r\n|\r|\n]([\S\s]*)/;
+		const ENG_MON_REG = /\[ (Monster Effect|Flavor Text|Effect) \]\s*[\r\n|\r|\n]([\S\s]*)/;
 		const engPendResult = ENG_PEND_REG.exec(this.literalDesc);
 		if (engPendResult) {
 			const pendHead = engPendResult[1].trim();
