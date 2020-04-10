@@ -179,27 +179,27 @@ describe("Testing image functions", function () {
 describe("Testing alias list", function () {
 	it("Normal art's alias list should be [7852509, 7852510]", async function () {
 		const card = await index.getCard("Loop of Destruction", "en");
-		const codes = await card.aliasIDs;
+		const codes = card.data.aliasedCards;
 		expect(codes).to.deep.equal([7852509, 7852510]);
 	});
 	it("Alt art's alias list should be [7852509, 7852510]", async function () {
 		const card = await index.getCard(7852510);
-		const codes = await card.aliasIDs;
+		const codes = card.data.aliasedCards;
 		expect(codes).to.deep.equal([7852509, 7852510]);
 	});
 	it("Ra's aliases should not include 513000134 because it's anime", async function () {
 		const card = await index.getCard(10000010);
-		const codes = await card.aliasIDs;
+		const codes = card.data.aliasedCards;
 		expect(codes).to.not.include(513000134);
 	});
 	it("Manga Ra's aliases should be only [513000134] ignoring OCG", async function () {
 		const card = await index.getCard(513000134);
-		const codes = await card.aliasIDs;
+		const codes = card.data.aliasedCards;
 		expect(codes).to.deep.equal([513000134]);
 	});
 	it("Harpie Lady's alias list should have only itself, because aliases are alt arts", async function () {
 		const card = await index.getCard("Harpie Lady", "en");
-		const codes = await card.aliasIDs;
+		const codes = card.data.aliasedCards;
 		expect(codes.length).to.equal(1);
 	});
 });

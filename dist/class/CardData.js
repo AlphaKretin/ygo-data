@@ -43,6 +43,7 @@ class CardData {
         this.attribute = dbData.attribute;
         this.category = dbData.category;
         this.names = {};
+        this.aliasedCards = dbData.aliasedCards;
         for (const lang of langs) {
             const trans = translations_1.translations.getTrans(lang);
             if (trans) {

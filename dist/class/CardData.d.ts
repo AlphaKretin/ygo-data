@@ -10,6 +10,7 @@ export interface CardDataRaw {
     race: number;
     attribute: number;
     category: number;
+    aliasedCards: number[];
 }
 interface CardDataNames {
     ot: string[];
@@ -32,6 +33,7 @@ export declare class CardData {
     readonly names: {
         [lang: string]: CardDataNames;
     };
+    readonly aliasedCards: number[];
     private literalDef;
     private literalLevel;
     constructor(dbData: CardDataRaw, langs: string[]);

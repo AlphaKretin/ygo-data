@@ -137,7 +137,8 @@ class CardList {
 							ot: card.ot,
 							race: card.race,
 							setcode: card.setcode,
-							type: card.type
+							type: card.type,
+							aliasedCards: [card.id]
 						};
 						const text: CardTextRaw = {
 							desc: card.desc,
@@ -200,6 +201,25 @@ class CardList {
 							raw[card.id] = cardRaw;
 						}
 					}
+				}
+			}
+		}
+		for (const id in raw) {
+			const card = raw[id];
+			if (card.data.alias > 0) {
+				const alCard = raw[card.data.alias];
+				// lists alt arts - different OT means anime version, distant ID means "always treated as"
+				if (alCard && alCard.data.ot === card.data.ot && Math.abs(alCard.id - card.id) < 10) {
+					alCard.data.aliasedCards.push(card.id);
+				}
+			}
+		}
+		for (const id in raw) {
+			const card = raw[id];
+			if (card.data.alias === 0 && card.data.aliasedCards.length > 1) {
+				for (const code of card.data.aliasedCards) {
+					// propagate alias lists to match the base card
+					raw[code].data.aliasedCards = card.data.aliasedCards;
 				}
 			}
 		}

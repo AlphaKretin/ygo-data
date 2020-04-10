@@ -1,6 +1,5 @@
 import fetch from "node-fetch";
 import { banlist } from "../module/banlist";
-import { cards } from "../module/cards";
 import { images } from "../module/images";
 import { CardData, CardDataRaw } from "./CardData";
 import { CardText, CardTextRaw } from "./CardText";
@@ -36,35 +35,6 @@ export class Card {
 		for (const lang in dbData.text) {
 			this.text[lang] = new CardText(dbData.text[lang]);
 		}
-	}
-
-	get aliasIDs(): Promise<number[]> {
-		// async promise to circumvent synchronous getters
-		// eslint-disable-next-line no-async-promise-executor
-		return new Promise(async resolve => {
-			const list = await cards.getRawCardList();
-			if (this.data.alias > 0) {
-				const alCard = list[this.data.alias];
-				if (!alCard || alCard.data.ot !== this.data.ot) {
-					return resolve([this.id]);
-				}
-			}
-			const baseCode = this.data.alias > 0 ? this.data.alias : this.id;
-			const baseCard = list[baseCode];
-			const ids = [baseCode];
-			for (const id in list) {
-				const card = list[id];
-				let check = card && card.data.alias === baseCode && card.data.ot === baseCard.data.ot;
-				const lang = Object.keys(baseCard.text)[0];
-				if (card.text[lang] && baseCard.text[lang].name !== card.text[lang].name) {
-					check = false;
-				}
-				if (check) {
-					ids.push(parseInt(id, 10));
-				}
-			}
-			resolve(ids);
-		});
 	}
 
 	get status(): Promise<string> {

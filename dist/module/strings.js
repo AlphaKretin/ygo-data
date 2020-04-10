@@ -42,9 +42,21 @@ class Strings {
         }
     }
     update(conf, savePath) {
-        const prom = this.load(conf, savePath);
-        this.codes = prom.then(list => list[0]);
-        this.counters = prom.then(list => list[1]);
+        const prom = this.load(conf, savePath).catch(e => {
+            console.error(e);
+            console.error("Failed to load strings file! Catastrophic failure, exiting");
+            process.exit();
+        });
+        this.codes = prom
+            .then(list => list[0])
+            .catch(e => {
+            throw e;
+        });
+        this.counters = prom
+            .then(list => list[1])
+            .catch(e => {
+            throw e;
+        });
         return prom;
     }
     async loadConf(conf, lang, savePath) {

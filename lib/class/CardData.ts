@@ -14,6 +14,7 @@ export interface CardDataRaw {
 	race: number;
 	attribute: number;
 	category: number;
+	aliasedCards: number[];
 }
 
 interface CardDataNames {
@@ -67,6 +68,7 @@ export class CardData {
 	public readonly names: {
 		[lang: string]: CardDataNames;
 	};
+	public readonly aliasedCards: number[];
 	private literalDef: number;
 	private literalLevel: number;
 	constructor(dbData: CardDataRaw, langs: string[]) {
@@ -81,6 +83,7 @@ export class CardData {
 		this.attribute = dbData.attribute;
 		this.category = dbData.category;
 		this.names = {};
+		this.aliasedCards = dbData.aliasedCards;
 		for (const lang of langs) {
 			const trans = translations.getTrans(lang);
 			if (trans) {
