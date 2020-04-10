@@ -13,6 +13,7 @@ interface CardListOpts {
         };
     };
     baseDbs?: string[];
+    aliasSpecialCases?: number[];
 }
 export interface SimpleCard {
     id: number;

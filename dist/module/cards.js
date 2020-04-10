@@ -182,6 +182,9 @@ class CardList {
                 if (alCard && alCard.data.ot === card.data.ot && Math.abs(alCard.id - card.id) < 10) {
                     alCard.data.aliasedCards.push(card.id);
                 }
+                if (alCard && opts.aliasSpecialCases && opts.aliasSpecialCases.includes(card.id)) {
+                    alCard.data.aliasedCards.push(card.id);
+                }
             }
         }
         for (const id in raw) {

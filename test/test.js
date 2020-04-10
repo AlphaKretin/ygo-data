@@ -202,6 +202,11 @@ describe("Testing alias list", function () {
 		const codes = card.data.aliasedCards;
 		expect(codes.length).to.equal(1);
 	});
+	it("Polymerizations's alias list should include the alt art in this special case", async function () {
+		const card = await index.getCard("Polymerization", "en");
+		const codes = card.data.aliasedCards;
+		expect(codes).to.deep.equal([24094653, 27847700]);
+	});
 });
 describe("Testing card.data.is functions", function () {
 	it("Is Beast should be true", async function () {

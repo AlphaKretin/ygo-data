@@ -25,6 +25,7 @@ interface CardListOpts {
 		};
 	};
 	baseDbs?: string[];
+	aliasSpecialCases?: number[];
 }
 
 export interface SimpleCard {
@@ -210,6 +211,9 @@ class CardList {
 				const alCard = raw[card.data.alias];
 				// lists alt arts - different OT means anime version, distant ID means "always treated as"
 				if (alCard && alCard.data.ot === card.data.ot && Math.abs(alCard.id - card.id) < 10) {
+					alCard.data.aliasedCards.push(card.id);
+				}
+				if (alCard && opts.aliasSpecialCases && opts.aliasSpecialCases.includes(card.id)) {
 					alCard.data.aliasedCards.push(card.id);
 				}
 			}
