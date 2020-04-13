@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mkdirp = require("mkdirp");
 const fs = require("mz/fs");
 const node_fetch_1 = require("node-fetch");
-const sqlite = require("sqlite");
+const sqlite = require("better-sqlite3");
 const util = require("util");
 const Card_1 = require("../class/Card");
 const ygo_data_1 = require("../ygo-data");
@@ -90,8 +90,9 @@ class CardList {
             const dbs = await fs.readdir(dir);
             for (const dbName of dbs) {
                 if (dbName.endsWith(".cdb")) {
-                    const db = await sqlite.open(dir + dbName);
-                    const result = await db.all("select * from datas,texts where datas.id=texts.id");
+                    const db = await sqlite(dir + dbName);
+                    const statement = db.prepare("select * from datas,texts where datas.id=texts.id");
+                    const result = statement.all();
                     for (const card of result) {
                         const data = {
                             alias: card.alias,

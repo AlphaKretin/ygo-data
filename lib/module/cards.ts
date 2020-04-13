@@ -2,7 +2,7 @@ import { Octokit } from "@octokit/rest";
 import * as mkdirp from "mkdirp";
 import * as fs from "mz/fs";
 import fetch from "node-fetch";
-import * as sqlite from "sqlite";
+import * as sqlite from "better-sqlite3";
 import * as util from "util";
 import { Card, CardRaw } from "../class/Card";
 import { CardDataRaw } from "../class/CardData";
@@ -125,8 +125,9 @@ class CardList {
 			const dbs = await fs.readdir(dir);
 			for (const dbName of dbs) {
 				if (dbName.endsWith(".cdb")) {
-					const db = await sqlite.open(dir + dbName);
-					const result = await db.all("select * from datas,texts where datas.id=texts.id");
+					const db = await sqlite(dir + dbName);
+					const statement = db.prepare("select * from datas,texts where datas.id=texts.id");
+					const result = statement.all();
 					for (const card of result) {
 						const data: CardDataRaw = {
 							alias: card.alias,
