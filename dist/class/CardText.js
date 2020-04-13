@@ -40,7 +40,7 @@ class CardText {
         if (jpnPendResult) {
             let pendEff = jpnPendResult[1].trim();
             if (pendEff.length < 1) {
-                pendEff = "テキストはありません。";
+                pendEff = "テキストなし";
             }
             let monHead = "";
             let monText = "";
@@ -53,7 +53,7 @@ class CardText {
                 monHead = "テキスト";
             }
             if (monText.length < 1) {
-                monText = "テキストはありません。";
+                monText = "テキストなし";
             }
             return ["Ｐ効果", pendEff, monHead, monText];
         }
