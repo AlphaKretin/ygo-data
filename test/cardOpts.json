@@ -1,0 +1,16 @@
+{
+	"langs": {
+		"en": {
+			"remoteDBs": [
+				{
+					"owner": "ProjectIgnis",
+					"repo": "BabelCDB",
+					"path": ""
+				}
+			]
+		},
+		"ja": {}
+	},
+	"baseDbs": ["cards.cdb", "cards-tf.cdb"],
+	"aliasSpecialCases": [27847700, 36996508]
+}

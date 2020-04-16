@@ -1,7 +1,6 @@
 // ts-ignore allowed in this file because fuse.js has incorrect typings
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 import * as Fuse from "fuse.js";
-import * as fs from "mz/fs";
 import { Card } from "./class/Card";
 import { Filter } from "./class/Filter";
 import { banlist } from "./module/banlist";
@@ -10,7 +9,64 @@ import { strings } from "./module/strings";
 import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardSkillRace, CardType } from "./module/enums";
 import { updateFilterNames } from "./module/filterNames";
 import { images } from "./module/images";
-import { translations } from "./module/translations";
+import { translations, TranslationsRaw } from "./module/translations";
+import { Octokit } from "@octokit/rest";
+
+interface CardConfig {
+	langs: {
+		[lang: string]: {
+			remoteDBs: Octokit.ReposGetContentsParams[];
+		};
+	};
+	baseDbs?: string[];
+	aliasSpecialCases?: number[];
+}
+
+interface TransOptions {
+	[lang: string]: {
+		type: { [t: string]: string };
+		race: { [r: string]: string };
+		skillRace: { [r: string]: string };
+		attribute: { [a: string]: string };
+		ot: { [o: string]: string };
+		category: { [o: string]: string };
+	};
+}
+
+type TransConfig = TranslationsRaw | TransOptions;
+
+interface MiscConfig {
+	stringOpts: {
+		[lang: string]: {
+			local?: string;
+			remote?: string;
+		};
+	};
+	shortcuts: {
+		[lang: string]: {
+			[shortcut: string]: string;
+		};
+	};
+	filterNames: {
+		attribute: string[];
+		category: string[];
+		ot: string[];
+		race: string[];
+		type: string[];
+		level: string[];
+		atk: string[];
+		def: string[];
+		setcode: string[];
+	};
+	banlist: Octokit.ReposGetContentsParams;
+	imageLink: string;
+	imageExt: string;
+}
+
+function needsConversion(transOpts: TransConfig): transOpts is TransOptions {
+	const key = Object.keys(transOpts)[0];
+	return typeof Object.keys(transOpts[key].type)[0] === "string";
+}
 
 class YgoData {
 	private internalLangs!: string[];
@@ -30,22 +86,53 @@ class YgoData {
 	private shortcuts?: { [lang: string]: { [short: string]: string } };
 	// any allowed here because config is subject to change
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	private config: any;
+	private cardOpts: CardConfig;
+	private transOpts: TranslationsRaw;
+	private miscOpts: MiscConfig;
 	private savePath: string;
-	constructor(configPath: string, savePath: string) {
-		this.config = JSON.parse(fs.readFileSync(configPath, "utf8"), (key, value) => {
-			// if object with hex keys
-			if (typeof value === "object" && Object.keys(value).length > 0 && Object.keys(value)[0].startsWith("0x")) {
-				// any allowed here because could apply to any part of config
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				const newObj: { [i: number]: any } = {};
-				for (const k in value) {
-					newObj[parseInt(k, 16)] = value[k];
+	constructor(cardOpts: CardConfig, transOpts: TransConfig, miscOpts: MiscConfig, savePath: string) {
+		this.cardOpts = cardOpts;
+		if (needsConversion(transOpts)) {
+			this.transOpts = {};
+			for (const lang in transOpts) {
+				const type: { [t: number]: string } = {};
+				for (const hex in transOpts[lang].type) {
+					type[parseInt(hex, 16)] = transOpts[lang].type[hex];
 				}
-				return newObj;
+				const race: { [r: number]: string } = {};
+				for (const hex in transOpts[lang].race) {
+					race[parseInt(hex, 16)] = transOpts[lang].race[hex];
+				}
+				const skillRace: { [r: number]: string } = {};
+				for (const hex in transOpts[lang].skillRace) {
+					skillRace[parseInt(hex, 16)] = transOpts[lang].skillRace[hex];
+				}
+				const attribute: { [a: number]: string } = {};
+				for (const hex in transOpts[lang].attribute) {
+					attribute[parseInt(hex, 16)] = transOpts[lang].attribute[hex];
+				}
+				const ot: { [o: number]: string } = {};
+				for (const hex in transOpts[lang].ot) {
+					ot[parseInt(hex, 16)] = transOpts[lang].ot[hex];
+				}
+				const category: { [o: number]: string } = {};
+				for (const hex in transOpts[lang].category) {
+					category[parseInt(hex, 16)] = transOpts[lang].category[hex];
+				}
+
+				this.transOpts[lang] = {
+					type: type as { [t in CardType]: string },
+					race: race as { [r in CardRace]: string },
+					skillRace: skillRace as { [r in CardSkillRace]: string },
+					attribute: attribute as { [a in CardAttribute]: string },
+					ot: ot as { [o in CardOT]: string },
+					category: category as { [c in CardCategory]: string }
+				};
 			}
-			return value;
-		});
+		} else {
+			this.transOpts = transOpts;
+		}
+		this.miscOpts = miscOpts;
 		this.savePath = savePath;
 		this.update();
 	}
@@ -54,15 +141,15 @@ class YgoData {
 		// any allowed here because array of different promises
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const proms: Array<Promise<any>> = [];
-		proms.push(cards.update(this.config.cardOpts, this.savePath));
-		proms.push(banlist.update(this.config.banlist));
-		proms.push(strings.update(this.config.stringOpts, this.savePath));
-		translations.update(this.config.transOpts);
-		updateFilterNames(this.config.filterNames);
-		images.update(this.config.imageLink, this.config.imageExt);
+		proms.push(cards.update(this.cardOpts, this.savePath));
+		proms.push(banlist.update(this.miscOpts.banlist));
+		proms.push(strings.update(this.miscOpts.stringOpts, this.savePath));
+		translations.update(this.transOpts);
+		updateFilterNames(this.miscOpts.filterNames);
+		images.update(this.miscOpts.imageLink, this.miscOpts.imageExt);
 		this.fuses = {};
-		this.internalLangs = Object.keys(this.config.cardOpts.langs);
-		this.shortcuts = this.config.shortcuts;
+		this.internalLangs = Object.keys(this.cardOpts.langs);
+		this.shortcuts = this.miscOpts.shortcuts;
 		await Promise.all(proms);
 	}
 

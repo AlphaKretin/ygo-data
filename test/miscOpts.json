@@ -1,0 +1,31 @@
+{
+	"stringOpts": {
+		"en": {
+			"local": "strings.conf"
+		},
+		"ja": {
+			"remote": "https://raw.githubusercontent.com/Ygoproco/Live2017Links/master/strings.conf"
+		}
+	},
+	"shortcuts": {
+		"en": { "mst": "Mystical Space Typhoon" }
+	},
+	"filterNames": {
+		"attribute": ["att", "attribute"],
+		"category": ["cat", "category"],
+		"ot": ["ot", "status", "region"],
+		"race": ["race", "mtype", "monstertype"],
+		"type": ["type", "ctype", "cardtype"],
+		"level": ["lvl", "level", "rank", "link"],
+		"atk": ["atk", "attack"],
+		"def": ["def", "defense", "defence"],
+		"setcode": ["set", "setcode", "arch", "archetype", "series", "theme"]
+	},
+	"banlist": {
+		"owner": "ProjectIgnis",
+		"repo": "LFLists",
+		"path": ""
+	},
+	"imageLink": "https://raw.githubusercontent.com/AlphaKretin/AlphaKretin.github.io/master/miscstorage/",
+	"imageExt": "png"
+}

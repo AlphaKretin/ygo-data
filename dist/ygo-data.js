@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // ts-ignore allowed in this file because fuse.js has incorrect typings
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 const Fuse = require("fuse.js");
-const fs = require("mz/fs");
 const Card_1 = require("./class/Card");
 exports.Card = Card_1.Card;
 const Filter_1 = require("./class/Filter");
@@ -17,8 +16,12 @@ const filterNames_1 = require("./module/filterNames");
 const images_1 = require("./module/images");
 const translations_1 = require("./module/translations");
 exports.translations = translations_1.translations;
+function needsConversion(transOpts) {
+    const key = Object.keys(transOpts)[0];
+    return typeof Object.keys(transOpts[key].type)[0] === "string";
+}
 class YgoData {
-    constructor(configPath, savePath) {
+    constructor(cardOpts, transOpts, miscOpts, savePath) {
         // TODO: Add some configurability here
         this.fuseOpts = {
             distance: 100,
@@ -31,19 +34,48 @@ class YgoData {
             threshold: 0.25,
             tokenize: true
         };
-        this.config = JSON.parse(fs.readFileSync(configPath, "utf8"), (key, value) => {
-            // if object with hex keys
-            if (typeof value === "object" && Object.keys(value).length > 0 && Object.keys(value)[0].startsWith("0x")) {
-                // any allowed here because could apply to any part of config
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const newObj = {};
-                for (const k in value) {
-                    newObj[parseInt(k, 16)] = value[k];
+        this.cardOpts = cardOpts;
+        if (needsConversion(transOpts)) {
+            this.transOpts = {};
+            for (const lang in transOpts) {
+                const type = {};
+                for (const hex in transOpts[lang].type) {
+                    type[parseInt(hex, 16)] = transOpts[lang].type[hex];
                 }
-                return newObj;
+                const race = {};
+                for (const hex in transOpts[lang].race) {
+                    race[parseInt(hex, 16)] = transOpts[lang].race[hex];
+                }
+                const skillRace = {};
+                for (const hex in transOpts[lang].skillRace) {
+                    skillRace[parseInt(hex, 16)] = transOpts[lang].skillRace[hex];
+                }
+                const attribute = {};
+                for (const hex in transOpts[lang].attribute) {
+                    attribute[parseInt(hex, 16)] = transOpts[lang].attribute[hex];
+                }
+                const ot = {};
+                for (const hex in transOpts[lang].ot) {
+                    ot[parseInt(hex, 16)] = transOpts[lang].ot[hex];
+                }
+                const category = {};
+                for (const hex in transOpts[lang].category) {
+                    category[parseInt(hex, 16)] = transOpts[lang].category[hex];
+                }
+                this.transOpts[lang] = {
+                    type: type,
+                    race: race,
+                    skillRace: skillRace,
+                    attribute: attribute,
+                    ot: ot,
+                    category: category
+                };
             }
-            return value;
-        });
+        }
+        else {
+            this.transOpts = transOpts;
+        }
+        this.miscOpts = miscOpts;
         this.savePath = savePath;
         this.update();
     }
@@ -51,15 +83,15 @@ class YgoData {
         // any allowed here because array of different promises
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const proms = [];
-        proms.push(cards_1.cards.update(this.config.cardOpts, this.savePath));
-        proms.push(banlist_1.banlist.update(this.config.banlist));
-        proms.push(strings_1.strings.update(this.config.stringOpts, this.savePath));
-        translations_1.translations.update(this.config.transOpts);
-        filterNames_1.updateFilterNames(this.config.filterNames);
-        images_1.images.update(this.config.imageLink, this.config.imageExt);
+        proms.push(cards_1.cards.update(this.cardOpts, this.savePath));
+        proms.push(banlist_1.banlist.update(this.miscOpts.banlist));
+        proms.push(strings_1.strings.update(this.miscOpts.stringOpts, this.savePath));
+        translations_1.translations.update(this.transOpts);
+        filterNames_1.updateFilterNames(this.miscOpts.filterNames);
+        images_1.images.update(this.miscOpts.imageLink, this.miscOpts.imageExt);
         this.fuses = {};
-        this.internalLangs = Object.keys(this.config.cardOpts.langs);
-        this.shortcuts = this.config.shortcuts;
+        this.internalLangs = Object.keys(this.cardOpts.langs);
+        this.shortcuts = this.miscOpts.shortcuts;
         await Promise.all(proms);
     }
     get langs() {

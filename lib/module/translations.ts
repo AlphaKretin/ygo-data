@@ -1,6 +1,6 @@
 import { TranslationRaw, Translation } from "../class/Translation";
 
-interface TranslationsRaw {
+export interface TranslationsRaw {
 	[lang: string]: TranslationRaw;
 }
 

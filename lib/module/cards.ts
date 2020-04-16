@@ -125,7 +125,7 @@ class CardList {
 			const dbs = await fs.readdir(dir);
 			for (const dbName of dbs) {
 				if (dbName.endsWith(".cdb")) {
-					const db = await sqlite(dir + dbName);
+					const db = sqlite(dir + dbName);
 					const statement = db.prepare("select * from datas,texts where datas.id=texts.id");
 					const result = statement.all();
 					for (const card of result) {
