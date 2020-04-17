@@ -90,11 +90,12 @@ class Strings {
 				stringsConf += "\r\n" + (await (await fetch(conf.remote)).text());
 			}
 		}
-		if (conf.remote) {
-			stringsConf = await (await fetch(conf.remote)).text();
-		}
 		if (!stringsConf) {
-			throw new Error("Some language has no strings defined!");
+			if (conf.remote) {
+				stringsConf = await (await fetch(conf.remote)).text();
+			} else {
+				throw new Error("Some language has no strings defined!");
+			}
 		}
 		const file = stringsConf.split(/\n|\r|\r\n/);
 		const setList: { [set: number]: string } = {};

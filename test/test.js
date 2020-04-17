@@ -495,6 +495,10 @@ describe("Testing setcodes", function () {
 		const code = await ygoData.strings.reverseCode("D/D", "en");
 		expect(code).to.equal(0xaf);
 	});
+	it("Testing local/remote merge", async function () {
+		const arch = await ygoData.strings.getCode(0x4f, "en");
+		expect(arch).to.equal("Dark Lucius");
+	});
 });
 describe("Testing counters", function () {
 	it("Testing straight search", async function () {
