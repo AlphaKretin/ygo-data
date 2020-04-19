@@ -7,7 +7,6 @@ function getGithub(auth) {
         return github;
     }
     let options = undefined;
-    console.log(auth);
     if (auth) {
         options = {
             auth: process.env.GITHUB_TOKEN
