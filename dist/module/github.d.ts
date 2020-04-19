@@ -1,2 +1,2 @@
 import { Octokit } from "@octokit/rest";
-export declare const github: Octokit;
+export declare function getGithub(auth?: string): Octokit;

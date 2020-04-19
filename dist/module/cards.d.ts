@@ -24,7 +24,7 @@ export interface SimpleCard {
 declare class CardList {
     private cards?;
     getCard(id: number | string): Promise<Card | undefined>;
-    update(opts: CardListOpts, savePath: string): Promise<{
+    update(opts: CardListOpts, savePath: string, gitAuth?: string): Promise<{
         [id: number]: Card;
     }>;
     getSimpleList(lang: string): Promise<SimpleList>;

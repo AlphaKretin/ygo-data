@@ -21,7 +21,7 @@ function needsConversion(transOpts) {
     return typeof Object.keys(transOpts[key].type)[0] === "string";
 }
 class YgoData {
-    constructor(cardOpts, transOpts, miscOpts, savePath) {
+    constructor(cardOpts, transOpts, miscOpts, savePath, gitAuth) {
         // TODO: Add some configurability here
         this.fuseOpts = {
             distance: 100,
@@ -77,14 +77,17 @@ class YgoData {
         }
         this.miscOpts = miscOpts;
         this.savePath = savePath;
+        if (gitAuth) {
+            this.gitAuth = gitAuth;
+        }
         this.update();
     }
     async update() {
         // any allowed here because array of different promises
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const proms = [];
-        proms.push(cards_1.cards.update(this.cardOpts, this.savePath));
-        proms.push(banlist_1.banlist.update(this.miscOpts.banlist));
+        proms.push(cards_1.cards.update(this.cardOpts, this.savePath, this.gitAuth));
+        proms.push(banlist_1.banlist.update(this.miscOpts.banlist, this.gitAuth));
         proms.push(strings_1.strings.update(this.miscOpts.stringOpts, this.savePath));
         translations_1.translations.update(this.transOpts);
         filterNames_1.updateFilterNames(this.miscOpts.filterNames);

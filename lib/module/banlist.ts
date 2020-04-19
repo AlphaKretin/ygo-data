@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import { Octokit } from "@octokit/rest";
-import { github } from "./github";
+import { getGithub } from "./github";
 
 interface LFList {
 	[code: number]: number;
@@ -24,8 +24,8 @@ class Banlist {
 		return code in lf[list] ? lf[list][code] : 3;
 	}
 
-	public update(repo: Octokit.ReposGetContentsParams): Promise<ListList> {
-		return (this.lflist = this.load(repo));
+	public update(repo: Octokit.ReposGetContentsParams, gitAuth?: string): Promise<ListList> {
+		return (this.lflist = this.load(repo, gitAuth));
 	}
 
 	private parseSingleBanlist(lflistConf: string): LFList {
@@ -42,8 +42,9 @@ class Banlist {
 		return list;
 	}
 
-	private async load(repo: Octokit.ReposGetContentsParams): Promise<ListList> {
+	private async load(repo: Octokit.ReposGetContentsParams, gitAuth?: string): Promise<ListList> {
 		const list: ListList = {};
+		const github = getGithub(gitAuth);
 		const res = await github.repos.getContents(repo);
 		const contents = res.data;
 		if (contents instanceof Array) {

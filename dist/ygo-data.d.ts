@@ -73,7 +73,8 @@ declare class YgoData {
     private transOpts;
     private miscOpts;
     private savePath;
-    constructor(cardOpts: CardConfig, transOpts: TransConfig, miscOpts: MiscConfig, savePath: string);
+    private gitAuth?;
+    constructor(cardOpts: CardConfig, transOpts: TransConfig, miscOpts: MiscConfig, savePath: string, gitAuth?: string);
     update(): Promise<void>;
     get langs(): string[];
     getCard(id: number | string, lang?: string, allowAnime?: boolean, allowCustom?: boolean): Promise<Card | undefined>;

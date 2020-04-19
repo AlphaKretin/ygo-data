@@ -90,7 +90,8 @@ class YgoData {
 	private transOpts: TranslationsRaw;
 	private miscOpts: MiscConfig;
 	private savePath: string;
-	constructor(cardOpts: CardConfig, transOpts: TransConfig, miscOpts: MiscConfig, savePath: string) {
+	private gitAuth?: string;
+	constructor(cardOpts: CardConfig, transOpts: TransConfig, miscOpts: MiscConfig, savePath: string, gitAuth?: string) {
 		this.cardOpts = cardOpts;
 		if (needsConversion(transOpts)) {
 			this.transOpts = {};
@@ -134,6 +135,9 @@ class YgoData {
 		}
 		this.miscOpts = miscOpts;
 		this.savePath = savePath;
+		if (gitAuth) {
+			this.gitAuth = gitAuth;
+		}
 		this.update();
 	}
 
@@ -141,8 +145,8 @@ class YgoData {
 		// any allowed here because array of different promises
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const proms: Array<Promise<any>> = [];
-		proms.push(cards.update(this.cardOpts, this.savePath));
-		proms.push(banlist.update(this.miscOpts.banlist));
+		proms.push(cards.update(this.cardOpts, this.savePath, this.gitAuth));
+		proms.push(banlist.update(this.miscOpts.banlist, this.gitAuth));
 		proms.push(strings.update(this.miscOpts.stringOpts, this.savePath));
 		translations.update(this.transOpts);
 		updateFilterNames(this.miscOpts.filterNames);

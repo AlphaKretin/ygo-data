@@ -19,9 +19,9 @@ class CardList {
         const list = await this.cards;
         return list[id];
     }
-    update(opts, savePath) {
+    update(opts, savePath, gitAuth) {
         // returns the same promise it registers to this.cards, so awaiting the function will await the update process
-        return (this.cards = this.load(opts, savePath));
+        return (this.cards = this.load(opts, savePath, gitAuth));
     }
     async getSimpleList(lang) {
         if (!this.cards) {
@@ -58,7 +58,7 @@ class CardList {
             await fs.writeFile(fullPath, result);
         }
     }
-    async downloadDBs(opts, savePath) {
+    async downloadDBs(opts, savePath, gitAuth) {
         const proms = [];
         for (const langName in opts.langs) {
             const filePath = savePath + "/" + langName + "/";
@@ -66,7 +66,8 @@ class CardList {
             const lang = opts.langs[langName];
             if (lang.remoteDBs) {
                 for (const repo of lang.remoteDBs) {
-                    const res = await github_1.github.repos.getContents(repo);
+                    const github = github_1.getGithub(gitAuth);
+                    const res = await github.repos.getContents(repo);
                     const contents = res.data;
                     if (contents instanceof Array) {
                         for (const file of contents) {
@@ -199,8 +200,8 @@ class CardList {
         }
         return raw;
     }
-    async load(opts, savePath) {
-        await this.downloadDBs(opts, savePath);
+    async load(opts, savePath, gitAuth) {
+        await this.downloadDBs(opts, savePath, gitAuth);
         const rawData = await this.loadDBs(opts, savePath);
         const list = {};
         for (const id in rawData) {

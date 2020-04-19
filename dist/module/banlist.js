@@ -13,8 +13,8 @@ class Banlist {
         }
         return code in lf[list] ? lf[list][code] : 3;
     }
-    update(repo) {
-        return (this.lflist = this.load(repo));
+    update(repo, gitAuth) {
+        return (this.lflist = this.load(repo, gitAuth));
     }
     parseSingleBanlist(lflistConf) {
         const file = lflistConf.split(/\n|\r|\r\n/);
@@ -29,9 +29,10 @@ class Banlist {
         }
         return list;
     }
-    async load(repo) {
+    async load(repo, gitAuth) {
         const list = {};
-        const res = await github_1.github.repos.getContents(repo);
+        const github = github_1.getGithub(gitAuth);
+        const res = await github.repos.getContents(repo);
         const contents = res.data;
         if (contents instanceof Array) {
             for (const file of contents) {

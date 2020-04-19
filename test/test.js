@@ -1,10 +1,11 @@
 "use strict";
+require("dotenv").config();
 const expect = require("chai").expect;
 const ygoData = require("../dist/ygo-data.js");
 const cardOpts = require("./cardOpts.json");
 const transOpts = require("./transOpts.json");
 const miscOpts = require("./miscOpts.json");
-const index = new ygoData.YgoData(cardOpts, transOpts, miscOpts, __dirname + "/dbs/");
+const index = new ygoData.YgoData(cardOpts, transOpts, miscOpts, __dirname + "/dbs/", process.env.GITHUB_TOKEN);
 const filter = new ygoData.Filter({
 	type: [{ yes: [ygoData.enums.type.TYPE_RITUAL, ygoData.enums.type.TYPE_MONSTER] }],
 	attribute: [{ yes: [ygoData.enums.attribute.ATTRIBUTE_DARK] }, { yes: [ygoData.enums.attribute.ATTRIBUTE_LIGHT] }],

@@ -8,7 +8,7 @@ import { Card, CardRaw } from "../class/Card";
 import { CardDataRaw } from "../class/CardData";
 import { CardTextRaw } from "../class/CardText";
 import { enums } from "../ygo-data";
-import { github } from "./github";
+import { getGithub } from "./github";
 
 export interface CardArray {
 	[id: number]: Card;
@@ -49,9 +49,9 @@ class CardList {
 		return list[id];
 	}
 
-	public update(opts: CardListOpts, savePath: string): Promise<{ [id: number]: Card }> {
+	public update(opts: CardListOpts, savePath: string, gitAuth?: string): Promise<{ [id: number]: Card }> {
 		// returns the same promise it registers to this.cards, so awaiting the function will await the update process
-		return (this.cards = this.load(opts, savePath));
+		return (this.cards = this.load(opts, savePath, gitAuth));
 	}
 
 	public async getSimpleList(lang: string): Promise<SimpleList> {
@@ -93,7 +93,7 @@ class CardList {
 		}
 	}
 
-	private async downloadDBs(opts: CardListOpts, savePath: string): Promise<void> {
+	private async downloadDBs(opts: CardListOpts, savePath: string, gitAuth?: string): Promise<void> {
 		const proms: Array<Promise<void>> = [];
 		for (const langName in opts.langs) {
 			const filePath = savePath + "/" + langName + "/";
@@ -101,6 +101,7 @@ class CardList {
 			const lang = opts.langs[langName];
 			if (lang.remoteDBs) {
 				for (const repo of lang.remoteDBs) {
+					const github = getGithub(gitAuth);
 					const res = await github.repos.getContents(repo);
 					const contents = res.data;
 					if (contents instanceof Array) {
@@ -231,8 +232,8 @@ class CardList {
 		return raw;
 	}
 
-	private async load(opts: CardListOpts, savePath: string): Promise<{ [id: number]: Card }> {
-		await this.downloadDBs(opts, savePath);
+	private async load(opts: CardListOpts, savePath: string, gitAuth?: string): Promise<{ [id: number]: Card }> {
+		await this.downloadDBs(opts, savePath, gitAuth);
 		const rawData = await this.loadDBs(opts, savePath);
 		const list: { [id: number]: Card } = {};
 		for (const id in rawData) {

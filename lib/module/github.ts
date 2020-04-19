@@ -1,10 +1,17 @@
 import { Octokit } from "@octokit/rest";
 
-let options: Octokit.Options | undefined = undefined;
-// for travis
-if (process.env.GITHUB_TOKEN) {
-	options = {
-		auth: process.env.GITHUB_TOKEN
-	};
+let github: Octokit;
+
+export function getGithub(auth?: string): Octokit {
+	if (github) {
+		return github;
+	}
+	let options: Octokit.Options | undefined = undefined;
+	if (auth) {
+		options = {
+			auth: process.env.GITHUB_TOKEN
+		};
+	}
+	github = new Octokit(options);
+	return github;
 }
-export const github = new Octokit(options);

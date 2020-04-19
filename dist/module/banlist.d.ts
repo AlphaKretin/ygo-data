@@ -8,7 +8,7 @@ interface ListList {
 declare class Banlist {
     private lflist?;
     getStatus(code: number, list: string): Promise<number | undefined>;
-    update(repo: Octokit.ReposGetContentsParams): Promise<ListList>;
+    update(repo: Octokit.ReposGetContentsParams, gitAuth?: string): Promise<ListList>;
     private parseSingleBanlist;
     private load;
 }
