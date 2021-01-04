@@ -18,10 +18,8 @@ class Banlist {
 			throw new Error("Banlist not loaded!");
 		}
 		const lf = await this.lflist;
-		if (!(list in lf)) {
-			return undefined;
-		}
-		return code in lf[list] ? lf[list][code] : 3;
+		const listName = Object.keys(lf).find(k => k.includes(list));
+		return listName && code in lf[listName] ? lf[listName][code] : 3;
 	}
 
 	public update(repo: Octokit.ReposGetContentsParams, gitAuth?: string): Promise<ListList> {
