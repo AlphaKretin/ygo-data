@@ -1,4 +1,4 @@
-import { Octokit } from "@octokit/rest";
+import { ReposGetContentParams } from "./github";
 interface LFList {
     [code: number]: number;
 }
@@ -8,7 +8,7 @@ interface ListList {
 declare class Banlist {
     private lflist?;
     getStatus(code: number, list: string): Promise<number | undefined>;
-    update(repo: Octokit.ReposGetContentsParams, gitAuth?: string): Promise<ListList>;
+    update(repo: ReposGetContentParams, gitAuth?: string): Promise<ListList>;
     private parseSingleBanlist;
     private load;
 }

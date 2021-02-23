@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CardCategory = exports.CardLinkMarker = exports.CardSkillRace = exports.CardRace = exports.CardAttribute = exports.CardType = exports.CardOT = void 0;
 var CardOT;
 (function (CardOT) {
     CardOT[CardOT["OT_OCG"] = 1] = "OT_OCG";

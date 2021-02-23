@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.translations = void 0;
 const Translation_1 = require("../class/Translation");
 class Translations {
     constructor() {

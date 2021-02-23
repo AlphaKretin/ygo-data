@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.updateFilterNames = exports.filterNames = void 0;
 exports.filterNames = {
     atk: [],
     attribute: [],

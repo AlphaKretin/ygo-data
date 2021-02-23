@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Translation = void 0;
 const enums_1 = require("../module/enums");
 class Translation {
     constructor(name, raw) {

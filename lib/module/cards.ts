@@ -1,14 +1,12 @@
-import { Octokit } from "@octokit/rest";
-import * as mkdirp from "mkdirp";
-import * as fs from "mz/fs";
+import mkdirp from "mkdirp";
+import fs from "mz/fs";
 import fetch from "node-fetch";
-import * as sqlite from "better-sqlite3";
-import * as util from "util";
+import sqlite from "better-sqlite3";
 import { Card, CardRaw } from "../class/Card";
 import { CardDataRaw } from "../class/CardData";
 import { CardTextRaw } from "../class/CardText";
 import { enums } from "../ygo-data";
-import { getGithub } from "./github";
+import { getGithub, ReposGetContentParams, ReposGetContentResponse } from "./github";
 
 export interface CardArray {
 	[id: number]: Card;
@@ -21,7 +19,7 @@ export interface SimpleList {
 interface CardListOpts {
 	langs: {
 		[lang: string]: {
-			remoteDBs?: Octokit.ReposGetContentsParams[];
+			remoteDBs?: ReposGetContentParams[];
 		};
 	};
 	baseDbs?: string[];
@@ -85,7 +83,7 @@ class CardList {
 		return await this.cards;
 	}
 
-	private async downloadSingleDB(file: Octokit.ReposGetContentsResponseItem, filePath: string): Promise<void> {
+	private async downloadSingleDB(file: ReposGetContentResponse, filePath: string): Promise<void> {
 		const fullPath = filePath + file.name;
 		if (file.download_url) {
 			const result = await (await fetch(file.download_url)).buffer();
@@ -97,12 +95,12 @@ class CardList {
 		const proms: Array<Promise<void>> = [];
 		for (const langName in opts.langs) {
 			const filePath = savePath + "/" + langName + "/";
-			await util.promisify(mkdirp)(filePath);
+			await mkdirp(filePath);
 			const lang = opts.langs[langName];
 			if (lang.remoteDBs) {
 				for (const repo of lang.remoteDBs) {
 					const github = getGithub(gitAuth);
-					const res = await github.repos.getContents(repo);
+					const res = await github.repos.getContent(repo);
 					const contents = res.data;
 					if (contents instanceof Array) {
 						for (const file of contents) {

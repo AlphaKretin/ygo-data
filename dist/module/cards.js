@@ -1,10 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mkdirp = require("mkdirp");
-const fs = require("mz/fs");
-const node_fetch_1 = require("node-fetch");
-const sqlite = require("better-sqlite3");
-const util = require("util");
+exports.cards = void 0;
+const mkdirp_1 = __importDefault(require("mkdirp"));
+const fs_1 = __importDefault(require("mz/fs"));
+const node_fetch_1 = __importDefault(require("node-fetch"));
+const better_sqlite3_1 = __importDefault(require("better-sqlite3"));
 const Card_1 = require("../class/Card");
 const ygo_data_1 = require("../ygo-data");
 const github_1 = require("./github");
@@ -55,19 +58,19 @@ class CardList {
         const fullPath = filePath + file.name;
         if (file.download_url) {
             const result = await (await node_fetch_1.default(file.download_url)).buffer();
-            await fs.writeFile(fullPath, result);
+            await fs_1.default.writeFile(fullPath, result);
         }
     }
     async downloadDBs(opts, savePath, gitAuth) {
         const proms = [];
         for (const langName in opts.langs) {
             const filePath = savePath + "/" + langName + "/";
-            await util.promisify(mkdirp)(filePath);
+            await mkdirp_1.default(filePath);
             const lang = opts.langs[langName];
             if (lang.remoteDBs) {
                 for (const repo of lang.remoteDBs) {
                     const github = github_1.getGithub(gitAuth);
-                    const res = await github.repos.getContents(repo);
+                    const res = await github.repos.getContent(repo);
                     const contents = res.data;
                     if (contents instanceof Array) {
                         for (const file of contents) {
@@ -88,10 +91,10 @@ class CardList {
         const raw = {};
         for (const langName in opts.langs) {
             const dir = savePath + "/" + langName + "/";
-            const dbs = await fs.readdir(dir);
+            const dbs = await fs_1.default.readdir(dir);
             for (const dbName of dbs) {
                 if (dbName.endsWith(".cdb")) {
-                    const db = sqlite(dir + dbName);
+                    const db = better_sqlite3_1.default(dir + dbName);
                     const statement = db.prepare("select * from datas,texts where datas.id=texts.id");
                     const result = statement.all();
                     for (const card of result) {

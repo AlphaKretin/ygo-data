@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CardData = void 0;
 const enums_1 = require("../module/enums");
 const strings_1 = require("../module/strings");
 const translations_1 = require("../module/translations");

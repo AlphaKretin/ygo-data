@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const node_fetch_1 = require("node-fetch");
+exports.banlist = void 0;
+const node_fetch_1 = __importDefault(require("node-fetch"));
 const github_1 = require("./github");
 class Banlist {
     async getStatus(code, list) {
@@ -30,7 +34,7 @@ class Banlist {
     async load(repo, gitAuth) {
         const list = {};
         const github = github_1.getGithub(gitAuth);
-        const res = await github.repos.getContents(repo);
+        const res = await github.repos.getContent(repo);
         const contents = res.data;
         if (contents instanceof Array) {
             for (const file of contents) {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getGithub = void 0;
 const rest_1 = require("@octokit/rest");
 let github;
 function getGithub(auth) {

@@ -1,5 +1,5 @@
-import { Octokit } from "@octokit/rest";
 import { Card } from "../class/Card";
+import { ReposGetContentParams } from "./github";
 export interface CardArray {
     [id: number]: Card;
 }
@@ -9,7 +9,7 @@ export interface SimpleList {
 interface CardListOpts {
     langs: {
         [lang: string]: {
-            remoteDBs?: Octokit.ReposGetContentsParams[];
+            remoteDBs?: ReposGetContentParams[];
         };
     };
     baseDbs?: string[];

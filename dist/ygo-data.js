@@ -1,21 +1,23 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-// ts-ignore allowed in this file because fuse.js has incorrect typings
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
-const Fuse = require("fuse.js");
+exports.strings = exports.Filter = exports.enums = exports.translations = exports.Card = exports.YgoData = void 0;
+const fuse_js_1 = __importDefault(require("fuse.js"));
 const Card_1 = require("./class/Card");
-exports.Card = Card_1.Card;
+Object.defineProperty(exports, "Card", { enumerable: true, get: function () { return Card_1.Card; } });
 const Filter_1 = require("./class/Filter");
-exports.Filter = Filter_1.Filter;
+Object.defineProperty(exports, "Filter", { enumerable: true, get: function () { return Filter_1.Filter; } });
 const banlist_1 = require("./module/banlist");
 const cards_1 = require("./module/cards");
 const strings_1 = require("./module/strings");
-exports.strings = strings_1.strings;
+Object.defineProperty(exports, "strings", { enumerable: true, get: function () { return strings_1.strings; } });
 const enums_1 = require("./module/enums");
 const filterNames_1 = require("./module/filterNames");
 const images_1 = require("./module/images");
 const translations_1 = require("./module/translations");
-exports.translations = translations_1.translations;
+Object.defineProperty(exports, "translations", { enumerable: true, get: function () { return translations_1.translations; } });
 function needsConversion(transOpts) {
     const key = Object.keys(transOpts)[0];
     return typeof Object.keys(transOpts[key].type)[0] === "string";
@@ -28,11 +30,9 @@ class YgoData {
             includeScore: true,
             keys: ["name"],
             location: 0,
-            maxPatternLength: 52,
             minMatchCharLength: 1,
             shouldSort: true,
             threshold: 0.25,
-            tokenize: true
         };
         this.cardOpts = cardOpts;
         if (needsConversion(transOpts)) {
@@ -144,12 +144,10 @@ class YgoData {
                     const fuse = await this.getFuse(lang);
                     const result = fuse
                         .search(term)
-                        //@ts-ignore
                         .filter(r => (allowAnime || !r.item.anime) && (allowCustom || !r.item.custom));
                     if (result.length < 1) {
                         return undefined;
                     }
-                    //@ts-ignore
                     resultCard = await this.getCard(result[0].item.id);
                 }
                 if (resultCard !== undefined && resultCard.data.alias > 0) {
@@ -173,13 +171,12 @@ class YgoData {
     }
     async getFuseList(query, lang) {
         const fuse = await this.getFuse(lang);
-        //@ts-ignore
         return fuse.search(query).map(r => r.item);
     }
     async getFuse(lang) {
         if (!(lang in this.fuses)) {
             const list = await cards_1.cards.getSimpleList(lang);
-            this.fuses[lang] = new Fuse(Object.values(list), this.fuseOpts);
+            this.fuses[lang] = new fuse_js_1.default(Object.values(list), this.fuseOpts);
         }
         return this.fuses[lang];
     }

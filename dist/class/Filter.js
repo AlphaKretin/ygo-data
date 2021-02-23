@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Filter = void 0;
 const cards_1 = require("../module/cards");
 const filterNames_1 = require("../module/filterNames");
 const strings_1 = require("../module/strings");

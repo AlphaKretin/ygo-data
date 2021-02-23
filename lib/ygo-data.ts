@@ -1,6 +1,4 @@
-// ts-ignore allowed in this file because fuse.js has incorrect typings
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
-import * as Fuse from "fuse.js";
+import Fuse from "fuse.js";
 import { Card } from "./class/Card";
 import { Filter } from "./class/Filter";
 import { banlist } from "./module/banlist";
@@ -10,12 +8,12 @@ import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardSkil
 import { updateFilterNames } from "./module/filterNames";
 import { images } from "./module/images";
 import { translations, TranslationsRaw } from "./module/translations";
-import { Octokit } from "@octokit/rest";
+import { ReposGetContentParams } from "./module/github";
 
 interface CardConfig {
 	langs: {
 		[lang: string]: {
-			remoteDBs: Octokit.ReposGetContentsParams[];
+			remoteDBs: ReposGetContentParams[];
 		};
 	};
 	baseDbs?: string[];
@@ -58,7 +56,7 @@ interface MiscConfig {
 		def: string[];
 		setcode: string[];
 	};
-	banlist: Octokit.ReposGetContentsParams;
+	banlist: ReposGetContentParams;
 	imageLink: string;
 	imageExt: string;
 }
@@ -71,18 +69,16 @@ function needsConversion(transOpts: TransConfig): transOpts is TransOptions {
 class YgoData {
 	private internalLangs!: string[];
 	// TODO: Add some configurability here
-	private fuseOpts: Fuse.FuseOptions<SimpleCard> = {
+	private fuseOpts: Fuse.IFuseOptions<SimpleCard> = {
 		distance: 100,
 		includeScore: true,
 		keys: ["name"],
 		location: 0,
-		maxPatternLength: 52,
 		minMatchCharLength: 1,
 		shouldSort: true,
 		threshold: 0.25,
-		tokenize: true
 	};
-	private fuses!: { [lang: string]: Fuse<SimpleCard, Fuse.FuseOptions<SimpleCard>> };
+	private fuses!: { [lang: string]: Fuse<SimpleCard> };
 	private shortcuts?: { [lang: string]: { [short: string]: string } };
 	// any allowed here because config is subject to change
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -209,12 +205,10 @@ class YgoData {
 					const fuse = await this.getFuse(lang);
 					const result = fuse
 						.search(term)
-						//@ts-ignore
 						.filter(r => (allowAnime || !r.item.anime) && (allowCustom || !r.item.custom));
 					if (result.length < 1) {
 						return undefined;
 					}
-					//@ts-ignore
 					resultCard = await this.getCard(result[0].item.id);
 				}
 				if (resultCard !== undefined && resultCard.data.alias > 0) {
@@ -240,11 +234,10 @@ class YgoData {
 
 	public async getFuseList(query: string, lang: string): Promise<SimpleCard[]> {
 		const fuse = await this.getFuse(lang);
-		//@ts-ignore
 		return fuse.search(query).map(r => r.item);
 	}
 
-	private async getFuse(lang: string): Promise<Fuse<SimpleCard, Fuse.FuseOptions<SimpleCard>>> {
+	private async getFuse(lang: string): Promise<Fuse<SimpleCard>> {
 		if (!(lang in this.fuses)) {
 			const list = await cards.getSimpleList(lang);
 			this.fuses[lang] = new Fuse(Object.values(list), this.fuseOpts);

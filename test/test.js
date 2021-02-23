@@ -51,7 +51,7 @@ describe("Testing searches", function () {
 });
 describe("Testing utilities", function () {
 	it("Language list should be [en, ja]", async function () {
-		const langs = await index.langs;
+		const langs = index.langs;
 		expect(langs).to.deep.equal(["en", "ja"]);
 	});
 	it("Card list should be Object", async function () {

@@ -4,11 +4,11 @@ import { CardArray, SimpleCard } from "./module/cards";
 import { strings } from "./module/strings";
 import { CardAttribute, CardCategory, CardLinkMarker, CardOT, CardRace, CardSkillRace, CardType } from "./module/enums";
 import { translations, TranslationsRaw } from "./module/translations";
-import { Octokit } from "@octokit/rest";
+import { ReposGetContentParams } from "./module/github";
 interface CardConfig {
     langs: {
         [lang: string]: {
-            remoteDBs: Octokit.ReposGetContentsParams[];
+            remoteDBs: ReposGetContentParams[];
         };
     };
     baseDbs?: string[];
@@ -60,7 +60,7 @@ interface MiscConfig {
         def: string[];
         setcode: string[];
     };
-    banlist: Octokit.ReposGetContentsParams;
+    banlist: ReposGetContentParams;
     imageLink: string;
     imageExt: string;
 }
