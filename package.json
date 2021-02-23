@@ -4,6 +4,11 @@
   "description": "Parses information from YGOPro card databases",
   "main": "dist/ygo-data.js",
   "types": "dist/ygo-data.d.ts",
+  "files": [
+    "dist/**/*.d.ts",
+    "dist/**/*.js",
+    "dist/**/*.js.map"
+  ],
   "scripts": {
     "test": "mocha",
     "build": "tsc",
