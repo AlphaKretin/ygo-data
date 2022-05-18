@@ -107,7 +107,7 @@ export class CardText {
 		}
 		const KOR_TAG_REG = /([^━]*)(?:[\r\n|\r|\n]\s*━+)/
 		const korTagResult = KOR_TAG_REG.exec(this.literalDesc);
-		if (!korPendResult &&korTagResult) {
+		if (!korPendResult && korTagResult) {
 			let monText = korTagResult[1].trim();
 			return [monText];
 		}
