@@ -112,7 +112,7 @@ export class CardText {
 			return [monText];
 		}
 		// jpn regex from https://github.com/247321453/DataEditorX/blob/master/DataEditorX/data/mse_Japanese.txt#L27
-		const JPN_PEND_REG = /[果|介|述|報]】[\s\S]*?[\r\n|\r|\n]([\S\s]*?)[\r\n|\r|\n]【/;
+		const JPN_PEND_REG = /】[\s\S]*?[\r\n|\r|\n]([\S\s]*?)[\r\n|\r|\n]【/;
 		const JPN_MON_REG = /[\r\n|\r|\n]【([\S\s]*?[果|介|述|報])】[\r\n|\r|\n]([\S\s]*)/;
 		const jpnPendResult = JPN_PEND_REG.exec(this.literalDesc);
 		if (jpnPendResult) {
