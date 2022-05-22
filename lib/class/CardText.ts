@@ -79,6 +79,37 @@ export class CardText {
 				monText = "[no card text]";
 			}
 			return [pendHead, pendEff, monHead, monText];
+		}	
+		// kor regex (Updating Database with JSY1728)
+		const KOR_PEND_REG = /【(펜듈럼 효과|스킬 발동)】\s*[\r\n|\r|\n](?:없음)?([^━]*)(?:[\r\n|\r|\n]\s*━+)?/;
+		const KOR_MON_REG = /【(몬스터 효과|플레이버 텍스트|효과)】\s*[\r\n|\r|\n]([^━]*)(?:[\r\n|\r|\n]\s*━?)/;
+		const korPendResult = KOR_PEND_REG.exec(this.literalDesc);
+		if (korPendResult) {
+			const pendHead = korPendResult[1].trim();
+			let pendEff = korPendResult[2].trim();
+			if (pendEff.length < 1) {
+				pendEff = "없음";
+			}
+			let monHead = "";
+			let monText = "";
+			const korMonResult = KOR_MON_REG.exec(this.literalDesc);
+			if (korMonResult) {
+				monHead = korMonResult[1].trim();
+				monText = korMonResult[2].trim();
+			}
+			if (monHead.length < 1) {
+				monHead = "카드 텍스트";
+			}
+			if (monText.length < 1) {
+				monText = "없음";
+			}
+			return [pendHead, pendEff, monHead, monText];
+		}
+		const KOR_TAG_REG = /([^━]*)(?:[\r\n|\r|\n]\s*━+)/
+		const korTagResult = KOR_TAG_REG.exec(this.literalDesc);
+		if (!korPendResult && korTagResult) {
+			let monText = korTagResult[1].trim();
+			return [monText];
 		}
 		// jpn regex from https://github.com/247321453/DataEditorX/blob/master/DataEditorX/data/mse_Japanese.txt#L27
 		const JPN_PEND_REG = /】[\s\S]*?[\r\n|\r|\n]([\S\s]*?)[\r\n|\r|\n]【/;
