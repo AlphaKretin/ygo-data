@@ -81,8 +81,8 @@ export class CardText {
 			return [pendHead, pendEff, monHead, monText];
 		}	
 		// kor regex (Updating Database with JSY1728)
-		const KOR_PEND_REG = /【(펜듈럼 효과|스킬 발동)】\s*[\r\n|\r|\n](?:없음)?([^━]*)(?:[\r\n|\r|\n]\s*━+)?/;
-		const KOR_MON_REG = /【(몬스터 효과|플레이버 텍스트|효과)】\s*[\r\n|\r|\n]([^━]*)(?:[\r\n|\r|\n]\s*━?)/;
+		const KOR_PEND_REG = /【(펜듈럼 효과|스킬 발동)】\s*[\r\n|\r|\n](?:없음)?([^━]*)(?:\s*━+)?/;
+		const KOR_MON_REG = /【(몬스터 효과|플레이버 텍스트|효과)】\s*[\r\n|\r|\n]([^━]*)(?:\s*━?)/;
 		const korPendResult = KOR_PEND_REG.exec(this.literalDesc);
 		if (korPendResult) {
 			const pendHead = korPendResult[1].trim();
